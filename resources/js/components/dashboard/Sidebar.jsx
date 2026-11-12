@@ -14,6 +14,7 @@ import {
   Calendar,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Search,
   SlidersHorizontal,
   Sun,
@@ -21,7 +22,19 @@ import {
   MoreVertical,
   LogOut,
   User as UserIcon,
-  ShieldCheck,
+  Camera,
+  CalendarClock,
+  ClipboardList,
+  CheckSquare,
+  Timer,
+  MapPin,
+  QrCode,
+  ScanBarcode,
+  Calculator,
+  FileText,
+  Landmark,
+  Building2,
+  Network,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -52,25 +65,63 @@ function Row({ collapsed, children, label }) {
 export function Sidebar({ collapsed, setCollapsed }) {
   const { url, props } = usePage();
   const user = props.auth?.user;
+  const currentPath = url.split("?")[0];
+
   const [searchQuery, setSearchQuery] = useState("");
   const [isDark, setIsDark] = useState(false);
 
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
-
-  const toggleTheme = (dark) => {
-    setIsDark(dark);
-    document.documentElement.classList.toggle("dark", dark);
-  };
-
   const menu = [
     { label: "Dashboard", href: "/", icon: LayoutDashboard },
-    { label: "Smart Attendance", href: "/attendance", icon: Clock },
-    { label: "Holiday & Leave", href: "/leave", icon: CalendarDays },
-    { label: "Klaim, Lembur & Visit", href: "/claims", icon: Receipt },
-    { label: "Crave Canteen", href: "/canteen", icon: UtensilsCrossed },
-    { label: "Payroll Management", href: "/payroll", icon: FileSpreadsheet },
+    {
+      label: "Presensi",
+      href: "/attendance",
+      icon: Clock,
+      children: [
+        { label: "Presensi Harian", href: "/attendance", icon: Camera },
+        { label: "Jadwal & Shift", href: "/attendance/shifts", icon: CalendarClock },
+        { label: "Rekap Kehadiran", href: "/attendance/recap", icon: ClipboardList },
+      ],
+    },
+    {
+      label: "Cuti & Libur",
+      href: "/leave",
+      icon: CalendarDays,
+      children: [
+        { label: "Cuti & Izin Saya", href: "/leave", icon: CalendarDays },
+        { label: "Persetujuan Cuti", href: "/leave/approvals", icon: CheckSquare },
+        { label: "Kalender & Libur", href: "/calendar", icon: Calendar },
+      ],
+    },
+    {
+      label: "Klaim & Lembur",
+      href: "/claims",
+      icon: Receipt,
+      children: [
+        { label: "Lembur (SPKL)", href: "/claims/overtime", icon: Timer },
+        { label: "Reimbursement", href: "/claims/reimbursement", icon: Receipt },
+        { label: "Tugas Lapangan / Visit", href: "/claims/visit", icon: MapPin },
+      ],
+    },
+    {
+      label: "Crave Canteen",
+      href: "/canteen",
+      icon: UtensilsCrossed,
+      children: [
+        { label: "Voucher QR Saya", href: "/canteen", icon: QrCode },
+        { label: "Scanner Merchant", href: "/canteen/scanner", icon: ScanBarcode },
+        { label: "Rekonsiliasi Vendor", href: "/canteen/settlement", icon: FileSpreadsheet },
+      ],
+    },
+    {
+      label: "Payroll Management",
+      href: "/payroll",
+      icon: FileSpreadsheet,
+      children: [
+        { label: "Proses Payroll", href: "/payroll", icon: Calculator },
+        { label: "Slip Gaji", href: "/payroll/slips", icon: FileText },
+        { label: "Ekspor Bank & Rekap", href: "/payroll/export", icon: Landmark },
+      ],
+    },
   ];
 
   const talenta = [
@@ -81,9 +132,44 @@ export function Sidebar({ collapsed, setCollapsed }) {
 
   const pengaturan = [
     { label: "Pengumuman", href: "/announcements", icon: Megaphone },
-    { label: "Kalender Libur", href: "/calendar", icon: Calendar },
-    { label: "Matriks Izin RBAC", href: "/organization/rbac-matrix", icon: SlidersHorizontal },
+    {
+      label: "Organisasi & Akses",
+      href: "/organization",
+      icon: SlidersHorizontal,
+      children: [
+        { label: "Cabang & Geofence", href: "/organization/branches", icon: Building2 },
+        { label: "Struktur Organisasi", href: "/organization/chart", icon: Network },
+        { label: "Matriks Izin RBAC", href: "/organization/rbac-matrix", icon: SlidersHorizontal },
+      ],
+    },
   ];
+
+  const isGroupActive = (item) =>
+    item.children?.some((c) => currentPath === c.href) ||
+    (item.href !== "/" && currentPath.startsWith(item.href));
+
+  const [openGroup, setOpenGroup] = useState(() => {
+    const allItems = [...menu, ...talenta, ...pengaturan];
+    const matched = allItems.find((item) => item.children && isGroupActive(item));
+    return matched ? matched.href : null;
+  });
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+  }, []);
+
+  useEffect(() => {
+    const allItems = [...menu, ...talenta, ...pengaturan];
+    const matched = allItems.find((item) => item.children && isGroupActive(item));
+    if (matched) {
+      setOpenGroup(matched.href);
+    }
+  }, [currentPath]);
+
+  const toggleTheme = (dark) => {
+    setIsDark(dark);
+    document.documentElement.classList.toggle("dark", dark);
+  };
 
   const itemClass = (active) =>
     cn(
@@ -94,15 +180,102 @@ export function Sidebar({ collapsed, setCollapsed }) {
         : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
     );
 
-  const filterItems = (items) =>
-    items.filter((item) =>
-      item.label.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const query = searchQuery.trim().toLowerCase();
+
+  const filterItems = (items) => {
+    if (!query) return items;
+    return items
+      .map((item) => {
+        if (!item.children) {
+          return item.label.toLowerCase().includes(query) ? item : null;
+        }
+        const parentMatch = item.label.toLowerCase().includes(query);
+        const matchingChildren = item.children.filter((c) =>
+          c.label.toLowerCase().includes(query)
+        );
+        if (parentMatch) return item;
+        if (matchingChildren.length > 0) {
+          return { ...item, children: matchingChildren };
+        }
+        return null;
+      })
+      .filter(Boolean);
+  };
 
   const renderItem = (item) => {
-    const isActive =
-      url === item.href || (item.href !== "/" && url.startsWith(item.href));
     const Icon = item.icon;
+
+    if (item.children) {
+      const groupActive = isGroupActive(item);
+      const open = !collapsed && (query ? true : openGroup === item.href);
+
+      return (
+        <div key={item.href} className="space-y-1">
+          <Row collapsed={collapsed} label={item.label}>
+            <button
+              type="button"
+              onClick={() => {
+                if (collapsed) {
+                  setCollapsed(false);
+                  setOpenGroup(item.href);
+                } else {
+                  setOpenGroup(openGroup === item.href ? null : item.href);
+                }
+              }}
+              className={cn(
+                itemClass(false),
+                "w-full",
+                groupActive && "text-primary hover:text-primary"
+              )}
+            >
+              <Icon className="size-4.5 shrink-0" />
+              {!collapsed && (
+                <>
+                  <span className="flex-1 truncate text-left">{item.label}</span>
+                  <ChevronDown
+                    className={cn("size-4 transition-transform", open && "rotate-180")}
+                  />
+                </>
+              )}
+            </button>
+          </Row>
+
+          <div
+            className={cn(
+              "grid transition-all duration-300 ease-out",
+              open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+            )}
+          >
+            <div className="overflow-hidden">
+              <div className="ml-5 space-y-1 border-l pl-3 pt-1">
+                {item.children.map((child, i) => {
+                  const ChildIcon = child.icon;
+                  const childActive = currentPath === child.href;
+                  return (
+                    <Link
+                      key={child.href}
+                      href={child.href}
+                      className={cn(
+                        itemClass(childActive),
+                        "transition-all duration-300 ease-out",
+                        open ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
+                      )}
+                      style={{ transitionDelay: open ? `${60 + i * 60}ms` : "0ms" }}
+                    >
+                      <ChildIcon className="size-4 shrink-0" />
+                      <span className="truncate">{child.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const isActive =
+      currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href));
 
     return (
       <Row key={item.href} collapsed={collapsed} label={item.label}>
@@ -182,43 +355,49 @@ export function Sidebar({ collapsed, setCollapsed }) {
           {/* Navigation Links */}
           <div className="flex-1 overflow-y-auto space-y-4 py-2 mt-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {/* Menu Operasional */}
-            <div className="space-y-1">
-              <p
-                className={cn(
-                  "px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground",
-                  collapsed && "hidden"
-                )}
-              >
-                Operasional
-              </p>
-              {filterItems(menu).map(renderItem)}
-            </div>
+            {filterItems(menu).length > 0 && (
+              <div className="space-y-1">
+                <p
+                  className={cn(
+                    "px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground",
+                    collapsed && "hidden"
+                  )}
+                >
+                  Operasional
+                </p>
+                {filterItems(menu).map(renderItem)}
+              </div>
+            )}
 
             {/* Menu Talenta & Organisasi */}
-            <div className="space-y-1">
-              <p
-                className={cn(
-                  "px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground",
-                  collapsed && "hidden"
-                )}
-              >
-                Talenta & Tim
-              </p>
-              {filterItems(talenta).map(renderItem)}
-            </div>
+            {filterItems(talenta).length > 0 && (
+              <div className="space-y-1">
+                <p
+                  className={cn(
+                    "px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground",
+                    collapsed && "hidden"
+                  )}
+                >
+                  Talenta & Tim
+                </p>
+                {filterItems(talenta).map(renderItem)}
+              </div>
+            )}
 
             {/* Menu Pengaturan */}
-            <div className="space-y-1">
-              <p
-                className={cn(
-                  "px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground",
-                  collapsed && "hidden"
-                )}
-              >
-                Pengaturan
-              </p>
-              {filterItems(pengaturan).map(renderItem)}
-            </div>
+            {filterItems(pengaturan).length > 0 && (
+              <div className="space-y-1">
+                <p
+                  className={cn(
+                    "px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground",
+                    collapsed && "hidden"
+                  )}
+                >
+                  Pengaturan
+                </p>
+                {filterItems(pengaturan).map(renderItem)}
+              </div>
+            )}
           </div>
 
           {/* Theme & User Profile Footer */}

@@ -115,70 +115,76 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 - [x] Halaman visual grid Matriks Izin Peran (`RbacMatrix.jsx`) 5 peran x modul operasional
 - [x] Automated tests: `EmployeeManagementTest.php` (5 test lolos, 50 assertions, zero tenant data leakage)
 
-### Task 6: Pengumuman Internal & Kalender Hari Libur
+### Task 6: Pengumuman Internal, Kalender Hari Libur, Cabang & Org Chart
 * **Target Selesai:** 16 November 2026
 * **PIC:** Aufa
-* **Reviewer:** Egi Witra Aditya
-* **Skill Rekomendasi:** `frontend-ui-engineering`
+* **Reviewer:** Egi Witra Aditya & Eka Revandi
+* **Skill Rekomendasi:** `frontend-ui-engineering`, `security-and-hardening`
 * **Status:** `[ ] Pending`
+> 📌 *Referensi Peta Menu & Route:* Lihat tabel di [`docs/PRD.md`](PRD.md) Section 4.2 agar setiap file halaman terhubung tepat ke submenu di `Sidebar.jsx`.
 - [ ] Migrasi tabel `announcements` dan `holidays`
-- [ ] Controller pengumuman internal & sinkronisasi hari libur nasional (SKB 3 Menteri)
-- [ ] Feed pengumuman kartu modern dan visual kalender hari libur
+- [ ] Controller pengumuman internal (`/announcements` -> `Announcements/Index.jsx`) & sinkronisasi hari libur nasional SKB 3 Menteri (`/calendar` -> `Calendar/HolidayCalendar.jsx`)
+- [ ] Halaman **Cabang & Geofence** (`/organization/branches` -> `Organization/Branches.jsx`) untuk input koordinat Lat/Lng, radius geofence, & whitelist IP kantor (prasyarat Task 7)
+- [ ] Halaman **Struktur Organisasi / Org Chart** (`/organization/chart` -> `Organization/OrgChart.jsx`)
 - [ ] **Gerbang Evaluasi QA Sprint 1:** UAT Sign-off isolasi multi-company dan master data oleh Egi Witra Aditya (`verification-before-completion`)
 
 ---
 
 # ⚡ SPRINT 2: Operational Core (Presensi, Cuti, Lembur & Kantin)
 **Periode:** 17 November – 23 November 2026  
-**Target:** Smart Attendance GPS, Izin/Cuti alur bertingkat, Reimbursement & Lembur PP 35/2021, Kolabo Canteen QR dinamis.
+**Target:** Smart Attendance GPS & Shift, Izin/Cuti alur bertingkat, Reimbursement & Lembur PP 35/2021, Crave Canteen QR dinamis.
 
-### Task 7: Smart Attendance System (GPS Geofence + IP + Kamera Selfie)
+### Task 7: Smart Attendance System (GPS Geofence + IP + Kamera Selfie + Shift)
 * **Target Selesai:** 18 November 2026
-* **PIC:** Eka Revandi (Service & Geofence) & Aufa (Kamera & UI)
+* **PIC:** Eka Revandi (Service & Geofence) & Aufa (Kamera, Shift & UI)
 * **Reviewer:** Egi Witra Aditya
-* **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`
+* **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`, `antislop-layoutmobile`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `shifts` dan `attendances`
 - [ ] Implementasi `AttendanceService` (rumus Haversine radius kantor, IP whitelist kantor, kalkulasi menit keterlambatan)
-- [ ] Halaman `CheckIn.jsx` mobile-optimized dengan live GPS indicator dan kamera selfie preview
-- [ ] Dashboard HR monitoring kehadiran harian dengan filter tanggal, cabang, dan shift
+- [ ] Submenu **Presensi Harian** (`/attendance` -> `Attendance/CheckIn.jsx`) mobile-optimized dengan live GPS indicator & kamera selfie preview
+- [ ] Submenu **Jadwal & Shift** (`/attendance/shifts` -> `Attendance/Shifts.jsx`) untuk shift reguler, berputar, fleksibel, & tukar shift
+- [ ] Submenu **Rekap Kehadiran** (`/attendance/recap` -> `Attendance/Report.jsx`) dashboard HR monitoring harian dengan filter tanggal, cabang, dan shift
 - [ ] Uji validasi: Lolos di dalam radius geofence dan tolak otomatis jika di luar radius
 
 ### Task 8: Holiday & Leave Management
 * **Target Selesai:** 20 November 2026
 * **PIC:** Aufa
 * **Reviewer:** Eka Revandi & Egi Witra Aditya
-* **Skill Rekomendasi:** `frontend-ui-engineering`
+* **Skill Rekomendasi:** `frontend-ui-engineering`, `test-driven-development`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `leave_types` dan `leave_requests`
 - [ ] Logika alokasi saldo cuti tahunan dan alur approval berjenjang (Karyawan -> Atasan Langsung -> HR)
-- [ ] Form pengajuan cuti dengan date range picker dan upload surat dokter
-- [ ] Modal aksi persetujuan / penolakan untuk atasan & HR
+- [ ] Submenu **Cuti & Izin Saya** (`/leave` -> `Leave/Index.jsx`) form pengajuan cuti dengan date range picker & upload surat dokter
+- [ ] Submenu **Persetujuan Cuti** (`/leave/approvals` -> `Leave/Approvals.jsx`) antrean persetujuan / penolakan untuk atasan & HR
+- [ ] Integrasi visual cuti tim satu departemen pada submenu **Kalender & Libur** (`/calendar` -> `Calendar/HolidayCalendar.jsx`)
 - [ ] Uji potongan kuota cuti otomatis setelah persetujuan final
 
 ### Task 9: Reimbursement, Overtime PP 35/2021 & Visit Lapangan
 * **Target Selesai:** 21 November 2026
 * **PIC:** Aufa (Form & View) & Eka Revandi (Kalkulator Lembur)
 * **Reviewer:** Egi Witra Aditya
-* **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`
+* **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`, `antislop-layoutmobile`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `reimbursements`, `overtimes` (SPKL), dan `visits`
 - [ ] Implementasi formula lembur resmi Depnaker PP 35/2021 (pengali upah 1/173) di `OvertimeCalculatorService`
-- [ ] Form klaim reimbursement dengan upload kuitansi & check-in visit klien ber-geotagging
-- [ ] Inbox persetujuan klaim dan tabel rekapitulasi periodik
+- [ ] Submenu **Lembur (SPKL)** (`/claims/overtime` -> `Claims/Overtime.jsx`)
+- [ ] Submenu **Reimbursement** (`/claims/reimbursement` -> `Claims/Reimbursement.jsx`) dengan upload pratinjau struk/kuitansi
+- [ ] Submenu **Tugas Lapangan / Visit** (`/claims/visit` -> `Claims/Visit.jsx`) dengan geotagging GPS & swafoto di lokasi klien
 - [ ] Uji coba hitungan pengali lembur 1.5x dan 2x
 
 ### Task 10: Crave Canteen (Dynamic QR Code 60s & Merchant Scanner)
 * **Target Selesai:** 23 November 2026
 * **PIC:** Aufa
 * **Reviewer:** Eka Revandi & Egi Witra Aditya
-* **Skill Rekomendasi:** `security-and-hardening`, `frontend-ui-engineering`
+* **Skill Rekomendasi:** `security-and-hardening`, `frontend-ui-engineering`, `antislop-layoutmobile`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `canteen_vendors` dan `canteen_vouchers`
 - [ ] Implementasi generator QR Code token dinamis terenkripsi dengan TTL 60 detik (*one-time use*)
-- [ ] Halaman voucher makan karyawan dengan animasi countdown timer
-- [ ] Halaman kasir kantin (`Scanner.jsx`) menggunakan kamera pemindai barcode/QR
-- [ ] Rekapitulasi porsi makan bulanan untuk rekonsiliasi vendor katering
+- [ ] Submenu **Voucher QR Saya** (`/canteen` -> `Canteen/VoucherCard.jsx`) dengan animasi countdown timer
+- [ ] Submenu **Scanner Merchant** (`/canteen/scanner` -> `Canteen/Scanner.jsx`) menggunakan kamera pemindai barcode/QR
+- [ ] Submenu **Rekonsiliasi Vendor** (`/canteen/settlement` -> `Canteen/Reports.jsx`) rekapitulasi porsi makan bulanan untuk tagihan katering
+- [ ] Filter visibilitas submenu Sidebar berbasis RBAC (menu kasir/admin disembunyikan untuk `employee`)
 - [ ] **Gerbang Evaluasi QA Sprint 2:** UAT Sign-off fitur operasional oleh Egi Witra Aditya (`verification-before-completion`)
 
 ---
@@ -191,14 +197,14 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 * **Target Selesai:** 25 November 2026
 * **PIC:** Eka Revandi
 * **Reviewer:** Egi Witra Aditya
-* **Skill Rekomendasi:** `test-driven-development`, `performance-optimization`
+* **Skill Rekomendasi:** `test-driven-development`, `performance-optimization`, `security-and-hardening`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `payrolls` dan `salary_components`
 - [ ] Implementasi `Pph21TerCalculator` sesuai tabel resmi 2024 (Kategori TER A, B, C)
 - [ ] Implementasi `BpjsCalculator` (Kesehatan 4%:1%, JKK, JKM, JHT 3.7%:2%, JP 2%:1%)
-- [ ] Runner otomatisasi generate penggajian bulanan perusahaan
-- [ ] Generator Slip Gaji PDF via DomPDF berlogo perusahaan dengan opsi proteksi PIN
-- [ ] Layanan ekspor file batch bank corporate internet banking (BCA, Mandiri, BRI, BNI)
+- [ ] Submenu **Proses Payroll** (`/payroll` -> `Payroll/Index.jsx`) runner otomatisasi penggajian bulanan perusahaan
+- [ ] Submenu **Slip Gaji** (`/payroll/slips` -> `Payroll/Slips.jsx` & `PayslipModal.jsx`) generator Slip Gaji PDF via DomPDF berlogo perusahaan & opsi proteksi sandi
+- [ ] Submenu **Ekspor Bank & Rekap** (`/payroll/export` -> `Payroll/Export.jsx`) layanan ekspor file batch bank corporate internet banking (BCA, Mandiri, BRI, BNI) & Excel
 - [ ] Uji presisi perhitungan pajak dan BPJS terhadap tabel simulasi pemerintah
 
 ### Task 12: Crave E-Recruitment (Career Portal Publik & ATS Kanban)
@@ -232,7 +238,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 * **Status:** `[ ] Pending`
 - [ ] Konfigurasi `vite-plugin-pwa` dan Service Worker caching
 - [ ] Buat file `manifest.json` Crave HRM dengan tema `#1B5CFE`
-- [ ] Buat widget keamanan sesi login aktif di profil (`DeviceSessions.jsx`)
+- [ ] Buat halaman keamanan sesi login aktif (`/sessions` -> `Profile/DeviceSessions.jsx`, ditautkan dari dropdown profil Header & Footer Sidebar)
 - [ ] Banner prompt install PWA otomatis di desktop & mobile
 - [ ] Kompilasi build final produksi (`npm run build`)
 - [ ] **Final UAT & Go-Live Sign-off:** Verifikasi kelayakan rilis sebelum 30 November oleh Egi Witra Aditya
@@ -249,4 +255,5 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 | **10 Nov 2026** | **Task 4 Selesai:** Master Dashboard Shell (`AuthenticatedLayout`, `Sidebar` dual-state, `Header`, `CompanySwitcher`, `MobileBottomNav`, `Dashboard.jsx` Hero KPI Card), build Vite 100% sukses | - | `Selesai` |
 | **10 Nov 2026** | **Task 5 Selesai:** Master Data Karyawan, Organisasi & Matriks RBAC (`EmployeeController`, `Employees/Index.jsx` dengan Shadcn Switch toggle, `EmployeeSheet.jsx`, `RbacMatrix.jsx`, seeder realistis), 5 unit/feature tests lolos (50 assertions) | - | `Selesai` |
 | **10 Nov 2026** | **UI/UX Audit & Refactor (Crave POS 100% Parity):** Audit visual terhadap folder `crave-pos-dashboard`, pembersihan menyeluruh elemen AI-slop (menghapus gradient pelangi & badge berlebihan), integrasi aset brand asli (`light-mode-logo.png`, `dark-mode-logo.png`, `profile-logo.jpeg`), penyesuaian layout 2-kolom `karyawan.tsx` dan stat cards `dashboard.tsx`. Kompilasi 3,062 modul lolos, 9 tests PHPUnit hijau (57 assertions) | - | `Selesai` |
-| **11 Nov 2026** | Task 6: Pengumuman Internal & Kalender Hari Libur (Penutup Sprint 1 & Gate Evaluasi QA) | - | `Siap Dikerjakan` |
+| **12 Nov 2026** | **Arsitektur SideMenu Dropdown & Sinkronisasi Docs (Lead Update):** Backup `Sidebar.jsx.bak`, implementasi 6 grup dropdown accordion persis pola Crave POS (`Presensi`, `Cuti & Libur`, `Klaim & Lembur`, `Crave Canteen`, `Payroll Management`, `Organisasi & Akses`), pemetaan lengkap tabel Route -> Page React di `PRD.md` Section 4.2, serta pembaruan PR halaman baru di `IMPLEMENTATION_PLAN.md` & `SPRINT.md`. Build Vite & 9 PHPUnit tests lolos 100%. | - | `Selesai` |
+| **12 Nov 2026** | Task 6: Pengumuman Internal, Kalender Hari Libur, Cabang & Geofence, serta Org Chart (Penutup Sprint 1 & Gate Evaluasi QA) | - | `Siap Dikerjakan` |

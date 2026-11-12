@@ -121,35 +121,65 @@ revan-laravel/
 
 ## 4. UI/UX Architecture & Shell Patterns
 
-### 3.1 Dual-State Collapsible Sidebar (`SideNav`)
-* **State Lebar:** `w-72` (288px) saat expanded, `w-20` (80px) saat collapsed dengan transisi halus `transition-[padding] duration-300`.
-* **Header Sidebar:** Logo Crave + Label Aplikasi ("Crave HRM") + **Company Switcher Dropdown** (pilih anak perusahaan / cabang aktif).
-* **Instant Menu Search:** Kotak pencarian menu cepat di atas navigasi untuk menyaring 9 modul dalam hitungan detik.
-* **Section Dividers:** Header seksi kapital tebal (`OPERASIONAL`, `KOMPENSASI`, `MANAJEMEN`, `PENGATURAN`).
-* **Menu Badges:** Badge pill angka (misal `Lembur (3)`, `Cuti (2)` untuk notifikasi approval tertunda).
-* **Accordion Submenu:** Menu bersarang dengan animasi drop yang rapi (misal `Payroll -> Rekap, PPh 21, Bank Transfer`).
-* **Footer Sidebar:** Tombol toggle Dark Mode, status profil ringkas pengguna, tombol logout, dan tombol minimize sidebar.
+### 4.1 Dual-State Collapsible Sidebar (`SideNav`)
+* **State Lebar:** `w-72` (288px) saat expanded, `w-20` (80px) saat collapsed dengan transisi halus `transition-[padding] duration-300` serta tombol bulat toggle di garis tepi kanan sidebar.
+* **Header Sidebar:** Logo Crave asli (`light-mode-logo.png` / `dark-mode-logo.png`) + Label Aplikasi ("Crave — Human Resource Management") + **Company Switcher Dropdown** (pilih holding / anak perusahaan aktif).
+* **Instant Menu Search:** Kotak pencarian menu cepat (`bg-muted`) yang menyaring menu induk maupun anak submenu sekaligus otomatis membuka dropdown saat kata kunci cocok.
+* **Section Dividers (3 Grup Utama):** Header seksi bersih (`OPERASIONAL`, `TALENTA & TIM`, `PENGATURAN`).
+* **Single-Open Accordion Submenu (Crave POS Parity):** Menu induk dengan banyak alur memiliki dropdown animasi grid halus (`grid-rows-[1fr]` / `grid-rows-[0fr]`) dan hanya 1 dropdown yang terbuka pada satu waktu (`openGroup`). Submenu yang aktif otomatis menandai induknya dengan warna `text-primary`.
+* **RBAC Menu Visibility:** Submenu khusus admin/finance (seperti *Proses Payroll, Ekspor Bank & Rekap, Scanner Merchant, Rekonsiliasi Vendor, Cabang & Geofence, Matriks RBAC*) disembunyikan untuk peran `employee` biasa saat RBAC penuh diterapkan.
+* **Footer Sidebar:** Toggle switch `Light / Dark` (`bg-muted rounded-2xl p-1`), kartu profil pengguna dengan `profile-logo.jpeg`, dan dropdown menu profil (*Pengaturan Profil, Sesi Perangkat, Keluar*).
 
-### 3.2 Sticky Header (`AppShell`)
+### 4.2 Peta Navigasi SideMenu, Route & Fungsi Halaman (Panduan Developer)
+Tabel berikut menjadi acuan resmi penamaan route di `routes/web.php` dan penempatan file React di `resources/js/pages/`:
+
+| Section | Menu Induk | Submenu (Dropdown) | Route URL | Halaman React (`pages/...`) | Fungsi Utama | Task |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Operasional** | **Dashboard** | *(Flat)* | `/` | `Dashboard.jsx` | Ringkasan KPI kehadiran, distribusi divisi, log masuk harian, approval pending | Task 4 |
+| **Operasional** | **Presensi** | Presensi Harian | `/attendance` | `Attendance/CheckIn.jsx` | Check-in/out GPS geofence, whitelist IP kantor, dan kamera selfie | Task 7 |
+| **Operasional** | **Presensi** | Jadwal & Shift | `/attendance/shifts` | `Attendance/Shifts.jsx` | Atur shift reguler/berputar/fleksibel dan pengajuan tukar shift | Task 7 |
+| **Operasional** | **Presensi** | Rekap Kehadiran | `/attendance/recap` | `Attendance/Report.jsx` | Monitoring HR keterlambatan (*late in*), pulang cepat, WFO/WFH, & koreksi | Task 7 |
+| **Operasional** | **Cuti & Libur** | Cuti & Izin Saya | `/leave` | `Leave/Index.jsx` | Saldo kuota cuti tahunan, form pengajuan cuti/sakit + upload surat dokter | Task 8 |
+| **Operasional** | **Cuti & Libur** | Persetujuan Cuti | `/leave/approvals` | `Leave/Approvals.jsx` | Antrean approval berjenjang (Atasan Langsung $\rightarrow$ HR Admin) | Task 8 |
+| **Operasional** | **Cuti & Libur** | Kalender & Libur | `/calendar` | `Calendar/HolidayCalendar.jsx` | Kalender libur nasional (SKB 3 Menteri) & jadwal cuti tim satu departemen | Task 6 & 8 |
+| **Operasional** | **Klaim & Lembur** | Lembur (SPKL) | `/claims/overtime` | `Claims/Overtime.jsx` | Pengajuan SPKL, bukti kerja, & kalkulasi upah PP 35/2021 ($1/173$) | Task 9 |
+| **Operasional** | **Klaim & Lembur** | Reimbursement | `/claims/reimbursement` | `Claims/Reimbursement.jsx` | Klaim biaya medis, transport, parkir, & pratinjau struk/kuitansi | Task 9 |
+| **Operasional** | **Klaim & Lembur** | Tugas Lapangan / Visit | `/claims/visit` | `Claims/Visit.jsx` | Check-in lokasi klien/proyek luar kantor dengan GPS geotagging & selfie | Task 9 |
+| **Operasional** | **Crave Canteen** | Voucher QR Saya | `/canteen` | `Canteen/VoucherCard.jsx` | Kuota makan harian & generate QR Code dinamis (TTL 60 detik) | Task 10 |
+| **Operasional** | **Crave Canteen** | Scanner Merchant | `/canteen/scanner` | `Canteen/Scanner.jsx` | Antarmuka kasir/kantin scan QR voucher karyawan (`< 1` detik, one-time use) | Task 10 |
+| **Operasional** | **Crave Canteen** | Rekonsiliasi Vendor | `/canteen/settlement` | `Canteen/Reports.jsx` | Rekap bulanan total porsi makan terpakai per vendor untuk tagihan katering | Task 10 |
+| **Operasional** | **Payroll Management** | Proses Payroll | `/payroll` | `Payroll/Index.jsx` | Jalankan penggajian bulanan, kalkulasi PPh 21 TER 2024 & BPJS Kes/TK | Task 11 |
+| **Operasional** | **Payroll Management** | Slip Gaji | `/payroll/slips` | `Payroll/Slips.jsx` | Daftar & unduh slip gaji PDF berlogo perusahaan dengan proteksi sandi | Task 11 |
+| **Operasional** | **Payroll Management** | Ekspor Bank & Rekap | `/payroll/export` | `Payroll/Export.jsx` | Ekspor file batch transfer BCA/Mandiri/BRI/BNI (CSV/TXT) & rekap Excel | Task 11 |
+| **Talenta & Tim** | **Data Karyawan** | *(Flat)* | `/employees` | `Employees/Index.jsx` | Daftar staf, toggle status aktif, detail sheet 3 tab, & matriks izin ringkas | Task 5 |
+| **Talenta & Tim** | **Crave E-Recruitment** | *(Flat + Tabs)* | `/recruitment` | `Recruitment/KanbanBoard.jsx` | Kelola lowongan, link portal karir publik, ATS Kanban, & 1-click onboard | Task 12 |
+| **Talenta & Tim** | **360 Performance** | *(Flat + Tabs)* | `/performance` | `Performance/Index.jsx` | Siklus review, kuesioner Likert 1–5 (4 rater), & Radar Chart Recharts | Task 13 |
+| **Pengaturan** | **Pengumuman** | *(Flat)* | `/announcements` | `Announcements/Index.jsx` | Feed pengumuman internal bertarget perusahaan/cabang & *read receipt* | Task 6 |
+| **Pengaturan** | **Organisasi & Akses** | Cabang & Geofence | `/organization/branches` | `Organization/Branches.jsx` | Kelola cabang kantor, koordinat Lat/Lng, radius geofence, & whitelist IP | Task 6 |
+| **Pengaturan** | **Organisasi & Akses** | Struktur Organisasi | `/organization/chart` | `Organization/OrgChart.jsx` | Bagan pohon interaktif Direksi, Departemen, Jabatan, & Atasan Langsung | Task 6 |
+| **Pengaturan** | **Organisasi & Akses** | Matriks Izin RBAC | `/organization/rbac-matrix` | `Organization/RbacMatrix.jsx` | Grid matriks hak akses penuh antar 5 peran terhadap seluruh modul | Task 5 |
+| **Profil / Header** | *(Dropdown Akun)* | Sesi Perangkat | `/sessions` | `Profile/DeviceSessions.jsx` | Pelacak perangkat login aktif (OS, Browser, IP) & tombol revoke sesi | Task 14 |
+
+### 4.3 Sticky Header (`AppShell`)
 * `sticky top-0 z-20 border-b bg-background/85 backdrop-blur`.
 * **Kiri:** Judul halaman H1 (`font-extrabold`) + deskripsi halaman 1 kalimat (*subtitle context*).
 * **Kanan:**
   * Global Search Bar (`w-64 rounded-xl pl-9` dengan icon search).
   * Quick Action Button (CTA dinamis per halaman, misal: *+ Tambah Karyawan*, *+ Ajukan Cuti*, *Generate Payroll*).
   * Notification Bell Popover dengan unread count pill.
-  * User Avatar Dropdown (Profil, Keamanan Sesi, Pengaturan Akun).
+  * User Avatar Dropdown (Profil, Hak Akses Peran, Sesi Perangkat, Keluar).
 
-### 3.3 Mobile Bottom Navigation Bar (PWA ESS Mode)
-* Fixed bottom navigation bar khusus tampilan ponsel untuk karyawan:
-  * **Beranda** (Home overview)
-  * **Absensi** (Kamera Selfie & GPS Check-in)
-  * **Kantin QR** (Voucher makan dinamis)
-  * **Inbox / Approval** (Status pengajuan izin, lembur, klaim)
-  * **Akun** (Profil, Slip Gaji, Sesi Perangkat)
+### 4.4 Mobile Bottom Navigation Bar (PWA ESS Mode)
+* Fixed bottom navigation bar khusus tampilan ponsel (`lg:hidden bg-card/90 backdrop-blur border-t`):
+  * **Dasbor** (`/`)
+  * **Presensi** (`/attendance`)
+  * **Kantin** (`/canteen`)
+  * **Karyawan** (`/employees`)
+  * **Akses** (`/organization/rbac-matrix`)
 
 ---
 
-## 4. Capability Map & Modul Inti
+### 4.5 Capability Map & Modul Inti
 
 | Module ID | Module Name | Tanggung Jawab Utama | Dependencies |
 | :--- | :--- | :--- | :--- |

@@ -207,30 +207,34 @@ revan-laravel/
 
 ---
 
-### Task 6: Pengumuman Internal & Kalender Hari Libur
+### Task 6: Pengumuman Internal, Kalender Hari Libur, Cabang & Org Chart
 * **Sprint:** Sprint 1
 * **Target Selesai:** 16 Nov 2026
 * **PIC / Assignee:** Aufa
-* **Reviewer / QA:** Egi Witra Aditya
+* **Reviewer / QA:** Egi Witra Aditya & Eka Revandi
 
 **Files:**
 * Create: `database/migrations/xxxx_xx_xx_create_announcements_and_holidays_table.php`
 * Create: `app/Models/Announcement.php`, `Holiday.php`
-* Create: `app/Http/Controllers/AnnouncementController.php`, `HolidayController.php`
-* Create: `resources/js/pages/Announcements/Index.jsx`
-* Create: `resources/js/pages/Calendar/HolidayCalendar.jsx`
+* Create: `app/Http/Controllers/AnnouncementController.php`, `HolidayController.php`, `BranchController.php`
+* Modify: `app/Http/Controllers/OrganizationController.php` (tambahkan method `branches` & `orgChart`)
+* Create: `resources/js/pages/Announcements/Index.jsx` (Route: `/announcements`)
+* Create: `resources/js/pages/Calendar/HolidayCalendar.jsx` (Route: `/calendar` — submenu *Cuti & Libur -> Kalender & Libur*)
+* Create: `resources/js/pages/Organization/Branches.jsx` (Route: `/organization/branches` — submenu *Organisasi & Akses -> Cabang & Geofence*)
+* Create: `resources/js/pages/Organization/OrgChart.jsx` (Route: `/organization/chart` — submenu *Organisasi & Akses -> Struktur Organisasi*)
 
 - [ ] **Step 1: Create migrations and models for announcements & holidays**
-- [ ] **Step 2: Build controllers with company scoping**
-- [ ] **Step 3: Build Announcement feed card and Holiday calendar view**
-- [ ] **Step 4: Checkpoint Sprint 1 Review & Demo bersama PM (Egi Witra)**
+- [ ] **Step 2: Build `AnnouncementController`, `HolidayController`, & `BranchController` with company scoping**
+- [ ] **Step 3: Build `Announcements/Index.jsx` feed & `Calendar/HolidayCalendar.jsx` (SKB 3 Menteri)**
+- [ ] **Step 4: Build `Organization/Branches.jsx` (CRUD cabang, Lat/Lng, radius geofence, whitelist IP kantor untuk kesiapan Task 7) & `Organization/OrgChart.jsx`**
+- [ ] **Step 5: Checkpoint Sprint 1 Review & Demo bersama PM (Egi Witra)**
 
 ---
 
 # SPRINT 2: Operational Core (17 Nov – 23 Nov)
-*Fokus: Smart Attendance GPS, Izin/Cuti bertingkat, Reimbursement & Lembur PP 35/2021, Kolabo Canteen QR.*
+*Fokus: Smart Attendance GPS, Izin/Cuti bertingkat, Reimbursement & Lembur PP 35/2021, Crave Canteen QR.*
 
-### Task 7: Smart Attendance System (GPS Geofence + IP + Selfie)
+### Task 7: Smart Attendance System (GPS Geofence + IP + Selfie + Shift)
 * **Sprint:** Sprint 2
 * **Target Selesai:** 18 Nov 2026
 * **PIC / Assignee:** Eka Revandi (Engine & Geofence) & Aufa (Kamera & UI)
@@ -241,14 +245,16 @@ revan-laravel/
 * Create: `app/Models/Shift.php`, `Attendance.php`
 * Create: `app/Services/AttendanceService.php` (Formula Haversine GPS, Whitelist IP, Kalkulasi Telat)
 * Create: `app/Http/Controllers/AttendanceController.php`
-* Create: `resources/js/pages/Attendance/CheckIn.jsx` (Webcam selfie, GPS indicator, status badge)
-* Create: `resources/js/pages/Attendance/Report.jsx` (Monitoring harian HR & Approval koreksi)
+* Create: `resources/js/pages/Attendance/CheckIn.jsx` (Route: `/attendance` — submenu *Presensi Harian*: webcam selfie, GPS indicator)
+* Create: `resources/js/pages/Attendance/Shifts.jsx` (Route: `/attendance/shifts` — submenu *Jadwal & Shift*: shift reguler/berputar/fleksibel & tukar shift)
+* Create: `resources/js/pages/Attendance/Report.jsx` (Route: `/attendance/recap` — submenu *Rekap Kehadiran*: monitoring harian HR & approval koreksi)
 
 - [ ] **Step 1: Write migrations for shifts and attendances**
 - [ ] **Step 2: Implement `AttendanceService` haversine distance algorithm & IP whitelist check**
 - [ ] **Step 3: Build `CheckIn.jsx` mobile-optimized UI with live camera preview**
-- [ ] **Step 4: Build HR Attendance monitoring table with filter date, branch, and shift**
-- [ ] **Step 5: Test geofence acceptance within radius and rejection outside radius**
+- [ ] **Step 4: Build `Shifts.jsx` shift scheduling & swap view (`/attendance/shifts`)**
+- [ ] **Step 5: Build `Report.jsx` HR Attendance monitoring table with filter date, branch, and shift (`/attendance/recap`)**
+- [ ] **Step 6: Test geofence acceptance within radius and rejection outside radius**
 
 ---
 
@@ -262,13 +268,14 @@ revan-laravel/
 * Create: `database/migrations/xxxx_xx_xx_create_leave_types_and_leave_requests_table.php`
 * Create: `app/Models/LeaveType.php`, `LeaveRequest.php`
 * Create: `app/Http/Controllers/LeaveRequestController.php`
-* Create: `resources/js/pages/Leave/Index.jsx`
-* Create: `resources/js/pages/Leave/Apply.jsx` (Date range picker, kuota cuti counter, upload surat dokter)
+* Create: `resources/js/pages/Leave/Index.jsx` (Route: `/leave` — submenu *Cuti & Izin Saya*: kuota cuti & form pengajuan + upload surat dokter)
+* Create: `resources/js/pages/Leave/Approvals.jsx` (Route: `/leave/approvals` — submenu *Persetujuan Cuti*: inbox approval Supervisor -> HR)
+* Modify: `resources/js/pages/Calendar/HolidayCalendar.jsx` (Route: `/calendar` — integrasikan tampilan cuti tim satu departemen)
 
 - [ ] **Step 1: Write migrations for leave types and requests**
 - [ ] **Step 2: Implement balance deduction and sequential approval (Supervisor -> HR)**
-- [ ] **Step 3: Build employee leave request form with file upload**
-- [ ] **Step 4: Build supervisor/HR approval action modal**
+- [ ] **Step 3: Build `Leave/Index.jsx` employee leave request form with date range & medical note upload**
+- [ ] **Step 4: Build `Leave/Approvals.jsx` supervisor/HR approval queue & update team leave calendar in `/calendar`**
 - [ ] **Step 5: Test leave submission, approval chain, and quota deduction**
 
 ---
@@ -284,13 +291,13 @@ revan-laravel/
 * Create: `app/Models/Reimbursement.php`, `Overtime.php`, `Visit.php`
 * Create: `app/Services/OvertimeCalculatorService.php` (PP 35/2021 formula 1/173)
 * Create: `app/Http/Controllers/ClaimController.php`
-* Create: `resources/js/pages/Claims/Reimbursement.jsx`
-* Create: `resources/js/pages/Claims/Overtime.jsx`
-* Create: `resources/js/pages/Claims/Visit.jsx`
+* Create: `resources/js/pages/Claims/Overtime.jsx` (Route: `/claims/overtime` — submenu *Lembur (SPKL)*)
+* Create: `resources/js/pages/Claims/Reimbursement.jsx` (Route: `/claims/reimbursement` — submenu *Reimbursement*)
+* Create: `resources/js/pages/Claims/Visit.jsx` (Route: `/claims/visit` — submenu *Tugas Lapangan / Visit*)
 
 - [ ] **Step 1: Create migrations for reimbursements, SPKL overtime, and client visits**
 - [ ] **Step 2: Implement PP 35/2021 overtime formula in `OvertimeCalculatorService`**
-- [ ] **Step 3: Build claim forms with receipt upload preview and visit GPS geotagging**
+- [ ] **Step 3: Build `Claims/Overtime.jsx`, `Claims/Reimbursement.jsx` (receipt upload preview), & `Claims/Visit.jsx` (GPS geotagging + selfie)**
 - [ ] **Step 4: Build claim approval inbox and monthly recapitulation table**
 - [ ] **Step 5: Verify calculation of 1.5x and 2x overtime rates**
 
@@ -306,14 +313,14 @@ revan-laravel/
 * Create: `database/migrations/xxxx_xx_xx_create_canteen_vouchers_table.php`
 * Create: `app/Models/CanteenVoucher.php`, `CanteenVendor.php`
 * Create: `app/Http/Controllers/CanteenController.php`
-* Create: `resources/js/pages/Canteen/VoucherCard.jsx` (QR code dinamis dengan 60s countdown timer)
-* Create: `resources/js/pages/Canteen/Scanner.jsx` (Antarmuka scanner kasir kantin berbasis kamera)
-* Create: `resources/js/pages/Canteen/Reports.jsx` (Rekapitulasi tagihan vendor katering)
+* Create: `resources/js/pages/Canteen/VoucherCard.jsx` (Route: `/canteen` — submenu *Voucher QR Saya*: 60s countdown timer)
+* Create: `resources/js/pages/Canteen/Scanner.jsx` (Route: `/canteen/scanner` — submenu *Scanner Merchant*: kamera kasir kantin)
+* Create: `resources/js/pages/Canteen/Reports.jsx` (Route: `/canteen/settlement` — submenu *Rekonsiliasi Vendor*: tagihan vendor katering)
 
 - [ ] **Step 1: Write migrations for canteen vendors and voucher transactions**
 - [ ] **Step 2: Implement encrypted token generator (60s TTL) and one-time redemption check**
-- [ ] **Step 3: Build employee voucher card with live animated countdown**
-- [ ] **Step 4: Build merchant scanner interface using HTML5 QR scanner**
+- [ ] **Step 3: Build `VoucherCard.jsx` employee voucher card with live animated countdown (`/canteen`)**
+- [ ] **Step 4: Build `Scanner.jsx` merchant scanner (`/canteen/scanner`) & `Reports.jsx` vendor settlement (`/canteen/settlement`)**
 - [ ] **Step 5: Checkpoint Sprint 2 Review & UAT Demo bersama PM (Egi Witra)**
 
 ---
@@ -334,16 +341,17 @@ revan-laravel/
 * Create: `app/Services/BpjsCalculator.php` (Kesehatan & Ketenagakerjaan split)
 * Create: `app/Services/BankExportService.php` (BCA, Mandiri, BRI, BNI formatters)
 * Create: `app/Http/Controllers/PayrollController.php`
-* Create: `resources/js/pages/Payroll/Index.jsx`
-* Create: `resources/js/pages/Payroll/Generate.jsx`
-* Create: `resources/js/pages/Payroll/PayslipModal.jsx` (Pratinjau & Download PDF)
+* Create: `resources/js/pages/Payroll/Index.jsx` (Route: `/payroll` — submenu *Proses Payroll*: runner penggajian & ringkasan periode)
+* Create: `resources/js/pages/Payroll/Slips.jsx` (Route: `/payroll/slips` — submenu *Slip Gaji*: daftar slip karyawan, pratinjau & download PDF terproteksi)
+* Create: `resources/js/pages/Payroll/Export.jsx` (Route: `/payroll/export` — submenu *Ekspor Bank & Rekap*: download batch BCA/Mandiri/BRI/BNI & Excel)
+* Create: `resources/js/pages/Payroll/PayslipModal.jsx` (Modal pratinjau slip gaji)
 
 - [ ] **Step 1: Write migrations for payroll runs and payroll items**
 - [ ] **Step 2: Implement `Pph21TerCalculator` based on official 2024 monthly TER tables**
 - [ ] **Step 3: Implement `BpjsCalculator` with employer & employee split rates**
-- [ ] **Step 4: Build automated payroll batch generation runner**
-- [ ] **Step 5: Build Payslip PDF generation using DomPDF with company letterhead**
-- [ ] **Step 6: Build Bank Export service generating downloadable CSV/TXT for BCA, Mandiri, BRI, BNI**
+- [ ] **Step 4: Build `Payroll/Index.jsx` automated payroll batch generation runner (`/payroll`)**
+- [ ] **Step 5: Build `Payroll/Slips.jsx` & `PayslipModal.jsx` PDF generation via DomPDF with company letterhead (`/payroll/slips`)**
+- [ ] **Step 6: Build `Payroll/Export.jsx` & `BankExportService` generating downloadable CSV/TXT for BCA, Mandiri, BRI, BNI (`/payroll/export`)**
 - [ ] **Step 7: Verify payroll calculation matches manual tax & BPJS benchmark**
 
 ---
@@ -403,7 +411,7 @@ revan-laravel/
 * Create: `public/manifest.json`
 * Create: `public/icons/*` (PWA icons 192x192, 512x512)
 * Create: `resources/js/components/PwaInstallPrompt.jsx`
-* Create: `resources/js/components/dashboard/DeviceSessions.jsx` (Pelacak sesi login aktif)
+* Create: `resources/js/pages/Profile/DeviceSessions.jsx` (Route: `/sessions` — akses melalui dropdown profil di Header & Footer Sidebar)
 
 - [ ] **Step 1: Configure `vite-plugin-pwa` in `vite.config.js` with Workbox caching**
 - [ ] **Step 2: Create Web App Manifest with Crave HRM branding and theme color `#1B5CFE`**
