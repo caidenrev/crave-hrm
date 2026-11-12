@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ViewToggle } from "@/components/ui/ViewToggle";
+import { ConfirmDeleteDialog } from "@/components/ui/ConfirmDeleteDialog";
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -21,16 +23,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { EmployeeSheet } from "./EmployeeSheet";
 import { EmployeeFormModal } from "./EmployeeFormModal";
 import { getInitials } from "@/lib/formatters";
@@ -65,6 +57,7 @@ export default function EmployeesIndex({
 
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deletingEmployee, setDeletingEmployee] = useState(null);
+  const [viewMode, setViewMode] = useState("card");
 
   const handleFilter = (updates = {}) => {
     const params = {
@@ -120,49 +113,62 @@ export default function EmployeesIndex({
       subtitle={`${employees.total || employees.data.length} akun terdaftar · ${metrics?.active || 0} aktif`}
       actions={
         <Button
-          className="rounded-xl"
+          className="rounded-xl text-xs sm:text-sm font-semibold"
           onClick={() => {
             setEditingEmployee(null);
             setFormOpen(true);
           }}
         >
-          <UserPlus className="size-4" />
+          <UserPlus className="size-4 mr-1 sm:mr-1.5" />
           <span className="hidden sm:inline">Tambah Karyawan</span>
+          <span className="sm:hidden">Tambah</span>
         </Button>
       }
     >
       <Head title="Karyawan & Akses" />
 
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
-        {/* KOLOM KIRI: DAFTAR KARYAWAN */}
+      <div className={viewMode === "card" ? "space-y-4" : "grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,420px)]"}>
+        {/* KOLOM KIRI (ATAU ATAS): DAFTAR KARYAWAN */}
         <div className="card-soft p-4 min-w-0">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-            <p className="text-sm font-extrabold text-foreground">
-              Daftar Karyawan
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-extrabold text-foreground">
+                Daftar Karyawan
+              </p>
+              <Badge variant="outline" className="rounded-full text-[10px] text-muted-foreground font-semibold">
+                {employees.total || employees.data.length}
+              </Badge>
+            </div>
 
-            <Tabs
-              value={selectedStatus}
-              onValueChange={(val) => {
-                setSelectedStatus(val);
-                handleFilter({ status: val });
-              }}
-            >
-              <TabsList className="rounded-xl h-8">
-                <TabsTrigger value="all" className="text-xs px-2.5">
-                  Semua
-                </TabsTrigger>
-                <TabsTrigger value="active" className="text-xs px-2.5">
-                  Aktif
-                </TabsTrigger>
-                <TabsTrigger value="probation" className="text-xs px-2.5">
-                  Probation
-                </TabsTrigger>
-                <TabsTrigger value="inactive" className="text-xs px-2.5">
-                  Nonaktif
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1 border border-border/40">
+                {[
+                  { value: "all", label: "Semua" },
+                  { value: "active", label: "Aktif" },
+                  { value: "probation", label: "Probation" },
+                  { value: "inactive", label: "Nonaktif" },
+                ].map((tab) => (
+                  <button
+                    key={tab.value}
+                    type="button"
+                    onClick={() => {
+                      setSelectedStatus(tab.value);
+                      handleFilter({ status: tab.value });
+                    }}
+                    className={cn(
+                      "rounded-full px-3.5 py-1 text-xs font-semibold transition-all",
+                      selectedStatus === tab.value
+                        ? "bg-card text-foreground font-bold shadow-soft"
+                        : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <ViewToggle view={viewMode} onViewChange={setViewMode} />
+            </div>
           </div>
 
           {/* Search bar */}
@@ -173,24 +179,136 @@ export default function EmployeesIndex({
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleFilter()}
               placeholder="Cari nama, NIK, atau email..."
-              className="rounded-xl bg-muted/50 border-transparent text-xs h-9 pl-9"
+              className="rounded-xl bg-muted/40 border-border/50 text-xs h-9 pl-9 transition-colors"
             />
           </div>
 
-          {/* List items */}
-          <div className="space-y-2">
-            {employees.data.length === 0 ? (
-              <div className="p-8 text-center text-xs text-muted-foreground">
-                Tidak ada data karyawan yang cocok.
-              </div>
-            ) : (
-              employees.data.map((emp) => (
+          {/* Items Container: Card or List */}
+          {employees.data.length === 0 ? (
+            <div className="p-8 text-center text-xs text-muted-foreground rounded-2xl border border-dashed border-border/60">
+              Tidak ada data karyawan yang cocok.
+            </div>
+          ) : viewMode === "card" ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {employees.data.map((emp) => (
                 <div
                   key={emp.id}
-                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl bg-muted/50 p-3 hover:bg-muted/80 transition-colors"
+                  className="rounded-2xl border border-border/60 bg-card p-4 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)] hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <Avatar className="size-11 shrink-0 border border-border/60">
+                          {emp.avatar_url && (
+                            <AvatarImage src={emp.avatar_url} alt={emp.nama_lengkap} />
+                          )}
+                          <AvatarFallback className="bg-primary/10 text-xs font-black text-primary uppercase">
+                            {getInitials(emp.nama_lengkap)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveEmployee(emp);
+                              setSheetOpen(true);
+                            }}
+                            className="font-bold text-sm text-foreground hover:text-primary transition-colors text-left truncate block max-w-full"
+                          >
+                            {emp.nama_lengkap}
+                          </button>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {emp.designation?.title || "Staff"}
+                          </p>
+                          <p className="text-[11px] text-muted-foreground/80 truncate">
+                            {emp.department?.name || "-"}
+                          </p>
+                        </div>
+                      </div>
+
+                      <Switch
+                        checked={emp.is_active}
+                        onCheckedChange={() => handleToggleActive(emp)}
+                        aria-label={`Toggle active for ${emp.nama_lengkap}`}
+                        className="shrink-0"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5 py-2.5 my-2 border-y border-border/40 text-xs">
+                      <div className="flex items-center justify-between text-muted-foreground">
+                        <span>NIK:</span>
+                        <span className="font-mono font-medium text-foreground">{emp.nik}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-muted-foreground">
+                        <span>Status Kerja:</span>
+                        <Badge variant="secondary" className="rounded-full text-[10px] font-semibold">
+                          {emp.status_kerja}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-muted-foreground">
+                        <span>Kantor:</span>
+                        <span className="truncate max-w-[140px] text-foreground font-medium">
+                          {emp.branch?.name || "Pusat"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2 pt-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setActiveEmployee(emp);
+                        setSheetOpen(true);
+                      }}
+                      className="flex-1 rounded-xl text-xs h-8 font-semibold"
+                    >
+                      <Eye className="size-3.5 mr-1" />
+                      Detail
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setEditingEmployee(emp);
+                        setFormOpen(true);
+                      }}
+                      className="rounded-xl text-xs h-8 px-2.5 font-semibold"
+                      title="Edit Karyawan"
+                    >
+                      <Edit className="size-3.5" />
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setDeletingEmployee(emp);
+                        setDeleteConfirmOpen(true);
+                      }}
+                      className="rounded-xl text-xs h-8 px-2 text-destructive hover:bg-destructive/10"
+                      title="Hapus Karyawan"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {employees.data.map((emp) => (
+                <div
+                  key={emp.id}
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl bg-card border border-border/50 p-3 hover:bg-muted/40 transition-colors shadow-xs"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <Avatar className="size-9 shrink-0">
+                    <Avatar className="size-9 shrink-0 border border-border/60">
+                      {emp.avatar_url && (
+                        <AvatarImage src={emp.avatar_url} alt={emp.nama_lengkap} />
+                      )}
                       <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary uppercase">
                         {getInitials(emp.nama_lengkap)}
                       </AvatarFallback>
@@ -269,9 +387,9 @@ export default function EmployeesIndex({
                     </DropdownMenu>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Pagination */}
           {employees.links && employees.links.length > 3 && (
@@ -366,33 +484,13 @@ export default function EmployeesIndex({
       />
 
       {/* DELETE CONFIRMATION */}
-      <AlertDialog
+      <ConfirmDeleteDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
-      >
-        <AlertDialogContent className="rounded-2xl max-w-sm">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="font-bold text-base text-foreground">
-              Hapus Karyawan?
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-xs text-muted-foreground">
-              Apakah Anda yakin ingin menghapus data karyawan{" "}
-              <strong>{deletingEmployee?.nama_lengkap}</strong>?
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-xl text-xs">
-              Batal
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="rounded-xl text-xs bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Hapus
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        title="Hapus Karyawan?"
+        description={`Apakah Anda yakin ingin menghapus data karyawan "${deletingEmployee?.nama_lengkap}"? Tindakan ini tidak dapat dibatalkan.`}
+        onConfirm={handleDelete}
+      />
     </AuthenticatedLayout>
   );
 }

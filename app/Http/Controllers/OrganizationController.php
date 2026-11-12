@@ -2,11 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use App\Models\Department;
+use App\Models\Designation;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class OrganizationController extends Controller
 {
+    public function chart(Request $request)
+    {
+        $activeCompany = Company::find(session('active_company_id')) ?? Company::first();
+
+        $departments = Department::with([
+            'designations',
+            'employees' => function ($q) {
+                $q->where('is_active', true)
+                  ->with(['designation', 'branch'])
+                  ->orderBy('nama_lengkap');
+            }
+        ])
+        ->where('is_active', true)
+        ->get();
+
+        $stats = [
+            'total_departments' => $departments->count(),
+            'total_employees' => $departments->sum(fn ($d) => $d->employees->count()),
+            'total_designations' => Designation::count(),
+        ];
+
+        return Inertia::render('Organization/OrgChart', [
+            'company' => $activeCompany,
+            'departments' => $departments,
+            'stats' => $stats,
+        ]);
+    }
+
     public function rbacMatrix()
     {
         $roles = [

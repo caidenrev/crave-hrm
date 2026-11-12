@@ -80,7 +80,7 @@ export function CompanySwitcher({ collapsed = false }) {
                 <div className="flex flex-col truncate">
                   <span className="truncate text-xs font-bold">{comp.name}</span>
                   <span className="text-[10px] text-muted-foreground capitalize">
-                    {comp.role.replace("_", " ")}
+                    {comp.role ? comp.role.replace("_", " ") : "Anggota"}
                   </span>
                 </div>
               </div>
