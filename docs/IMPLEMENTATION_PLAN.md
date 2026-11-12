@@ -223,11 +223,11 @@ revan-laravel/
 * Create: `resources/js/pages/Organization/Branches.jsx` (Route: `/organization/branches` — submenu *Organisasi & Akses -> Cabang & Geofence*)
 * Create: `resources/js/pages/Organization/OrgChart.jsx` (Route: `/organization/chart` — submenu *Organisasi & Akses -> Struktur Organisasi*)
 
-- [ ] **Step 1: Create migrations and models for announcements & holidays**
-- [ ] **Step 2: Build `AnnouncementController`, `HolidayController`, & `BranchController` with company scoping**
-- [ ] **Step 3: Build `Announcements/Index.jsx` feed & `Calendar/HolidayCalendar.jsx` (SKB 3 Menteri)**
-- [ ] **Step 4: Build `Organization/Branches.jsx` (CRUD cabang, Lat/Lng, radius geofence, whitelist IP kantor untuk kesiapan Task 7) & `Organization/OrgChart.jsx`**
-- [ ] **Step 5: Checkpoint Sprint 1 Review & Demo bersama PM (Egi Witra)**
+- [x] **Step 1: Create migrations and models for announcements & holidays**
+- [x] **Step 2: Build `AnnouncementController`, `HolidayController`, & `BranchController` with company scoping**
+- [x] **Step 3: Build `Announcements/Index.jsx` feed & `Calendar/HolidayCalendar.jsx` (SKB 3 Menteri)**
+- [x] **Step 4: Build `Organization/Branches.jsx` (CRUD cabang, Lat/Lng, radius geofence, whitelist IP kantor untuk kesiapan Task 7) & `Organization/OrgChart.jsx`**
+- [x] **Step 5: Checkpoint Sprint 1 Review & Demo bersama PM (Egi Witra)** — 16 PHPUnit tests passed (95 assertions), Vite build sukses tanpa error.
 
 ---
 

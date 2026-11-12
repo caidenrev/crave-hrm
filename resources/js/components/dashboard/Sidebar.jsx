@@ -48,6 +48,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { CompanySwitcher } from "./CompanySwitcher";
+import {
+  MENU_OPERASIONAL,
+  MENU_TALENTA,
+  MENU_PENGATURAN,
+} from "./navigationItems";
 import { cn } from "@/lib/utils";
 
 function Row({ collapsed, children, label }) {
@@ -70,79 +75,9 @@ export function Sidebar({ collapsed, setCollapsed }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isDark, setIsDark] = useState(false);
 
-  const menu = [
-    { label: "Dashboard", href: "/", icon: LayoutDashboard },
-    {
-      label: "Presensi",
-      href: "/attendance",
-      icon: Clock,
-      children: [
-        { label: "Presensi Harian", href: "/attendance", icon: Camera },
-        { label: "Jadwal & Shift", href: "/attendance/shifts", icon: CalendarClock },
-        { label: "Rekap Kehadiran", href: "/attendance/recap", icon: ClipboardList },
-      ],
-    },
-    {
-      label: "Cuti & Libur",
-      href: "/leave",
-      icon: CalendarDays,
-      children: [
-        { label: "Cuti & Izin Saya", href: "/leave", icon: CalendarDays },
-        { label: "Persetujuan Cuti", href: "/leave/approvals", icon: CheckSquare },
-        { label: "Kalender & Libur", href: "/calendar", icon: Calendar },
-      ],
-    },
-    {
-      label: "Klaim & Lembur",
-      href: "/claims",
-      icon: Receipt,
-      children: [
-        { label: "Lembur (SPKL)", href: "/claims/overtime", icon: Timer },
-        { label: "Reimbursement", href: "/claims/reimbursement", icon: Receipt },
-        { label: "Tugas Lapangan / Visit", href: "/claims/visit", icon: MapPin },
-      ],
-    },
-    {
-      label: "Crave Canteen",
-      href: "/canteen",
-      icon: UtensilsCrossed,
-      children: [
-        { label: "Voucher QR Saya", href: "/canteen", icon: QrCode },
-        { label: "Scanner Merchant", href: "/canteen/scanner", icon: ScanBarcode },
-        { label: "Rekonsiliasi Vendor", href: "/canteen/settlement", icon: FileSpreadsheet },
-      ],
-    },
-    {
-      label: "Payroll Management",
-      href: "/payroll",
-      icon: FileSpreadsheet,
-      children: [
-        { label: "Proses Payroll", href: "/payroll", icon: Calculator },
-        { label: "Slip Gaji", href: "/payroll/slips", icon: FileText },
-        { label: "Ekspor Bank & Rekap", href: "/payroll/export", icon: Landmark },
-      ],
-    },
-  ];
-
-  const talenta = [
-    { label: "Data Karyawan", href: "/employees", icon: Users },
-    { label: "Crave E-Recruitment", href: "/recruitment", icon: UserCheck },
-    { label: "360 Performance", href: "/performance", icon: Compass },
-  ];
-
-  const pengaturan = [
-    { label: "Pengumuman", href: "/announcements", icon: Megaphone },
-    {
-      label: "Organisasi & Akses",
-      href: "/organization",
-      icon: SlidersHorizontal,
-      children: [
-        { label: "Cabang & Geofence", href: "/organization/branches", icon: Building2 },
-        { label: "Struktur Organisasi", href: "/organization/chart", icon: Network },
-        { label: "Matriks Izin RBAC", href: "/organization/rbac-matrix", icon: SlidersHorizontal },
-      ],
-    },
-  ];
+  const menu = MENU_OPERASIONAL;
+  const talenta = MENU_TALENTA;
+  const pengaturan = MENU_PENGATURAN;
 
   const isGroupActive = (item) =>
     item.children?.some((c) => currentPath === c.href) ||

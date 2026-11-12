@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
+import { MobileMenuDrawer } from "@/components/dashboard/MobileMenuDrawer";
 import { cn } from "@/lib/utils";
 
 export default function AuthenticatedLayout({
@@ -11,11 +12,18 @@ export default function AuthenticatedLayout({
   children,
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen w-full bg-background">
       {/* Desktop SideNav */}
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
+
+      {/* Mobile Slide-Over Drawer Navigation */}
+      <MobileMenuDrawer
+        open={mobileMenuOpen}
+        onOpenChange={setMobileMenuOpen}
+      />
 
       {/* Main Content Area */}
       <div
@@ -28,6 +36,7 @@ export default function AuthenticatedLayout({
           title={title}
           subtitle={subtitle}
           actions={actions}
+          onOpenMobileMenu={() => setMobileMenuOpen(true)}
         />
 
         <main className="mx-auto max-w-[1400px] px-3 pb-24 pt-3 sm:px-6 sm:pt-4 lg:pb-10">
@@ -37,7 +46,7 @@ export default function AuthenticatedLayout({
 
       {/* Mobile Bottom Nav */}
       <div className="lg:hidden">
-        <MobileBottomNav />
+        <MobileBottomNav onOpenMobileMenu={() => setMobileMenuOpen(true)} />
       </div>
     </div>
   );

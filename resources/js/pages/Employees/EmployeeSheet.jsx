@@ -3,7 +3,7 @@ import {
   Sheet,
   SheetContent,
 } from "@/components/ui/sheet";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -23,6 +23,7 @@ import {
   CreditCard,
   Briefcase,
   Wallet,
+  X,
 } from "lucide-react";
 
 export function EmployeeSheet({
@@ -35,11 +36,14 @@ export function EmployeeSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto p-5">
+      <SheetContent showCloseButton={false} className="w-full sm:max-w-md overflow-y-auto p-5">
         {/* Profile Header */}
         <div className="flex items-start justify-between gap-3 pb-4 border-b">
-          <div className="flex items-center gap-3">
-            <Avatar className="size-12 shrink-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <Avatar className="size-12 shrink-0 border border-border/60">
+              {employee.avatar_url && (
+                <AvatarImage src={employee.avatar_url} alt={employee.nama_lengkap} />
+              )}
               <AvatarFallback className="bg-primary/10 text-sm font-extrabold text-primary uppercase">
                 {getInitials(employee.nama_lengkap)}
               </AvatarFallback>
@@ -56,7 +60,7 @@ export function EmployeeSheet({
                   {employee.is_active ? "Aktif" : "Nonaktif"}
                 </Badge>
               </div>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-muted-foreground mt-0.5 truncate">
                 {employee.designation?.title || "Staff"} ·{" "}
                 {employee.department?.name || "-"}
               </p>
@@ -66,18 +70,29 @@ export function EmployeeSheet({
             </div>
           </div>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              onOpenChange(false);
-              onEdit(employee);
-            }}
-            className="rounded-xl text-xs"
-          >
-            <Edit className="size-3.5 mr-1" />
-            Edit
-          </Button>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                onOpenChange(false);
+                onEdit(employee);
+              }}
+              className="rounded-xl text-xs h-8 px-2.5 font-semibold"
+            >
+              <Edit className="size-3.5 mr-1" />
+              Edit
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => onOpenChange(false)}
+              className="rounded-xl size-8 text-muted-foreground hover:text-foreground hover:bg-muted"
+              title="Tutup Panel"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
         </div>
 
         {/* Tabbed Info */}
