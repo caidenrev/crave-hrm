@@ -13,30 +13,80 @@ class OrganizationController extends Controller
 {
     public function chart(Request $request)
     {
+        $branchId = $request->input('branch_id', 'all');
+
         $activeCompany = Company::find(session('active_company_id')) ?? Company::first();
 
+        $branches = \App\Models\Branch::where('is_active', true)
+            ->select('id', 'name', 'code')
+            ->get();
+
         $departments = Department::with([
-            'designations',
-            'employees' => function ($q) {
+            'designations' => fn ($q) => $q->where('is_active', true),
+            'employees' => function ($q) use ($branchId) {
                 $q->where('is_active', true)
                   ->with(['designation', 'branch'])
                   ->orderBy('nama_lengkap');
+
+                if ($branchId !== 'all' && !empty($branchId)) {
+                    $q->where('branch_id', $branchId);
+                }
             }
         ])
         ->where('is_active', true)
         ->get();
 
+        $allEmployees = Employee::where('is_active', true)
+            ->select('id', 'nama_lengkap', 'nik', 'department_id', 'designation_id', 'branch_id')
+            ->orderBy('nama_lengkap')
+            ->get();
+
+        $allDesignations = Designation::where('is_active', true)
+            ->select('id', 'department_id', 'title', 'level')
+            ->get();
+
         $stats = [
             'total_departments' => $departments->count(),
             'total_employees' => $departments->sum(fn ($d) => $d->employees->count()),
-            'total_designations' => Designation::count(),
+            'total_designations' => Designation::where('is_active', true)->count(),
+            'total_branches' => $branches->count(),
         ];
 
         return Inertia::render('Organization/OrgChart', [
             'company' => $activeCompany,
             'departments' => $departments,
+            'branches' => $branches,
+            'allEmployees' => $allEmployees,
+            'allDesignations' => $allDesignations,
+            'selectedBranchId' => $branchId,
             'stats' => $stats,
         ]);
+    }
+
+    public function updatePlacement(Request $request, Employee $employee)
+    {
+        $validated = $request->validate([
+            'department_id' => 'required|exists:departments,id',
+            'designation_id' => 'required|exists:designations,id',
+            'branch_id' => 'nullable|exists:branches,id',
+        ]);
+
+        $employee->update($validated);
+
+        return back()->with('success', "Penempatan {$employee->nama_lengkap} berhasil diperbarui.");
+    }
+
+    public function storeDepartment(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:50',
+            'description' => 'nullable|string|max:500',
+        ]);
+
+        Department::create($validated);
+
+        return back()->with('success', 'Departemen baru berhasil ditambahkan.');
     }
 
     public function rbacMatrix()

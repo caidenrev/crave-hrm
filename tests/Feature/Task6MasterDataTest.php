@@ -190,4 +190,100 @@ class Task6MasterDataTest extends TestCase
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page->component('Organization/OrgChart'));
     }
+
+    public function test_user_can_filter_organization_chart_by_branch(): void
+    {
+        $branch1 = Branch::create(['company_id' => $this->companyA->id, 'name' => 'HQ Sudirman', 'code' => 'HQ-01']);
+        $branch2 = Branch::create(['company_id' => $this->companyA->id, 'name' => 'Cabang Bandung', 'code' => 'BDG-01']);
+
+        $dept = Department::create(['company_id' => $this->companyA->id, 'name' => 'Operations', 'code' => 'OPS']);
+        $desig = Designation::create(['company_id' => $this->companyA->id, 'department_id' => $dept->id, 'title' => 'Manager']);
+
+        Employee::create([
+            'company_id' => $this->companyA->id,
+            'department_id' => $dept->id,
+            'designation_id' => $desig->id,
+            'branch_id' => $branch1->id,
+            'nik' => '3271012345670001',
+            'nama_lengkap' => 'Staff Sudirman',
+            'email' => 'sdr@crave.id',
+            'tanggal_masuk' => '2024-01-01',
+            'is_active' => true,
+        ]);
+
+        Employee::create([
+            'company_id' => $this->companyA->id,
+            'department_id' => $dept->id,
+            'designation_id' => $desig->id,
+            'branch_id' => $branch2->id,
+            'nik' => '3271012345670002',
+            'nama_lengkap' => 'Staff Bandung',
+            'email' => 'bdg@crave.id',
+            'tanggal_masuk' => '2024-01-01',
+            'is_active' => true,
+        ]);
+
+        // Filter by Branch 1 (Sudirman)
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->get("/organization/chart?branch_id={$branch1->id}");
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn ($page) => 
+            $page->component('Organization/OrgChart')
+                ->where('selectedBranchId', (string) $branch1->id)
+                ->has('departments.0.employees', 1)
+        );
+    }
+
+    public function test_user_can_update_employee_organization_placement(): void
+    {
+        $branch = Branch::create(['company_id' => $this->companyA->id, 'name' => 'Cabang Surabaya', 'code' => 'SBY-01']);
+        $dept1 = Department::create(['company_id' => $this->companyA->id, 'name' => 'Finance', 'code' => 'FIN']);
+        $dept2 = Department::create(['company_id' => $this->companyA->id, 'name' => 'Human Resource', 'code' => 'HR']);
+        $desig = Designation::create(['company_id' => $this->companyA->id, 'department_id' => $dept2->id, 'title' => 'HR Specialist']);
+
+        $emp = Employee::create([
+            'company_id' => $this->companyA->id,
+            'department_id' => $dept1->id,
+            'designation_id' => $desig->id,
+            'nik' => '3571012345670001',
+            'nama_lengkap' => 'Karyawan Pindahan',
+            'email' => 'pindah@crave.id',
+            'tanggal_masuk' => '2024-01-01',
+            'is_active' => true,
+        ]);
+
+        // Reassign to Dept 2 and Branch
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->patch("/organization/chart/placement/{$emp->id}", [
+                'department_id' => $dept2->id,
+                'designation_id' => $desig->id,
+                'branch_id' => $branch->id,
+            ]);
+
+        $response->assertRedirect();
+
+        $emp->refresh();
+        $this->assertEquals($dept2->id, $emp->department_id);
+        $this->assertEquals($branch->id, $emp->branch_id);
+    }
+
+    public function test_user_can_create_new_department_from_org_chart(): void
+    {
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->post('/organization/chart/departments', [
+                'name' => 'Data & Artificial Intelligence',
+                'code' => 'DATA',
+                'description' => 'Divisi analitik data dan inovasi AI',
+            ]);
+
+        $response->assertRedirect();
+
+        $dept = Department::where('code', 'DATA')->first();
+        $this->assertNotNull($dept);
+        $this->assertEquals($this->companyA->id, $dept->company_id);
+    }
 }

@@ -44,6 +44,8 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
 Route::get('/rbac', [OrganizationController::class, 'rbacMatrix'])->name('rbac');
 Route::prefix('organization')->name('organization.')->group(function () {
     Route::get('/chart', [OrganizationController::class, 'chart'])->name('chart');
+    Route::patch('/chart/placement/{employee}', [OrganizationController::class, 'updatePlacement'])->name('chart.placement');
+    Route::post('/chart/departments', [OrganizationController::class, 'storeDepartment'])->name('chart.departments.store');
     Route::get('/rbac-matrix', [OrganizationController::class, 'rbacMatrix'])->name('rbac-matrix');
 
     // Branches & Geofence

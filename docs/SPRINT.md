@@ -58,7 +58,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 1: Scaffolding Inertia React 19 & Styling Foundation
 * **Target Selesai:** 11 November 2026
 * **PIC:** Eka Revandi
-* **Reviewer:** Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `frontend-ui-engineering`
 * **Status:** `[x] Selesai (10 Nov 2026)`
 - [x] Install package Inertia Laravel (`composer require inertiajs/inertia-laravel`)
@@ -70,7 +70,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 2: Install Shadcn UI (All Components) & Theme Injection
 * **Target Selesai:** 12 November 2026
 * **PIC:** Eka Revandi
-* **Reviewer:** Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `impeccable`, `antislop-ui`
 * **Status:** `[x] Selesai (10 Nov 2026)`
 - [x] Inisialisasi konfigurasi Shadcn UI (`components.json`, style: new-york, baseColor: slate)
@@ -81,7 +81,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 3: Database Multi-Company Core & Auth Middleware
 * **Target Selesai:** 13 November 2026
 * **PIC:** Eka Revandi
-* **Reviewer:** Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `security-and-hardening`, `api-and-interface-design`
 * **Status:** `[x] Selesai (10 Nov 2026)`
 - [x] Migrasi database: `companies`, `branches`, dan `company_user` pivot (dengan role per company)
@@ -105,7 +105,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 5: Master Data Karyawan, Organisasi & Matriks RBAC
 * **Target Selesai:** 15 November 2026
 * **PIC:** Aufa
-* **Reviewer:** Eka Revandi & Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `frontend-ui-engineering`, `security-and-hardening`
 * **Status:** `[x] Selesai (10 Nov 2026)`
 - [x] Migrasi tabel `departments`, `designations`, dan `employees` (dengan multi-tenant `company_id`)
@@ -118,7 +118,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 6: Pengumuman Internal, Kalender Hari Libur, Cabang & Org Chart
 * **Target Selesai:** 16 November 2026
 * **PIC:** Aufa
-* **Reviewer:** Egi Witra Aditya & Eka Revandi
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `frontend-ui-engineering`, `security-and-hardening`
 * **Status:** `[x] Selesai (12 Nov 2026)`
 > 📌 *Referensi Peta Menu & Route:* Lihat tabel di [`docs/PRD.md`](PRD.md) Section 4.2 agar setiap file halaman terhubung tepat ke submenu di `Sidebar.jsx`.
@@ -126,7 +126,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 - [x] Controller pengumuman internal (`/announcements` -> `Announcements/Index.jsx`) & sinkronisasi hari libur nasional SKB 3 Menteri (`/calendar` -> `Calendar/HolidayCalendar.jsx`)
 - [x] Halaman **Cabang & Geofence** (`/organization/branches` -> `Organization/Branches.jsx`) untuk input koordinat Lat/Lng, radius geofence, & whitelist IP kantor (prasyarat Task 7)
 - [x] Halaman **Struktur Organisasi / Org Chart** (`/organization/chart` -> `Organization/OrgChart.jsx`)
-- [x] **Gerbang Evaluasi QA Sprint 1:** UAT Sign-off isolasi multi-company dan master data oleh Egi Witra Aditya (`verification-before-completion`) - 16 PHPUnit tests lolos (95 assertions), Vite build sukses tanpa error.
+- [x] **Gerbang Evaluasi QA Sprint 1:** UAT Sign-off isolasi multi-company dan master data oleh Eka Revandi (Lead) & Egi Witra Aditya (`verification-before-completion`) - 17 PHPUnit tests lolos (100% Green), Vite build sukses tanpa error.
 
 ---
 
@@ -137,7 +137,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 7: Smart Attendance System (GPS Geofence + IP + Kamera Selfie + Shift)
 * **Target Selesai:** 18 November 2026
 * **PIC:** Eka Revandi (Service & Geofence) & Aufa (Kamera, Shift & UI)
-* **Reviewer:** Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`, `antislop-layoutmobile`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `shifts` dan `attendances`
@@ -150,7 +150,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 8: Holiday & Leave Management
 * **Target Selesai:** 20 November 2026
 * **PIC:** Aufa
-* **Reviewer:** Eka Revandi & Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `frontend-ui-engineering`, `test-driven-development`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `leave_types` dan `leave_requests`
@@ -163,7 +163,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 9: Reimbursement, Overtime PP 35/2021 & Visit Lapangan
 * **Target Selesai:** 21 November 2026
 * **PIC:** Aufa (Form & View) & Eka Revandi (Kalkulator Lembur)
-* **Reviewer:** Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`, `antislop-layoutmobile`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `reimbursements`, `overtimes` (SPKL), dan `visits`
@@ -176,7 +176,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 10: Crave Canteen (Dynamic QR Code 60s & Merchant Scanner)
 * **Target Selesai:** 23 November 2026
 * **PIC:** Aufa
-* **Reviewer:** Eka Revandi & Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `security-and-hardening`, `frontend-ui-engineering`, `antislop-layoutmobile`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `canteen_vendors` dan `canteen_vouchers`
@@ -185,7 +185,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 - [ ] Submenu **Scanner Merchant** (`/canteen/scanner` -> `Canteen/Scanner.jsx`) menggunakan kamera pemindai barcode/QR
 - [ ] Submenu **Rekonsiliasi Vendor** (`/canteen/settlement` -> `Canteen/Reports.jsx`) rekapitulasi porsi makan bulanan untuk tagihan katering
 - [ ] Filter visibilitas submenu Sidebar berbasis RBAC (menu kasir/admin disembunyikan untuk `employee`)
-- [ ] **Gerbang Evaluasi QA Sprint 2:** UAT Sign-off fitur operasional oleh Egi Witra Aditya (`verification-before-completion`)
+- [ ] **Gerbang Evaluasi QA Sprint 2:** Sign-off arsitektur & fitur operasional oleh Eka Revandi (Lead) & Egi Witra Aditya (PM) (`verification-before-completion`)
 
 ---
 
@@ -196,7 +196,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 11: Payroll Management (PPh 21 TER, BPJS, Slip PDF & Bank Batch)
 * **Target Selesai:** 25 November 2026
 * **PIC:** Eka Revandi
-* **Reviewer:** Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `test-driven-development`, `performance-optimization`, `security-and-hardening`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `payrolls` dan `salary_components`
@@ -210,7 +210,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 12: Crave E-Recruitment (Career Portal Publik & ATS Kanban)
 * **Target Selesai:** 26 November 2026
 * **PIC:** Aufa
-* **Reviewer:** Eka Revandi & Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `frontend-ui-engineering`, `impeccable`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel `job_postings` dan `candidates`
@@ -222,7 +222,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 13: 360 Performance Review (Radar Chart Recharts)
 * **Target Selesai:** 27 November 2026
 * **PIC:** Aufa
-* **Reviewer:** Eka Revandi & Egi Witra Aditya
+* **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `frontend-ui-engineering`
 * **Status:** `[ ] Pending`
 - [ ] Migrasi tabel siklus evaluasi, kuesioner, dan nilai responden
@@ -233,7 +233,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 ### Task 14: PWA Packaging, Device Session Security & Final Launch Ready
 * **Target Selesai:** 28–29 November 2026
 * **PIC:** Eka Revandi & Aufa
-* **Reviewer:** Egi Witra Aditya (Final Delivery Sign-off)
+* **Reviewer:** Eka Revandi (Lead Project Sign-off) & Egi Witra Aditya (PM Delivery Sign-off)
 * **Skill Rekomendasi:** `performance-optimization`, `antislop-layoutmobile`, `verification-before-completion`
 * **Status:** `[ ] Pending`
 - [ ] Konfigurasi `vite-plugin-pwa` dan Service Worker caching
@@ -241,7 +241,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 - [ ] Buat halaman keamanan sesi login aktif (`/sessions` -> `Profile/DeviceSessions.jsx`, ditautkan dari dropdown profil Header & Footer Sidebar)
 - [ ] Banner prompt install PWA otomatis di desktop & mobile
 - [ ] Kompilasi build final produksi (`npm run build`)
-- [ ] **Final UAT & Go-Live Sign-off:** Verifikasi kelayakan rilis sebelum 30 November oleh Egi Witra Aditya
+- [ ] **Final UAT & Go-Live Sign-off:** Verifikasi kelayakan rilis sebelum 30 November oleh Eka Revandi (Lead) & Egi Witra Aditya (PM)
 
 ---
 
@@ -260,3 +260,6 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 | **12 Nov 2026** | **Final Refinement & Anti-Slop Overhaul (Branch `task-6-internal-org`):** Implementasi komponen reusable `ViewToggle` (List & Card View) pada Karyawan, Pengumuman, dan Cabang. Normalisasi focus/hover (menghilangkan ring 3px tebal AI-slop pada `<Input>` & `<Tabs>`), perapihan tombol close `(X)` & `Edit` pada Sheet detail karyawan, foto profil riil + fallback inisial, pita PIN solid tanpa gradasi pada pengumuman dengan aksi langsung (tanpa titik tiga di Card View), layout cabang anti-truncate, perbaikan Hero Card Struktur Organisasi, aktivasi Company Switcher multi-company & Quick Module Search di Header. Build Vite sukses (3,069 modul) & 16 PHPUnit tests lolos (95 assertions). | - | `Selesai` |
 | **12 Nov 2026** | **UI/UX Polish Pass 2 (Pill Filter Contrast, Modal Konfirmasi & Layout Stacking):** (1) Mode Card Karyawan diubah menjadi layout vertikal stacked (Karyawan di atas, Matriks Izin Peran di bawah dengan grid responsif lapang `xl:grid-cols-4`), (2) Integrasi `AvatarImage` pada `EmployeeSheet` agar foto profil konsisten dengan Card/List, (3) Tombol filter status & kategori (Karyawan, Pengumuman, ViewToggle) diselaraskan ke tema pill Light/Dark toggle Sidebar (`bg-muted rounded-full p-1` dengan kontras tinggi), (4) Penghapusan search bar ganda di `OrgChart.jsx` sehingga bersih mengacu pada Header search, (5) Pembuatan komponen reusable `ConfirmDeleteDialog.jsx` berbasis Shadcn `AlertDialog` dan diintegrasikan pada Pengumuman, Cabang, dan Karyawan. Build Vite 100% lolos (3,070 modul dalam 3.89s) & 16 PHPUnit tests lulus (95 assertions). | - | `Selesai` |
 | **12 Nov 2026** | **Header Space Optimization & Mobile Navigation Drawer Overhaul:** (1) Perbaikan pemotongan teks judul header dengan compact avatar profile `size-9`, search bar expandable `w-40 md:w-48 lg:w-56 focus:w-64`, dan pemindahan kontrol filter (Tahun di Kalender, ViewToggle di Cabang) ke toolbar halaman masing-masing, (2) Sentralisasi daftar rute menu di `navigationItems.js`, (3) Pembuatan komponen `MobileMenuDrawer.jsx` (slide-over Sheet kiri) lengkap dengan Company Switcher, pencarian modul, menu bertingkat accordion, toggle tema, & profil, (4) Pemasangan tombol Hamburger di `Header.jsx` (`lg:hidden`) dan refactor tab ke-5 `MobileBottomNav.jsx` menjadi tombol pemicu Menu. Kompilasi 3,072 modul sukses (4.04s) & 16 PHPUnit tests lulus (95 assertions). | - | `Selesai` |
+| **13 Nov 2026** | **UI/UX Audit & Crave POS Dashboard Alignment (Kalender & Pengumuman Internal):** (1) Penyelarasan total halaman `Calendar/HolidayCalendar.jsx` dengan widget Dasbor Crave POS (`crave-pos-dashboard/src/routes/dashboard.tsx`): 4 KPI Cards (1 Hero Blue + 3 White card-soft tanpa icon pelangi), layout 2:1 Chart Area Sebaran Bulanan & Donut Pie Komposisi Libur, layout 2-kolom Jadwal Terdekat (`bg-muted/50 p-3 rounded-xl` + date block) & Agenda Lengkap dengan search bar dan filter kategori, serta toggle `Widget Dasbor` vs `Grid 12 Bulan`, (2) Audit & perombakan halaman `Announcements/Index.jsx`: penambahan widget analitik 2:1 (AreaChart Aktivitas Penerbitan Informasi & PieChart Donut Komposisi Kategori), penggantian corner ribbon miring diagonal dengan PIN Badge resmi Shadcn (`<Badge variant="default">` + `size-2.5 fill-current`), normalisasi seluruh custom span pelangi ke standard Shadcn `<Badge>`, serta eliminasi `text-rose-500` ke `text-destructive`. Verifikasi build Vite 100% (3,072 modul dalam 3.17s) dan 14 test PHPUnit lulus (93 assertions). | - | `Selesai` |
+| **13 Nov 2026** | **UI/UX Audit & Modal Polish Cabang & Geofence (`Branches.jsx`):** (1) Perombakan modal form `Tambah/Edit Cabang`: eliminasi vertical overflow & scrollbar yang memotong close button via layout grid 3-kolom compact (Lat, Lng, Radius) dan grid 2-kolom (Whitelist IP & Switch Status Aktif), eliminasi warna `text-rose-500` ke `text-destructive`, (2) Penambahan widget analitik 2:1 Crave POS (BarChart Distribusi Staf per Cabang & PieChart Donut Kesiapan Geofence), (3) Normalisasi 4 KPI Cards (menghilangkan icon hijau/biru acak), serta penambahan live Search Bar & status filter tabs di toolbar atas. Build Vite sukses (3,072 modul dalam 2.68s) dan seluruh automated tests lulus 100%. | - | `Selesai` |
+| **13 Nov 2026** | **Dynamic Multi-Branch & Editable Org Chart (`OrgChart.jsx`):** (1) Implementasi filter cabang dinamis (*Setiap Cabang Beda-Beda*) via toolbar pill `Semua Cabang` dan cabang spesifik (`?branch_id=`), (2) Penambahan kapabilitas **Edit Penempatan & Jabatan Langsung** dari setiap card karyawan dalam hierarki (`PATCH /organization/chart/placement/{employee}`) lengkap dengan modal pemindahan departemen, jabatan level, dan kantor cabang, (3) Pembuatan modal **Tambah Departemen Baru** (`POST /organization/chart/departments`), (4) Pembersihan AI-slop pada 4 KPI Top Cards (semua icon netral dan selaras Crave POS). Vite build 100% (3,071 modul dalam 1.99s) dan 3 automated tests baru lulus (100% Green, total 17 tests lolos). | - | `Selesai` |

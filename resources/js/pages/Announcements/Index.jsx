@@ -1,7 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Head, useForm, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
 import { formatTanggal } from "@/lib/formatters";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   Megaphone,
   Pin,
@@ -10,22 +22,17 @@ import {
   Search,
   AlertTriangle,
   FileText,
-  Calendar,
-  Sparkles,
-  MoreVertical,
+  Clock,
   Edit2,
   Trash2,
-  CheckCircle2,
-  Clock,
-  User,
-  Filter,
+  MoreVertical,
   ArrowUpRight,
-  ArrowDownRight,
+  Sparkles,
+  Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { ViewToggle } from "@/components/ui/ViewToggle";
 import { ConfirmDeleteDialog } from "@/components/ui/ConfirmDeleteDialog";
 import { cn } from "@/lib/utils";
@@ -48,18 +55,30 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
+const chartColors = [
+  "var(--color-chart-1)",
+  "var(--color-chart-2)",
+  "var(--color-chart-3)",
+  "var(--color-chart-4)",
+];
+
 const CATEGORY_MAP = {
-  general: { label: "Umum", color: "bg-slate-100 text-slate-700 border-slate-200" },
-  policy: { label: "Kebijakan", color: "bg-blue-50 text-blue-700 border-blue-200" },
-  urgent: { label: "Penting / Darurat", color: "bg-rose-50 text-rose-700 border-rose-200" },
-  event: { label: "Agenda & Acara", color: "bg-purple-50 text-purple-700 border-purple-200" },
+  general: { label: "Umum", variant: "secondary" },
+  policy: { label: "Kebijakan", variant: "outline" },
+  urgent: { label: "Penting / Darurat", variant: "destructive" },
+  event: { label: "Agenda & Acara", variant: "secondary" },
 };
 
 const PRIORITY_MAP = {
-  normal: { label: "Biasa", badge: "bg-slate-100 text-slate-600" },
-  high: { label: "Tinggi", badge: "bg-amber-100 text-amber-700" },
-  urgent: { label: "Mendesak", badge: "bg-rose-100 text-rose-700 font-bold" },
+  normal: { label: "Biasa", variant: "secondary" },
+  high: { label: "Tinggi", variant: "secondary" },
+  urgent: { label: "Mendesak", variant: "destructive" },
 };
+
+const MONTH_SHORT = [
+  "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+  "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
+];
 
 export default function Index({ announcements, filters = {}, stats = {} }) {
   const [search, setSearch] = useState(filters.search || "");
@@ -67,6 +86,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [viewMode, setViewMode] = useState("card");
+  const [showCharts, setShowCharts] = useState(true);
 
   const { data, setData, post, put, processing, errors, reset } = useForm({
     title: "",
@@ -164,18 +184,88 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
     router.patch(`/announcements/${id}/toggle-pin`, {}, { preserveScroll: true });
   };
 
-  const handleDelete = (id) => {
-    const item = items.find((i) => i.id === id);
-    if (item) {
-      confirmDelete(item);
-    } else {
-      router.delete(`/announcements/${id}`, { preserveScroll: true });
-    }
-  };
-
   const items = announcements?.data || [];
   const pinnedItems = items.filter((i) => i.is_pinned);
   const regularItems = items.filter((i) => !i.is_pinned);
+
+  // 1. Top Metrics Cards
+  const topStats = [
+    {
+      label: "Total Pengumuman",
+      value: String(stats.total ?? items.length),
+      delta: "Aktif",
+      up: true,
+      icon: Megaphone,
+    },
+    {
+      label: "Disematkan (Pinned)",
+      value: String(stats.pinned ?? pinnedItems.length),
+      delta: "Prioritas",
+      up: true,
+      icon: Pin,
+    },
+    {
+      label: "Penting & Darurat",
+      value: String(stats.urgent ?? 0),
+      delta: (stats.urgent ?? 0) > 0 ? `${stats.urgent} Urgent` : "Nihil",
+      up: (stats.urgent ?? 0) === 0,
+      icon: AlertTriangle,
+    },
+    {
+      label: "Edaran Kebijakan",
+      value: String(stats.policy ?? 0),
+      delta: "Regulasi",
+      up: true,
+      icon: FileText,
+    },
+  ];
+
+  // 2. Chart Analytics: Category Distribution (Donut Pie)
+  const categoryShare = useMemo(() => {
+    const total = items.length || 1;
+    const policyCount = items.filter((i) => i.category === "policy").length;
+    const urgentCount = items.filter((i) => i.category === "urgent").length;
+    const eventCount = items.filter((i) => i.category === "event").length;
+    const generalCount = items.filter((i) => i.category === "general").length;
+
+    return [
+      {
+        name: "Kebijakan",
+        count: policyCount,
+        value: Math.round((policyCount / total) * 100),
+      },
+      {
+        name: "Penting / Darurat",
+        count: urgentCount,
+        value: Math.round((urgentCount / total) * 100),
+      },
+      {
+        name: "Agenda & Acara",
+        count: eventCount,
+        value: Math.round((eventCount / total) * 100),
+      },
+      {
+        name: "Informasi Umum",
+        count: generalCount,
+        value: Math.round((generalCount / total) * 100),
+      },
+    ].filter((c) => c.count > 0);
+  }, [items]);
+
+  // 3. Chart Analytics: Recent Publishing Trend (Monthly)
+  const monthlyActivity = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return MONTH_SHORT.map((label, idx) => {
+      const monthItems = items.filter((item) => {
+        const d = new Date(item.published_at || item.created_at);
+        return !isNaN(d.getTime()) && d.getMonth() === idx && d.getFullYear() === currentYear;
+      });
+      return {
+        label,
+        count: monthItems.length,
+      };
+    });
+  }, [items]);
 
   return (
     <AuthenticatedLayout
@@ -184,9 +274,9 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
       actions={
         <Button
           onClick={openCreateModal}
-          className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 font-semibold shadow-sm text-xs sm:text-sm"
+          className="rounded-xl font-semibold shadow-xs text-xs sm:text-sm"
         >
-          <Plus className="mr-1.5 h-4 w-4" />
+          <Plus className="mr-1.5 size-4" />
           <span className="hidden sm:inline">Buat Pengumuman</span>
           <span className="sm:hidden">Buat</span>
         </Button>
@@ -194,216 +284,305 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
     >
       <Head title="Pengumuman Internal" />
 
-      {/* 1. TOP METRICS CARDS (Dashboard-Consistent Signature Look) */}
-      <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4 mb-6">
-        {/* Card 0: Hero Card */}
-        <div className="col-span-2 md:col-span-1 p-3.5 sm:p-4 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-primary text-primary-foreground shadow-lg shadow-primary/25 border border-primary">
-          <div className="flex items-start justify-between gap-2">
-            <span className="text-white">
-              <Megaphone className="size-5 sm:size-6" />
-            </span>
-            <span className="flex items-center gap-1 text-[12px] font-bold text-white">
-              <ArrowUpRight className="size-4" />
-              Aktif
-            </span>
-          </div>
-          <div className="mt-4">
-            <p className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl text-white">
-              {stats.total ?? 0}
-            </p>
-            <p className="text-[13px] font-medium mt-0.5 text-primary-foreground/80">
-              Total Pengumuman
-            </p>
-          </div>
-        </div>
-
-        {/* Card 1: Disematkan */}
-        <div className="p-3.5 sm:p-4 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-card border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
-          <div className="flex items-start justify-between gap-2">
-            <span className="text-foreground">
-              <Pin className="size-5 sm:size-6 text-blue-600" />
-            </span>
-            <span className="flex items-center gap-1 text-[12px] font-bold text-blue-600">
-              <ArrowUpRight className="size-4" />
-              Prioritas
-            </span>
-          </div>
-          <div className="mt-4">
-            <p className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl text-foreground">
-              {stats.pinned ?? 0}
-            </p>
-            <p className="text-[13px] font-medium mt-0.5 text-muted-foreground">
-              Disematkan (Pinned)
-            </p>
-          </div>
-        </div>
-
-        {/* Card 2: Penting & Darurat */}
-        <div className="p-3.5 sm:p-4 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-card border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
-          <div className="flex items-start justify-between gap-2">
-            <span className="text-foreground">
-              <AlertTriangle className="size-5 sm:size-6 text-rose-600" />
-            </span>
-            <span
+      <div className="space-y-4">
+        {/* 1. TOP METRICS CARDS (Dashboard-Consistent Crave POS Look) */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
+          {topStats.map((s, i) => (
+            <div
+              key={s.label}
               className={
-                "flex items-center gap-1 text-[12px] font-bold " +
-                ((stats.urgent ?? 0) > 0 ? "text-rose-600" : "text-success")
+                "p-3 flex flex-col justify-between rounded-2xl sm:rounded-3xl sm:p-4 " +
+                (i === 0 || i === 3 ? "col-span-2 md:col-span-1 " : "") +
+                (i === 0
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 border border-primary"
+                  : "bg-card border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]")
               }
             >
-              {(stats.urgent ?? 0) > 0 ? (
-                <>
-                  <ArrowUpRight className="size-4" />
-                  {stats.urgent} Urgent
-                </>
-              ) : (
-                <>
-                  <ArrowUpRight className="size-4" />
-                  Nihil
-                </>
-              )}
-            </span>
-          </div>
-          <div className="mt-4">
-            <p className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl text-foreground">
-              {stats.urgent ?? 0}
-            </p>
-            <p className="text-[13px] font-medium mt-0.5 text-muted-foreground">
-              Penting & Darurat
-            </p>
-          </div>
-        </div>
-
-        {/* Card 3: Kebijakan & SOP */}
-        <div className="col-span-2 md:col-span-1 p-3.5 sm:p-4 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-card border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]">
-          <div className="flex items-start justify-between gap-2">
-            <span className="text-foreground">
-              <FileText className="size-5 sm:size-6 text-indigo-600" />
-            </span>
-            <span className="flex items-center gap-1 text-[12px] font-bold text-indigo-600">
-              <ArrowUpRight className="size-4" />
-              Regulasi
-            </span>
-          </div>
-          <div className="mt-4">
-            <p className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl text-foreground">
-              {stats.policy ?? 0}
-            </p>
-            <p className="text-[13px] font-medium mt-0.5 text-muted-foreground">
-              Edaran Kebijakan
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Compact Unified Toolbar: Categories, Search, and ViewToggle */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6 bg-card p-3 rounded-2xl border border-border/60 shadow-xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-          <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1 border border-border/40">
-            {[
-              { key: "all", label: "Semua" },
-              { key: "policy", label: "Kebijakan" },
-              { key: "urgent", label: "Mendesak" },
-              { key: "event", label: "Acara" },
-              { key: "general", label: "Umum" },
-            ].map((cat) => (
-              <button
-                key={cat.key}
-                type="button"
-                onClick={() => handleCategoryFilter(cat.key)}
-                className={cn(
-                  "rounded-full px-3.5 py-1 text-xs font-semibold whitespace-nowrap transition-all",
-                  selectedCategory === cat.key
-                    ? "bg-card text-foreground font-bold shadow-soft"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <form onSubmit={handleSearch} className="relative flex-1 sm:w-60">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari pengumuman..."
-              className="pl-8 rounded-xl border-border/50 bg-background/50 text-xs h-8"
-            />
-          </form>
-
-          <ViewToggle view={viewMode} onViewChange={setViewMode} />
-        </div>
-      </div>
-
-      {/* Pinned Announcements Spotlight (if any) */}
-      {pinnedItems.length > 0 && (
-        <div className="mb-6 space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
-            <Pin className="h-3.5 w-3.5" />
-            <span>Pengumuman Tersemat Penting</span>
-          </div>
-
-          {viewMode === "card" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {pinnedItems.map((item) => (
-                <Card
-                  key={item.id}
-                  className="relative rounded-2xl border-2 border-primary/40 bg-card shadow-sm hover:shadow-md transition-all overflow-hidden flex flex-col justify-between"
+              <div className="flex items-start justify-between gap-2">
+                <span className={i === 0 ? "text-white" : "text-foreground"}>
+                  <s.icon className="size-5 sm:size-6" />
+                </span>
+                <span
+                  className={
+                    "flex items-center gap-1 text-[12px] font-bold " +
+                    (i === 0
+                      ? "text-white"
+                      : s.up
+                      ? "text-success"
+                      : "text-destructive")
+                  }
                 >
-                  {/* Solid Corner Ribbon - Crave POS Standard */}
-                  <div className="absolute top-0 right-0 h-16 w-16 overflow-hidden pointer-events-none">
-                    <div className="absolute transform rotate-45 bg-primary text-white text-[10px] font-black tracking-wider py-0.5 right-[-35px] top-[18px] w-[120px] text-center shadow-xs">
-                      PINNED
-                    </div>
+                  <ArrowUpRight className="size-4" />
+                  {s.delta}
+                </span>
+              </div>
+              <div className="mt-4">
+                <p
+                  className={
+                    "text-xl font-black tracking-tight sm:text-2xl " +
+                    (i === 0 ? "text-white" : "text-foreground")
+                  }
+                >
+                  {s.value}
+                </p>
+                <p
+                  className={
+                    "text-[13px] font-medium mt-0.5 " +
+                    (i === 0
+                      ? "text-primary-foreground/80"
+                      : "text-muted-foreground")
+                  }
+                >
+                  {s.label}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* 2. CHARTS SECTION (Crave POS 2:1 Ratio Analytics) */}
+        {showCharts && items.length > 0 && (
+          <div className="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+            {/* Left Chart: Tren Penerbitan Informasi */}
+            <div className="card-soft p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div>
+                  <p className="text-sm font-extrabold">Aktivitas Penerbitan Informasi</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Distribusi pengumuman dan edaran tahun {new Date().getFullYear()}
+                  </p>
+                </div>
+                <Badge variant="secondary" className="rounded-full text-[10px]">
+                  Tahun Berjalan
+                </Badge>
+              </div>
+
+              <div className="mt-4 h-56 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={monthlyActivity}>
+                    <defs>
+                      <linearGradient id="fillAnnouncements" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="0%"
+                          stopColor="var(--color-chart-1)"
+                          stopOpacity={0.35}
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor="var(--color-chart-1)"
+                          stopOpacity={0}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid
+                      vertical={false}
+                      strokeDasharray="4 4"
+                      stroke="var(--color-border)"
+                    />
+                    <XAxis
+                      dataKey="label"
+                      tickLine={false}
+                      axisLine={false}
+                      fontSize={11}
+                    />
+                    <YAxis
+                      allowDecimals={false}
+                      tickLine={false}
+                      axisLine={false}
+                      fontSize={11}
+                      width={28}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: 12,
+                        border: "1px solid var(--color-border)",
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="count"
+                      name="Pengumuman"
+                      stroke="var(--color-chart-1)"
+                      strokeWidth={2.5}
+                      fill="url(#fillAnnouncements)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Right Chart: Komposisi Kategori */}
+            <div className="card-soft p-4">
+              <p className="text-sm font-extrabold">Komposisi Kategori</p>
+              <p className="text-[11px] text-muted-foreground">
+                Persentase dari total {items.length} informasi aktif
+              </p>
+
+              <div className="mt-2 h-44 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={categoryShare.length > 0 ? categoryShare : [{ name: "Umum", value: 100 }]}
+                      dataKey="value"
+                      nameKey="name"
+                      innerRadius={44}
+                      outerRadius={68}
+                      paddingAngle={3}
+                    >
+                      {(categoryShare.length > 0 ? categoryShare : [{ name: "Umum", value: 100 }]).map((_, i) => (
+                        <Cell
+                          key={i}
+                          fill={chartColors[i % chartColors.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(v) => `${v}%`}
+                      contentStyle={{ borderRadius: 12 }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="space-y-1.5 mt-2">
+                {categoryShare.map((c, i) => (
+                  <div
+                    key={c.name}
+                    className="flex items-center justify-between text-xs"
+                  >
+                    <span className="flex items-center gap-2 text-muted-foreground">
+                      <span
+                        className="size-2.5 rounded-full"
+                        style={{ background: chartColors[i % 4] }}
+                      />
+                      {c.name}
+                    </span>
+                    <span className="font-bold text-foreground">
+                      {c.value}% ({c.count})
+                    </span>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-                  <CardContent className="p-5 flex-1 flex flex-col">
-                    <div className="flex items-center gap-2 mb-2.5 pr-8">
-                      <span
-                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border ${
-                          CATEGORY_MAP[item.category]?.color || CATEGORY_MAP.general.color
-                        }`}
+        {/* 3. TOOLBAR: Categories, Search & View Toggle */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-card p-3 rounded-2xl border border-border/60 shadow-xs">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+            <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1 border border-border/40">
+              {[
+                { key: "all", label: "Semua" },
+                { key: "policy", label: "Kebijakan" },
+                { key: "urgent", label: "Mendesak" },
+                { key: "event", label: "Acara" },
+                { key: "general", label: "Umum" },
+              ].map((cat) => (
+                <button
+                  key={cat.key}
+                  type="button"
+                  onClick={() => handleCategoryFilter(cat.key)}
+                  className={cn(
+                    "rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap transition-all",
+                    selectedCategory === cat.key
+                      ? "bg-card text-foreground font-bold shadow-soft"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <form onSubmit={handleSearch} className="relative flex-1 sm:w-60">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Cari pengumuman..."
+                className="pl-8 rounded-xl border-border/50 bg-background/50 text-xs h-8"
+              />
+            </form>
+
+            <ViewToggle view={viewMode} onViewChange={setViewMode} />
+          </div>
+        </div>
+
+        {/* 4. PINNED ANNOUNCEMENTS SPOTLIGHT */}
+        {pinnedItems.length > 0 && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary">
+                <Pin className="size-3.5" />
+                <span>Pengumuman Tersemat Penting</span>
+              </div>
+              <Badge variant="default" className="rounded-full text-[10px] gap-1">
+                <Pin className="size-2.5 fill-current" />
+                {pinnedItems.length} Pinned
+              </Badge>
+            </div>
+
+            {viewMode === "card" ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {pinnedItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="card-soft p-5 border-2 border-primary/30 flex flex-col justify-between hover:shadow-md transition-all relative overflow-hidden"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2 mb-2.5 flex-wrap">
+                        <Badge
+                          variant="default"
+                          className="rounded-full text-[10px] gap-1 font-bold"
+                        >
+                          <Pin className="size-2.5 fill-current" />
+                          Pinned
+                        </Badge>
+                        <Badge
+                          variant={CATEGORY_MAP[item.category]?.variant || "secondary"}
+                          className="rounded-full text-[10px]"
+                        >
+                          {CATEGORY_MAP[item.category]?.label || item.category}
+                        </Badge>
+                        <Badge
+                          variant={PRIORITY_MAP[item.priority]?.variant || "secondary"}
+                          className="rounded-full text-[10px]"
+                        >
+                          {PRIORITY_MAP[item.priority]?.label || item.priority}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground flex items-center ml-auto">
+                          <Clock className="mr-1 size-3" />
+                          {formatTanggal(item.published_at)}
+                        </span>
+                      </div>
+
+                      <h4
+                        onClick={() => openEditModal(item)}
+                        className="text-base font-black tracking-tight text-foreground line-clamp-2 mb-2 hover:text-primary transition-colors cursor-pointer"
                       >
-                        {CATEGORY_MAP[item.category]?.label || item.category}
-                      </span>
-                      <span
-                        className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                          PRIORITY_MAP[item.priority]?.badge || PRIORITY_MAP.normal.badge
-                        }`}
-                      >
-                        {PRIORITY_MAP[item.priority]?.label || item.priority}
-                      </span>
-                      <span className="text-xs text-muted-foreground flex items-center ml-auto">
-                        <Clock className="mr-1 h-3 w-3" />
-                        {formatTanggal(item.published_at)}
-                      </span>
+                        {item.title}
+                      </h4>
+
+                      <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-4">
+                        {item.content}
+                      </p>
                     </div>
 
-                    <h4 className="text-lg font-black tracking-tight text-foreground line-clamp-2 mb-2">
-                      {item.title}
-                    </h4>
-
-                    <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-4 flex-1">
-                      {item.content}
-                    </p>
-
-                    <div className="flex items-center justify-between pt-3 border-t border-border/50 text-xs text-muted-foreground mt-auto">
+                    <div className="flex items-center justify-between pt-3 border-t border-border/50 text-xs text-muted-foreground mt-2">
                       <div className="flex items-center gap-2">
-                        <Avatar className="h-6 w-6">
+                        <Avatar className="size-6">
                           <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
                             {item.author?.name ? item.author.name.substring(0, 2).toUpperCase() : "AD"}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="font-medium text-foreground">
+                        <span className="font-medium text-foreground truncate max-w-[120px]">
                           {item.author?.name || "Admin HR"}
                         </span>
                       </div>
 
-                      {/* Direct Actions in Card View (No 3-dots) */}
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-1">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -411,7 +590,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
                           className="h-7 rounded-lg px-2 text-xs text-primary hover:bg-primary/10 font-semibold"
                           title="Lepas Sematan"
                         >
-                          <PinOff className="h-3.5 w-3.5 mr-1" />
+                          <PinOff className="size-3.5 mr-1" />
                           Lepas Pin
                         </Button>
                         <Button
@@ -420,45 +599,228 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
                           onClick={() => openEditModal(item)}
                           className="h-7 rounded-lg px-2.5 text-xs font-semibold"
                         >
-                          <Edit2 className="h-3 w-3 mr-1" />
+                          <Edit2 className="size-3 mr-1" />
                           Edit
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleDelete(item.id)}
+                          onClick={() => confirmDelete(item)}
                           className="h-7 rounded-lg px-2 text-xs text-destructive hover:bg-destructive/10"
                           title="Hapus Pengumuman"
                         >
-                          <Trash2 className="h-3.5 w-3.5" />
+                          <Trash2 className="size-3.5" />
                         </Button>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {pinnedItems.map((item) => (
+                  <div
+                    key={item.id}
+                    className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl bg-muted/50 p-3 border border-primary/30 hover:bg-muted/70 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="size-9 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
+                        <Pin className="size-4 fill-current" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5 flex-wrap">
+                          <span
+                            onClick={() => openEditModal(item)}
+                            className="text-sm font-bold text-foreground hover:text-primary transition-colors cursor-pointer truncate"
+                          >
+                            {item.title}
+                          </span>
+                          <Badge
+                            variant={CATEGORY_MAP[item.category]?.variant || "secondary"}
+                            className="rounded-full text-[10px]"
+                          >
+                            {CATEGORY_MAP[item.category]?.label || item.category}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground truncate max-w-xl">
+                          {item.content}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs text-muted-foreground hidden md:inline">
+                        {formatTanggal(item.published_at)}
+                      </span>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
+                            <MoreVertical className="size-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="rounded-xl">
+                          <DropdownMenuItem onClick={() => handleTogglePin(item.id)}>
+                            <PinOff className="size-3.5 mr-2 text-primary" /> Lepas Sematan
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openEditModal(item)}>
+                            <Edit2 className="size-3.5 mr-2" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => confirmDelete(item)} className="text-destructive">
+                            <Trash2 className="size-3.5 mr-2" /> Hapus
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* 5. REGULAR ANNOUNCEMENTS FEED */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+              <span>Daftar Pengumuman Terbaru</span>
+              <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground font-semibold">
+                {regularItems.length}
+              </span>
+            </h3>
+          </div>
+
+          {regularItems.length === 0 && pinnedItems.length === 0 ? (
+            <div className="card-soft p-12 text-center border-dashed">
+              <div className="mx-auto size-12 rounded-2xl bg-muted/60 flex items-center justify-center text-muted-foreground mb-3">
+                <Megaphone className="size-6" />
+              </div>
+              <h4 className="text-base font-bold text-foreground">Belum ada pengumuman</h4>
+              <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
+                Tidak ada pengumuman yang sesuai dengan filter pencarian Anda. Klik tombol di bawah untuk membuat pengumuman pertama.
+              </p>
+              <Button
+                onClick={openCreateModal}
+                className="mt-4 rounded-xl font-semibold"
+              >
+                <Plus className="mr-1.5 size-4" />
+                Buat Pengumuman Sekarang
+              </Button>
+            </div>
+          ) : viewMode === "card" ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {regularItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="card-soft p-5 flex flex-col justify-between hover:shadow-md transition-all"
+                >
+                  <div>
+                    <div className="flex items-center gap-2 mb-2.5 flex-wrap">
+                      <Badge
+                        variant={CATEGORY_MAP[item.category]?.variant || "secondary"}
+                        className="rounded-full text-[10px]"
+                      >
+                        {CATEGORY_MAP[item.category]?.label || item.category}
+                      </Badge>
+                      <Badge
+                        variant={PRIORITY_MAP[item.priority]?.variant || "secondary"}
+                        className="rounded-full text-[10px]"
+                      >
+                        {PRIORITY_MAP[item.priority]?.label || item.priority}
+                      </Badge>
+                      <span className="text-xs text-muted-foreground ml-auto flex items-center">
+                        <Clock className="mr-1 size-3" />
+                        {formatTanggal(item.published_at)}
+                      </span>
+                    </div>
+
+                    <h4
+                      onClick={() => openEditModal(item)}
+                      className="text-base font-bold text-foreground line-clamp-2 mb-2 hover:text-primary transition-colors cursor-pointer"
+                    >
+                      {item.title}
+                    </h4>
+
+                    <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-4">
+                      {item.content}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-3 border-t border-border/50 text-xs text-muted-foreground mt-2">
+                    <div className="flex items-center gap-2">
+                      <Avatar className="size-6">
+                        <AvatarFallback className="text-[10px] bg-muted font-bold text-muted-foreground">
+                          {item.author?.name ? item.author.name.substring(0, 2).toUpperCase() : "AD"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="truncate max-w-[110px] text-foreground font-medium">
+                        {item.author?.name || "Admin HR"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleTogglePin(item.id)}
+                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-primary"
+                        title="Sematkan ke atas"
+                      >
+                        <Pin className="size-3.5" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openEditModal(item)}
+                        className="h-7 rounded-lg px-2.5 text-xs font-semibold"
+                      >
+                        <Edit2 className="size-3 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => confirmDelete(item)}
+                        className="h-7 rounded-lg px-2 text-xs text-destructive hover:bg-destructive/10"
+                        title="Hapus"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (
             <div className="space-y-2">
-              {pinnedItems.map((item) => (
+              {regularItems.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-2xl border-2 border-primary/40 bg-card p-3 sm:p-4 shadow-xs flex items-center justify-between gap-3 hover:bg-muted/30 transition-colors"
+                  className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl bg-muted/50 p-3 hover:bg-muted/70 transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="size-8 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
-                      <Pin className="size-4" />
-                    </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="text-xs font-black text-foreground hover:text-primary transition-colors cursor-pointer" onClick={() => openEditModal(item)}>
+                        <span
+                          onClick={() => openEditModal(item)}
+                          className="text-sm font-bold text-foreground hover:text-primary transition-colors cursor-pointer truncate"
+                        >
                           {item.title}
                         </span>
-                        <span className={`inline-flex items-center rounded-full px-2 py-0.2 text-[10px] font-semibold border ${CATEGORY_MAP[item.category]?.color || CATEGORY_MAP.general.color}`}>
+                        <Badge
+                          variant={CATEGORY_MAP[item.category]?.variant || "secondary"}
+                          className="rounded-full text-[10px]"
+                        >
                           {CATEGORY_MAP[item.category]?.label || item.category}
-                        </span>
+                        </Badge>
+                        <Badge
+                          variant={PRIORITY_MAP[item.priority]?.variant || "secondary"}
+                          className="rounded-full text-[10px]"
+                        >
+                          {PRIORITY_MAP[item.priority]?.label || item.priority}
+                        </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground truncate max-w-xl">
+                      <p className="text-xs text-muted-foreground truncate max-w-2xl">
                         {item.content}
                       </p>
                     </div>
@@ -471,19 +833,19 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
-                          <MoreVertical className="h-4 w-4" />
+                          <MoreVertical className="size-4" />
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="rounded-xl">
                         <DropdownMenuItem onClick={() => handleTogglePin(item.id)}>
-                          <PinOff className="h-3.5 w-3.5 mr-2 text-primary" /> Lepas Sematan
+                          <Pin className="size-3.5 mr-2 text-primary" /> Sematkan (Pin)
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => openEditModal(item)}>
-                          <Edit2 className="h-3.5 w-3.5 mr-2" /> Edit
+                          <Edit2 className="size-3.5 mr-2" /> Edit
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => handleDelete(item.id)} className="text-destructive">
-                          <Trash2 className="h-3.5 w-3.5 mr-2" /> Hapus
+                        <DropdownMenuItem onClick={() => confirmDelete(item)} className="text-destructive">
+                          <Trash2 className="size-3.5 mr-2" /> Hapus
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -493,177 +855,9 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
             </div>
           )}
         </div>
-      )}
-
-      {/* Regular Announcements Feed */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-            <span>Daftar Pengumuman Terbaru</span>
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground font-semibold">
-              {regularItems.length}
-            </span>
-          </h3>
-        </div>
-
-        {regularItems.length === 0 && pinnedItems.length === 0 ? (
-          <Card className="rounded-2xl border border-dashed border-border p-12 text-center bg-card">
-            <div className="mx-auto h-12 w-12 rounded-2xl bg-muted/60 flex items-center justify-center text-muted-foreground mb-3">
-              <Megaphone className="h-6 w-6" />
-            </div>
-            <h4 className="text-base font-bold text-foreground">Belum ada pengumuman</h4>
-            <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
-              Tidak ada pengumuman yang sesuai dengan filter pencarian Anda. Klik tombol di bawah untuk membuat pengumuman pertama.
-            </p>
-            <Button
-              onClick={openCreateModal}
-              className="mt-4 rounded-xl bg-primary text-primary-foreground font-semibold"
-            >
-              <Plus className="mr-1.5 h-4 w-4" />
-              Buat Pengumuman Sekarang
-            </Button>
-          </Card>
-        ) : viewMode === "card" ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {regularItems.map((item) => (
-              <Card
-                key={item.id}
-                className="rounded-2xl border border-border/70 bg-card shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-              >
-                <CardContent className="p-5 flex-1 flex flex-col">
-                  <div className="flex items-center gap-2 mb-2.5">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border ${
-                        CATEGORY_MAP[item.category]?.color || CATEGORY_MAP.general.color
-                      }`}
-                    >
-                      {CATEGORY_MAP[item.category]?.label || item.category}
-                    </span>
-                    <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                        PRIORITY_MAP[item.priority]?.badge || PRIORITY_MAP.normal.badge
-                      }`}
-                    >
-                      {PRIORITY_MAP[item.priority]?.label || item.priority}
-                    </span>
-                    <span className="text-xs text-muted-foreground ml-auto flex items-center">
-                      <Clock className="mr-1 h-3 w-3" />
-                      {formatTanggal(item.published_at)}
-                    </span>
-                  </div>
-
-                  <h4 className="text-base font-bold text-foreground line-clamp-2 mb-2 hover:text-primary transition-colors">
-                    {item.title}
-                  </h4>
-
-                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed mb-4 flex-1">
-                    {item.content}
-                  </p>
-
-                  <div className="flex items-center justify-between pt-3 border-t border-border/50 text-xs text-muted-foreground mt-auto">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-6 w-6">
-                        <AvatarFallback className="text-[10px] bg-muted font-bold text-muted-foreground">
-                          {item.author?.name ? item.author.name.substring(0, 2).toUpperCase() : "AD"}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="truncate max-w-[110px] text-foreground font-medium">
-                        {item.author?.name || "Admin HR"}
-                      </span>
-                    </div>
-
-                    {/* Direct Actions in Card View (No 3-dots) */}
-                    <div className="flex items-center gap-1.5">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleTogglePin(item.id)}
-                        className="h-7 w-7 rounded-lg text-muted-foreground hover:text-primary"
-                        title="Sematkan ke atas"
-                      >
-                        <Pin className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openEditModal(item)}
-                        className="h-7 rounded-lg px-2.5 text-xs font-semibold"
-                      >
-                        <Edit2 className="h-3 w-3 mr-1" />
-                        Edit
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(item.id)}
-                        className="h-7 rounded-lg px-2 text-xs text-destructive hover:bg-destructive/10"
-                        title="Hapus"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {regularItems.map((item) => (
-              <div
-                key={item.id}
-                className="rounded-2xl border border-border/60 bg-card p-3 sm:p-4 shadow-xs flex items-center justify-between gap-3 hover:bg-muted/30 transition-colors"
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 mb-1 flex-wrap">
-                      <span className="text-sm font-bold text-foreground hover:text-primary transition-colors cursor-pointer" onClick={() => openEditModal(item)}>
-                        {item.title}
-                      </span>
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.2 text-[10px] font-semibold border ${CATEGORY_MAP[item.category]?.color || CATEGORY_MAP.general.color}`}>
-                        {CATEGORY_MAP[item.category]?.label || item.category}
-                      </span>
-                      <span className={`inline-flex items-center rounded-full px-2 py-0.2 text-[10px] font-medium ${PRIORITY_MAP[item.priority]?.badge || PRIORITY_MAP.normal.badge}`}>
-                        {PRIORITY_MAP[item.priority]?.label || item.priority}
-                      </span>
-                    </div>
-                    <p className="text-xs text-muted-foreground truncate max-w-2xl">
-                      {item.content}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs text-muted-foreground hidden md:inline">
-                    {formatTanggal(item.published_at)}
-                  </span>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
-                        <MoreVertical className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="rounded-xl">
-                      <DropdownMenuItem onClick={() => handleTogglePin(item.id)}>
-                        <Pin className="h-3.5 w-3.5 mr-2 text-primary" /> Sematkan (Pin)
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => openEditModal(item)}>
-                        <Edit2 className="h-3.5 w-3.5 mr-2" /> Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => handleDelete(item.id)} className="text-destructive">
-                        <Trash2 className="h-3.5 w-3.5 mr-2" /> Hapus
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* Modal Dialog Form Create / Edit */}
+      {/* MODAL DIALOG: BUAT / EDIT PENGUMUMAN */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent className="rounded-2xl sm:max-w-xl">
           <DialogHeader>
@@ -678,7 +872,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
           <form onSubmit={handleSubmit} className="space-y-4 pt-2">
             <div>
               <label className="text-xs font-semibold text-foreground mb-1 block">
-                Judul Pengumuman <span className="text-rose-500">*</span>
+                Judul Pengumuman <span className="text-destructive">*</span>
               </label>
               <Input
                 value={data.title}
@@ -687,7 +881,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
                 className="rounded-xl"
                 required
               />
-              {errors.title && <p className="text-xs text-rose-500 mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-xs text-destructive mt-1">{errors.title}</p>}
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -750,7 +944,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
 
             <div>
               <label className="text-xs font-semibold text-foreground mb-1 block">
-                Isi Pengumuman <span className="text-rose-500">*</span>
+                Isi Pengumuman <span className="text-destructive">*</span>
               </label>
               <Textarea
                 rows={5}
@@ -760,7 +954,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
                 className="rounded-xl resize-none"
                 required
               />
-              {errors.content && <p className="text-xs text-rose-500 mt-1">{errors.content}</p>}
+              {errors.content && <p className="text-xs text-destructive mt-1">{errors.content}</p>}
             </div>
 
             <DialogFooter className="pt-2">
@@ -775,7 +969,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
               <Button
                 type="submit"
                 disabled={processing}
-                className="rounded-xl bg-primary text-primary-foreground font-semibold"
+                className="rounded-xl font-semibold"
               >
                 {processing ? "Menyimpan..." : editingItem ? "Simpan Perubahan" : "Terbitkan Pengumuman"}
               </Button>
@@ -784,7 +978,7 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
         </DialogContent>
       </Dialog>
 
-      {/* DELETE CONFIRMATION DIALOG */}
+      {/* DIALOG KONFIRMASI HAPUS */}
       <ConfirmDeleteDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
