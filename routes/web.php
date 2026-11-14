@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OrganizationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,6 +41,64 @@ Route::prefix('calendar')->name('calendar.')->group(function () {
     Route::get('/', [HolidayController::class, 'index'])->name('index');
     Route::post('/', [HolidayController::class, 'store'])->name('store');
     Route::delete('/{holiday}', [HolidayController::class, 'destroy'])->name('destroy');
+});
+
+// Holiday & Leave Management
+Route::prefix('leave')->name('leave.')->group(function () {
+    Route::get('/', [LeaveController::class, 'index'])->name('index');
+    Route::post('/', [LeaveController::class, 'store'])->name('store');
+    Route::delete('/{leaveRequest}', [LeaveController::class, 'cancel'])->name('cancel');
+
+    // Approvals
+    Route::get('/approvals', [LeaveController::class, 'approvals'])->name('approvals');
+    Route::post('/approvals/{leaveRequest}/supervisor', [LeaveController::class, 'approveSupervisor'])->name('approvals.supervisor');
+    Route::post('/approvals/{leaveRequest}/hr', [LeaveController::class, 'approveHr'])->name('approvals.hr');
+    Route::post('/approvals/{leaveRequest}/reject', [LeaveController::class, 'reject'])->name('approvals.reject');
+});
+
+// Klaim, Lembur (PP 35/2021) & Tugas Lapangan
+Route::prefix('claims')->name('claims.')->group(function () {
+    Route::get('/', [ClaimController::class, 'index'])->name('index');
+
+    // Overtime (SPKL)
+    Route::get('/overtime', [ClaimController::class, 'overtimeIndex'])->name('overtime.index');
+    Route::post('/overtime', [ClaimController::class, 'storeOvertime'])->name('overtime.store');
+    Route::post('/overtime/{overtime}/approve', [ClaimController::class, 'approveOvertime'])->name('overtime.approve');
+    Route::post('/overtime/{overtime}/reject', [ClaimController::class, 'rejectOvertime'])->name('overtime.reject');
+
+    // Reimbursement
+    Route::get('/reimbursement', [ClaimController::class, 'reimbursementIndex'])->name('reimbursement.index');
+    Route::post('/reimbursement', [ClaimController::class, 'storeReimbursement'])->name('reimbursement.store');
+    Route::post('/reimbursement/{reimbursement}/approve', [ClaimController::class, 'approveReimbursement'])->name('reimbursement.approve');
+    Route::post('/reimbursement/{reimbursement}/pay', [ClaimController::class, 'payReimbursement'])->name('reimbursement.pay');
+    Route::post('/reimbursement/{reimbursement}/reject', [ClaimController::class, 'rejectReimbursement'])->name('reimbursement.reject');
+
+    // Tugas Lapangan / Visit
+    Route::get('/visit', [ClaimController::class, 'visitIndex'])->name('visit.index');
+    Route::post('/visit', [ClaimController::class, 'storeVisit'])->name('visit.store');
+    Route::post('/visit/{visit}/verify', [ClaimController::class, 'verifyVisit'])->name('visit.verify');
+});
+
+// Smart Attendance System (GPS Geofence + IP + Selfie + Shifts)
+Route::prefix('attendance')->name('attendance.')->group(function () {
+    Route::get('/', [AttendanceController::class, 'checkInView'])->name('index');
+    Route::post('/clock-in', [AttendanceController::class, 'clockIn'])->name('clock-in');
+    Route::post('/clock-out', [AttendanceController::class, 'clockOut'])->name('clock-out');
+
+    // Shifts & Schedules
+    Route::get('/shifts', [AttendanceController::class, 'shifts'])->name('shifts');
+    Route::post('/shifts', [AttendanceController::class, 'storeShift'])->name('shifts.store');
+    Route::put('/shifts/{shift}', [AttendanceController::class, 'updateShift'])->name('shifts.update');
+    Route::patch('/shifts/{shift}/toggle-active', [AttendanceController::class, 'toggleShiftActive'])->name('shifts.toggle-active');
+    Route::delete('/shifts/{shift}', [AttendanceController::class, 'destroyShift'])->name('shifts.destroy');
+
+    // Shift Swap
+    Route::post('/shifts/swap', [AttendanceController::class, 'storeShiftSwap'])->name('shifts.swap.store');
+    Route::patch('/shifts/swap/{shiftSwap}/action', [AttendanceController::class, 'actionShiftSwap'])->name('shifts.swap.action');
+
+    // Daily Recap & HR Monitoring
+    Route::get('/recap', [AttendanceController::class, 'recap'])->name('recap');
+    Route::patch('/recap/{attendance}/correct', [AttendanceController::class, 'correctAttendance'])->name('recap.correct');
 });
 
 // Organization, Branches, Chart & RBAC Matrix

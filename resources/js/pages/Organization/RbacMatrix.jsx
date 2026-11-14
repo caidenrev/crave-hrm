@@ -21,7 +21,6 @@ import {
   MapPin,
   Wallet,
   Users,
-  Sparkles,
 } from "lucide-react";
 
 export default function RbacMatrix({ roles, modules }) {
@@ -137,7 +136,7 @@ export default function RbacMatrix({ roles, modules }) {
                         "flex items-center justify-center size-9 rounded-xl " +
                         (isHero
                           ? "bg-white/15 text-white"
-                          : "bg-primary/10 text-primary")
+                          : "bg-muted text-foreground")
                       }
                     >
                       <RoleIcon className="size-5" />
@@ -150,7 +149,6 @@ export default function RbacMatrix({ roles, modules }) {
                           : "bg-muted text-muted-foreground border border-border/60")
                       }
                     >
-                      {isHero && <Sparkles className="size-3" />}
                       {r.badge}
                     </span>
                   </div>

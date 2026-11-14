@@ -238,23 +238,24 @@ revan-laravel/
 * **Sprint:** Sprint 2
 * **Target Selesai:** 18 Nov 2026
 * **PIC / Assignee:** Eka Revandi (Engine & Geofence) & Aufa (Kamera & UI)
-* **Reviewer / QA:** Egi Witra Aditya
+* **Reviewer / QA:** Eka Revandi
 
 **Files:**
-* Create: `database/migrations/xxxx_xx_xx_create_shifts_and_attendances_table.php`
-* Create: `app/Models/Shift.php`, `Attendance.php`
+* Create: `database/migrations/2026_11_15_000001_create_shifts_and_attendances_table.php`
+* Create: `app/Models/Shift.php`, `app/Models/ShiftSwap.php`, `app/Models/Attendance.php`
 * Create: `app/Services/AttendanceService.php` (Formula Haversine GPS, Whitelist IP, Kalkulasi Telat)
 * Create: `app/Http/Controllers/AttendanceController.php`
 * Create: `resources/js/pages/Attendance/CheckIn.jsx` (Route: `/attendance` — submenu *Presensi Harian*: webcam selfie, GPS indicator)
 * Create: `resources/js/pages/Attendance/Shifts.jsx` (Route: `/attendance/shifts` — submenu *Jadwal & Shift*: shift reguler/berputar/fleksibel & tukar shift)
 * Create: `resources/js/pages/Attendance/Report.jsx` (Route: `/attendance/recap` — submenu *Rekap Kehadiran*: monitoring harian HR & approval koreksi)
+* Create: `tests/Feature/Task7AttendanceTest.php`
 
-- [ ] **Step 1: Write migrations for shifts and attendances**
-- [ ] **Step 2: Implement `AttendanceService` haversine distance algorithm & IP whitelist check**
-- [ ] **Step 3: Build `CheckIn.jsx` mobile-optimized UI with live camera preview**
-- [ ] **Step 4: Build `Shifts.jsx` shift scheduling & swap view (`/attendance/shifts`)**
-- [ ] **Step 5: Build `Report.jsx` HR Attendance monitoring table with filter date, branch, and shift (`/attendance/recap`)**
-- [ ] **Step 6: Test geofence acceptance within radius and rejection outside radius**
+- [x] **Step 1: Write migrations for shifts, shift swaps, and attendances**
+- [x] **Step 2: Implement `AttendanceService` haversine distance algorithm & IP whitelist check**
+- [x] **Step 3: Build `CheckIn.jsx` mobile-optimized UI with live camera preview & distance calculation**
+- [x] **Step 4: Build `Shifts.jsx` shift scheduling & swap view (`/attendance/shifts`)**
+- [x] **Step 5: Build `Report.jsx` HR Attendance monitoring table with filter date, branch, and shift (`/attendance/recap`)**
+- [x] **Step 6: Test geofence acceptance within radius and rejection outside radius** — 28 PHPUnit tests lolos (166 assertions, 100% Green), Vite build sukses tanpa error (3,074 modul terkompilasi).
 
 ---
 
@@ -272,11 +273,11 @@ revan-laravel/
 * Create: `resources/js/pages/Leave/Approvals.jsx` (Route: `/leave/approvals` — submenu *Persetujuan Cuti*: inbox approval Supervisor -> HR)
 * Modify: `resources/js/pages/Calendar/HolidayCalendar.jsx` (Route: `/calendar` — integrasikan tampilan cuti tim satu departemen)
 
-- [ ] **Step 1: Write migrations for leave types and requests**
-- [ ] **Step 2: Implement balance deduction and sequential approval (Supervisor -> HR)**
-- [ ] **Step 3: Build `Leave/Index.jsx` employee leave request form with date range & medical note upload**
-- [ ] **Step 4: Build `Leave/Approvals.jsx` supervisor/HR approval queue & update team leave calendar in `/calendar`**
-- [ ] **Step 5: Test leave submission, approval chain, and quota deduction**
+- [x] **Step 1: Write migrations for leave types and requests**
+- [x] **Step 2: Implement balance deduction and sequential approval (Supervisor -> HR)**
+- [x] **Step 3: Build `Leave/Index.jsx` employee leave request form with date range & medical note upload**
+- [x] **Step 4: Build `Leave/Approvals.jsx` supervisor/HR approval queue & update team leave calendar in `/calendar`**
+- [x] **Step 5: Test leave submission, approval chain, and quota deduction**
 
 ---
 
@@ -295,11 +296,11 @@ revan-laravel/
 * Create: `resources/js/pages/Claims/Reimbursement.jsx` (Route: `/claims/reimbursement` — submenu *Reimbursement*)
 * Create: `resources/js/pages/Claims/Visit.jsx` (Route: `/claims/visit` — submenu *Tugas Lapangan / Visit*)
 
-- [ ] **Step 1: Create migrations for reimbursements, SPKL overtime, and client visits**
-- [ ] **Step 2: Implement PP 35/2021 overtime formula in `OvertimeCalculatorService`**
-- [ ] **Step 3: Build `Claims/Overtime.jsx`, `Claims/Reimbursement.jsx` (receipt upload preview), & `Claims/Visit.jsx` (GPS geotagging + selfie)**
-- [ ] **Step 4: Build claim approval inbox and monthly recapitulation table**
-- [ ] **Step 5: Verify calculation of 1.5x and 2x overtime rates**
+- [x] **Step 1: Create migrations for reimbursements, SPKL overtime, and client visits**
+- [x] **Step 2: Implement PP 35/2021 overtime formula in `OvertimeCalculatorService`**
+- [x] **Step 3: Build `Claims/Overtime.jsx`, `Claims/Reimbursement.jsx` (receipt upload preview), & `Claims/Visit.jsx` (GPS geotagging + selfie)**
+- [x] **Step 4: Build claim approval inbox and monthly recapitulation table**
+- [x] **Step 5: Verify calculation of 1.5x and 2x overtime rates**
 
 ---
 

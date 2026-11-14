@@ -27,7 +27,6 @@ import {
   Trash2,
   MoreVertical,
   ArrowUpRight,
-  Sparkles,
   Calendar,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Holiday;
+use App\Models\LeaveRequest;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -24,8 +25,19 @@ class HolidayController extends Controller
             'company' => $holidays->where('type', 'company_holiday')->count(),
         ];
 
+        $companyId = session('active_company_id');
+        $teamLeaves = LeaveRequest::where('company_id', $companyId)
+            ->where('status', 'approved')
+            ->where(function ($q) use ($selectedYear) {
+                $q->whereYear('start_date', $selectedYear)
+                  ->orWhereYear('end_date', $selectedYear);
+            })
+            ->with(['employee.department', 'leaveType'])
+            ->get();
+
         return Inertia::render('Calendar/HolidayCalendar', [
             'holidays' => $holidays,
+            'teamLeaves' => $teamLeaves,
             'selectedYear' => $selectedYear,
             'stats' => $stats,
         ]);

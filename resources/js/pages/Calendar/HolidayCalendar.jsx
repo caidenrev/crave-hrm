@@ -76,7 +76,7 @@ const TYPE_CONFIG = {
   },
 };
 
-export default function HolidayCalendar({ holidays = [], selectedYear = 2026, stats = {} }) {
+export default function HolidayCalendar({ holidays = [], teamLeaves = [], selectedYear = 2026, stats = {} }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -674,6 +674,46 @@ export default function HolidayCalendar({ holidays = [], selectedYear = 2026, st
                   )}
                 </div>
               </div>
+            </div>
+
+            {/* Jadwal Cuti Rekan Tim Section */}
+            <div className="card-soft p-5">
+              <div className="flex items-center justify-between border-b pb-3 mb-4">
+                <div>
+                  <h3 className="font-extrabold text-foreground text-sm">Jadwal Cuti Rekan Tim ({teamLeaves.length})</h3>
+                  <p className="text-[11px] text-muted-foreground">
+                    Daftar cuti karyawan yang telah disetujui agar memudahkan koordinasi jadwal kerja antar divisi
+                  </p>
+                </div>
+                <Badge variant="outline" className="rounded-full text-[10px]">
+                  {teamLeaves.length} Anggota Cuti
+                </Badge>
+              </div>
+
+              {teamLeaves.length === 0 ? (
+                <div className="py-6 text-center text-xs text-muted-foreground">
+                  Tidak ada jadwal cuti rekan tim yang aktif pada periode ini.
+                </div>
+              ) : (
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {teamLeaves.map((tl) => (
+                    <div key={tl.id} className="rounded-xl border border-border/60 bg-muted/30 p-3 text-xs space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold text-foreground">{tl.employee?.nama_lengkap || "Karyawan"}</span>
+                        <Badge variant="secondary" className="rounded-full text-[10px]">
+                          {tl.leave_type?.name}
+                        </Badge>
+                      </div>
+                      <div className="text-[11px] text-muted-foreground">
+                        {tl.employee?.department?.name || "Operasional"} • {tl.total_days} Hari Kerja
+                      </div>
+                      <div className="text-[11px] font-medium text-foreground">
+                        {formatTanggal(tl.start_date)} s.d. {formatTanggal(tl.end_date)}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         ) : (

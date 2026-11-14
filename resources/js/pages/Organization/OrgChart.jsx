@@ -10,7 +10,6 @@ import {
   MapPin,
   Mail,
   Layers,
-  Sparkles,
   ArrowUpRight,
   Edit2,
   Plus,

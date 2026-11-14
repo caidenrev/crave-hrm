@@ -139,46 +139,46 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 * **PIC:** Eka Revandi (Service & Geofence) & Aufa (Kamera, Shift & UI)
 * **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`, `antislop-layoutmobile`
-* **Status:** `[ ] Pending`
-- [ ] Migrasi tabel `shifts` dan `attendances`
-- [ ] Implementasi `AttendanceService` (rumus Haversine radius kantor, IP whitelist kantor, kalkulasi menit keterlambatan)
-- [ ] Submenu **Presensi Harian** (`/attendance` -> `Attendance/CheckIn.jsx`) mobile-optimized dengan live GPS indicator & kamera selfie preview
-- [ ] Submenu **Jadwal & Shift** (`/attendance/shifts` -> `Attendance/Shifts.jsx`) untuk shift reguler, berputar, fleksibel, & tukar shift
-- [ ] Submenu **Rekap Kehadiran** (`/attendance/recap` -> `Attendance/Report.jsx`) dashboard HR monitoring harian dengan filter tanggal, cabang, dan shift
-- [ ] Uji validasi: Lolos di dalam radius geofence dan tolak otomatis jika di luar radius
+* **Status:** `[x] Selesai (14 Nov 2026)`
+- [x] Migrasi tabel `shifts` dan `attendances`
+- [x] Implementasi `AttendanceService` (rumus Haversine radius kantor, IP whitelist kantor, kalkulasi menit keterlambatan)
+- [x] Submenu **Presensi Harian** (`/attendance` -> `Attendance/CheckIn.jsx`) mobile-optimized dengan live GPS indicator & kamera selfie preview
+- [x] Submenu **Jadwal & Shift** (`/attendance/shifts` -> `Attendance/Shifts.jsx`) untuk shift reguler, berputar, fleksibel, & tukar shift
+- [x] Submenu **Rekap Kehadiran** (`/attendance/recap` -> `Attendance/Report.jsx`) dashboard HR monitoring harian dengan filter tanggal, cabang, dan shift
+- [x] Uji validasi: Lolos di dalam radius geofence dan tolak otomatis jika di luar radius (9 automated tests passed, 53 assertions)
 
 ### Task 8: Holiday & Leave Management
 * **Target Selesai:** 20 November 2026
 * **PIC:** Aufa
 * **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `frontend-ui-engineering`, `test-driven-development`
-* **Status:** `[ ] Pending`
-- [ ] Migrasi tabel `leave_types` dan `leave_requests`
-- [ ] Logika alokasi saldo cuti tahunan dan alur approval berjenjang (Karyawan -> Atasan Langsung -> HR)
-- [ ] Submenu **Cuti & Izin Saya** (`/leave` -> `Leave/Index.jsx`) form pengajuan cuti dengan date range picker & upload surat dokter
-- [ ] Submenu **Persetujuan Cuti** (`/leave/approvals` -> `Leave/Approvals.jsx`) antrean persetujuan / penolakan untuk atasan & HR
-- [ ] Integrasi visual cuti tim satu departemen pada submenu **Kalender & Libur** (`/calendar` -> `Calendar/HolidayCalendar.jsx`)
-- [ ] Uji potongan kuota cuti otomatis setelah persetujuan final
+* **Status:** `[x] Selesai (15 Nov 2026)`
+- [x] Migrasi tabel `leave_types`, `leave_balances`, dan `leave_requests`
+- [x] Logika alokasi saldo cuti tahunan dan alur approval berjenjang (Karyawan -> Atasan Langsung -> HR)
+- [x] Submenu **Cuti & Izin Saya** (`/leave` -> `Leave/Index.jsx`) form pengajuan cuti dengan date range picker & upload surat dokter
+- [x] Submenu **Persetujuan Cuti** (`/leave/approvals` -> `Leave/Approvals.jsx`) antrean persetujuan / penolakan untuk atasan & HR
+- [x] Integrasi visual cuti tim satu departemen pada submenu **Kalender & Libur** (`/calendar` -> `Calendar/HolidayCalendar.jsx`)
+- [x] Uji potongan kuota cuti otomatis setelah persetujuan final (9 automated tests passed, 39 assertions)
 
 ### Task 9: Reimbursement, Overtime PP 35/2021 & Visit Lapangan
 * **Target Selesai:** 21 November 2026
 * **PIC:** Aufa (Form & View) & Eka Revandi (Kalkulator Lembur)
 * **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `test-driven-development`, `frontend-ui-engineering`, `antislop-layoutmobile`
-* **Status:** `[ ] Pending`
-- [ ] Migrasi tabel `reimbursements`, `overtimes` (SPKL), dan `visits`
-- [ ] Implementasi formula lembur resmi Depnaker PP 35/2021 (pengali upah 1/173) di `OvertimeCalculatorService`
-- [ ] Submenu **Lembur (SPKL)** (`/claims/overtime` -> `Claims/Overtime.jsx`)
-- [ ] Submenu **Reimbursement** (`/claims/reimbursement` -> `Claims/Reimbursement.jsx`) dengan upload pratinjau struk/kuitansi
-- [ ] Submenu **Tugas Lapangan / Visit** (`/claims/visit` -> `Claims/Visit.jsx`) dengan geotagging GPS & swafoto di lokasi klien
-- [ ] Uji coba hitungan pengali lembur 1.5x dan 2x
+* **Status:** `[x] Selesai (15 Nov 2026)`
+- [x] Migrasi tabel `reimbursements`, `overtimes` (SPKL), dan `visits`
+- [x] Implementasi formula lembur resmi Depnaker PP 35/2021 (pengali upah 1/173) di `OvertimeCalculatorService`
+- [x] Submenu **Lembur (SPKL)** (`/claims/overtime` -> `Claims/Overtime.jsx`)
+- [x] Submenu **Reimbursement** (`/claims/reimbursement` -> `Claims/Reimbursement.jsx`) dengan upload pratinjau struk/kuitansi
+- [x] Submenu **Tugas Lapangan / Visit** (`/claims/visit` -> `Claims/Visit.jsx`) dengan geotagging GPS & swafoto di lokasi klien
+- [x] Uji coba hitungan pengali lembur 1.5x dan 2x (7 automated tests passed, 32 assertions, 100% Green)
 
 ### Task 10: Crave Canteen (Dynamic QR Code 60s & Merchant Scanner)
 * **Target Selesai:** 23 November 2026
 * **PIC:** Aufa
 * **Reviewer:** Eka Revandi
 * **Skill Rekomendasi:** `security-and-hardening`, `frontend-ui-engineering`, `antislop-layoutmobile`
-* **Status:** `[ ] Pending`
+* **Status:** `[>] Sedang Dikerjakan (In Progress)`
 - [ ] Migrasi tabel `canteen_vendors` dan `canteen_vouchers`
 - [ ] Implementasi generator QR Code token dinamis terenkripsi dengan TTL 60 detik (*one-time use*)
 - [ ] Submenu **Voucher QR Saya** (`/canteen` -> `Canteen/VoucherCard.jsx`) dengan animasi countdown timer
@@ -263,3 +263,7 @@ Berikut adalah skills terbaik yang terpasang di sistem dan siap diaktifkan sesua
 | **13 Nov 2026** | **UI/UX Audit & Crave POS Dashboard Alignment (Kalender & Pengumuman Internal):** (1) Penyelarasan total halaman `Calendar/HolidayCalendar.jsx` dengan widget Dasbor Crave POS (`crave-pos-dashboard/src/routes/dashboard.tsx`): 4 KPI Cards (1 Hero Blue + 3 White card-soft tanpa icon pelangi), layout 2:1 Chart Area Sebaran Bulanan & Donut Pie Komposisi Libur, layout 2-kolom Jadwal Terdekat (`bg-muted/50 p-3 rounded-xl` + date block) & Agenda Lengkap dengan search bar dan filter kategori, serta toggle `Widget Dasbor` vs `Grid 12 Bulan`, (2) Audit & perombakan halaman `Announcements/Index.jsx`: penambahan widget analitik 2:1 (AreaChart Aktivitas Penerbitan Informasi & PieChart Donut Komposisi Kategori), penggantian corner ribbon miring diagonal dengan PIN Badge resmi Shadcn (`<Badge variant="default">` + `size-2.5 fill-current`), normalisasi seluruh custom span pelangi ke standard Shadcn `<Badge>`, serta eliminasi `text-rose-500` ke `text-destructive`. Verifikasi build Vite 100% (3,072 modul dalam 3.17s) dan 14 test PHPUnit lulus (93 assertions). | - | `Selesai` |
 | **13 Nov 2026** | **UI/UX Audit & Modal Polish Cabang & Geofence (`Branches.jsx`):** (1) Perombakan modal form `Tambah/Edit Cabang`: eliminasi vertical overflow & scrollbar yang memotong close button via layout grid 3-kolom compact (Lat, Lng, Radius) dan grid 2-kolom (Whitelist IP & Switch Status Aktif), eliminasi warna `text-rose-500` ke `text-destructive`, (2) Penambahan widget analitik 2:1 Crave POS (BarChart Distribusi Staf per Cabang & PieChart Donut Kesiapan Geofence), (3) Normalisasi 4 KPI Cards (menghilangkan icon hijau/biru acak), serta penambahan live Search Bar & status filter tabs di toolbar atas. Build Vite sukses (3,072 modul dalam 2.68s) dan seluruh automated tests lulus 100%. | - | `Selesai` |
 | **13 Nov 2026** | **Dynamic Multi-Branch & Editable Org Chart (`OrgChart.jsx`):** (1) Implementasi filter cabang dinamis (*Setiap Cabang Beda-Beda*) via toolbar pill `Semua Cabang` dan cabang spesifik (`?branch_id=`), (2) Penambahan kapabilitas **Edit Penempatan & Jabatan Langsung** dari setiap card karyawan dalam hierarki (`PATCH /organization/chart/placement/{employee}`) lengkap dengan modal pemindahan departemen, jabatan level, dan kantor cabang, (3) Pembuatan modal **Tambah Departemen Baru** (`POST /organization/chart/departments`), (4) Pembersihan AI-slop pada 4 KPI Top Cards (semua icon netral dan selaras Crave POS). Vite build 100% (3,071 modul dalam 1.99s) dan 3 automated tests baru lulus (100% Green, total 17 tests lolos). | - | `Selesai` |
+| **14 Nov 2026** | **Task 7 Selesai (Smart Attendance GPS Geofence, IP, Kamera Selfie & Shift):** (1) Migrasi tabel `shifts`, `shift_swaps`, dan `attendances`, (2) `AttendanceService` (Haversine distance, IP whitelist fallback, kalkulasi keterlambatan & kepulangan cepat), (3) Halaman **Presensi Harian** (`Attendance/CheckIn.jsx`) dengan kamera selfie live & GPS radius indicator, (4) Halaman **Jadwal & Shift** (`Attendance/Shifts.jsx`) dengan master shift regular/fleksibel & permohonan tukar shift, (5) Halaman **Rekap Kehadiran** (`Attendance/Report.jsx`) dengan analitik 2:1 (AreaChart tren & Donut komposisi shift), filter cabang/shift/status, dan modal koreksi HR. Seluruh 28 automated tests lulus (166 assertions, 100% Green) & build Vite sukses tanpa error (3,074 modul dalam 11.8s). | - | `Selesai` |
+| **15 Nov 2026** | **Attendance Polish & Human-Readable Geocoding:** (1) Implementasi reverse geocoding otomatis (OpenStreetMap Nominatim + BigDataCloud fallback) pada halaman Presensi Harian (`CheckIn.jsx`): mengubah tampilan angka koordinat teknis mentah menjadi nama jalan, kelurahan, kecamatan, kota/kabupaten dan provinsi yang jelas dan ramah pengguna, (2) Pembuatan komponen interaktif `SlideButton.jsx` (Slide-to-Confirm) dengan fisika sentuh/tarik mouse dari warna biru menjadi hijau terkonfirmasi saat absen masuk, (3) Eliminasi total icon `Sparkle`/`Sparkles` di seluruh repositori (0 sisa), (4) Penyelarasan widget KPI Top Cards di seluruh submenu presensi sesuai standar `Dashboard.jsx`. Build Vite sukses (3,075 modul) & 28 PHPUnit tests lulus 100% (166 assertions). | - | `Selesai` |
+| **15 Nov 2026** | **Task 8 Selesai (Holiday & Leave Management):** (1) Migrasi tabel `leave_types`, `leave_balances`, dan `leave_requests`, (2) `LeaveService` (kalkulasi hari kerja skip weekend & libur nasional SKB 3 Menteri, validasi kuota cuti tahunan, pengecekan overlap, dan alur approval bertingkat Supervisor -> HR), (3) Halaman **Cuti & Izin Saya** (`Leave/Index.jsx`) lengkap dengan 4 Top KPI Cards, modal pengajuan cuti, estimasi hari kerja, dan upload surat keterangan dokter, (4) Halaman **Persetujuan Cuti** (`Leave/Approvals.jsx`) antrean approval berjenjang, modal alasan penolakan, pratinjau lampiran, dan auto-potong kuota cuti pada persetujuan final HR, (5) Integrasi jadwal cuti tim satu divisi di **Kalender & Libur** (`Calendar/HolidayCalendar.jsx`), (6) Penggantian Company Switcher menjadi minimalis anti-slop dengan monogram avatar. Seluruh 37 automated tests lulus (205 assertions, 100% Green) & build Vite sukses tanpa error (3,078 modul dalam 3.25s). | - | `Selesai` |
+| **15 Nov 2026** | **Task 9 Selesai (Reimbursement, Overtime PP 35/2021 & Visit Lapangan):** (1) Migrasi tabel `reimbursements`, `overtimes` (SPKL), dan `visits`, (2) Implementasi `OvertimeCalculatorService` sesuai rumus resmi PP 35/2021 (upah per jam = Gaji Pokok / 173; hari kerja jam 1 = 1.5x, jam 2+ = 2x; hari libur 8 jam pertama = 2x, jam 9 = 3x, jam 10+ = 4x), (3) Halaman **Lembur (SPKL)** (`Claims/Overtime.jsx`) dengan 4 KPI cards, live rate calculator preview, modal SPKL & alur approval, (4) Halaman **Reimbursement** (`Claims/Reimbursement.jsx`) dengan receipt upload preview modal & status pencairan (Disbursement), (5) Halaman **Tugas Lapangan / Visit** (`Claims/Visit.jsx`) dengan live GPS geotagging otomatis, kamera selfie live di modal & approval supervisor, (6) 7 PHPUnit tests lolos (32 assertions, zero tenant data leakage via `BelongsToCompany`), total 44 tests lolos 100% Green. | - | `Selesai` |

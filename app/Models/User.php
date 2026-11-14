@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -36,6 +38,21 @@ class User extends Authenticatable
         return $this->belongsToMany(Company::class, 'company_user')
             ->withPivot(['role', 'branch_id', 'is_primary'])
             ->withTimestamps();
+    }
+
+    public function employees(): HasMany
+    {
+        return $this->hasMany(Employee::class);
+    }
+
+    public function currentEmployee(): ?Employee
+    {
+        $activeCompanyId = session('active_company_id') ?? $this->currentCompany()?->id;
+        if (!$activeCompanyId) {
+            return null;
+        }
+
+        return $this->employees()->where('company_id', $activeCompanyId)->first();
     }
 
     public function currentCompany(): ?Company
