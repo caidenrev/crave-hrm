@@ -101,4 +101,14 @@ class Employee extends Model
     {
         return $this->hasMany(CanteenVoucher::class);
     }
+
+    public function getNameAttribute(): ?string
+    {
+        return $this->nama_lengkap;
+    }
+
+    public function getAvatarAttribute(): ?string
+    {
+        return $this->avatar_url;
+    }
 }

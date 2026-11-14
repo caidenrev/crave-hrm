@@ -318,11 +318,11 @@ revan-laravel/
 * Create: `resources/js/pages/Canteen/Scanner.jsx` (Route: `/canteen/scanner` — submenu *Scanner Merchant*: kamera kasir kantin)
 * Create: `resources/js/pages/Canteen/Reports.jsx` (Route: `/canteen/settlement` — submenu *Rekonsiliasi Vendor*: tagihan vendor katering)
 
-- [ ] **Step 1: Write migrations for canteen vendors and voucher transactions**
-- [ ] **Step 2: Implement encrypted token generator (60s TTL) and one-time redemption check**
-- [ ] **Step 3: Build `VoucherCard.jsx` employee voucher card with live animated countdown (`/canteen`)**
-- [ ] **Step 4: Build `Scanner.jsx` merchant scanner (`/canteen/scanner`) & `Reports.jsx` vendor settlement (`/canteen/settlement`)**
-- [ ] **Step 5: Checkpoint Sprint 2 Review & UAT Demo bersama PM (Egi Witra)**
+- [x] **Step 1: Write migrations for canteen vendors and voucher transactions**
+- [x] **Step 2: Implement encrypted token generator (60s TTL) and one-time redemption check**
+- [x] **Step 3: Build `VoucherCard.jsx` employee voucher card with live animated countdown (`/canteen`)**
+- [x] **Step 4: Build `Scanner.jsx` merchant scanner (`/canteen/scanner`) & `Reports.jsx` vendor settlement (`/canteen/settlement`)**
+- [x] **Step 5: Checkpoint Sprint 2 Review & UAT Demo bersama PM (Egi Witra)**
 
 ---
 

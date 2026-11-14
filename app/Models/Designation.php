@@ -34,4 +34,9 @@ class Designation extends Model
     {
         return $this->hasMany(Employee::class);
     }
+
+    public function getNameAttribute(): ?string
+    {
+        return $this->title;
+    }
 }

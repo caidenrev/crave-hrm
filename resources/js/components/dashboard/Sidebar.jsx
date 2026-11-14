@@ -183,7 +183,9 @@ export function Sidebar({ collapsed, setCollapsed }) {
           >
             <div className="overflow-hidden">
               <div className="ml-5 space-y-1 border-l pl-3 pt-1">
-                {item.children.map((child, i) => {
+                {item.children
+                  .filter((child) => !child.roles || child.roles.includes(props.auth?.role || "super_admin"))
+                  .map((child, i) => {
                   const ChildIcon = child.icon;
                   const childActive = currentPath === child.href;
                   return (

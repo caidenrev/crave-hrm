@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\CanteenController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClaimController;
@@ -77,6 +78,22 @@ Route::prefix('claims')->name('claims.')->group(function () {
     Route::get('/visit', [ClaimController::class, 'visitIndex'])->name('visit.index');
     Route::post('/visit', [ClaimController::class, 'storeVisit'])->name('visit.store');
     Route::post('/visit/{visit}/verify', [ClaimController::class, 'verifyVisit'])->name('visit.verify');
+});
+
+// Crave Canteen (Dynamic QR 60s & Merchant Scanner)
+Route::prefix('canteen')->name('canteen.')->group(function () {
+    Route::get('/', [CanteenController::class, 'index'])->name('index');
+    Route::post('/refresh-token', [CanteenController::class, 'refreshToken'])->name('refresh-token');
+
+    // Merchant Scanner
+    Route::get('/scanner', [CanteenController::class, 'scanner'])->name('scanner');
+    Route::post('/redeem', [CanteenController::class, 'redeem'])->name('redeem');
+
+    // Vendor Reconciliation / Settlement
+    Route::get('/settlement', [CanteenController::class, 'settlement'])->name('settlement');
+    Route::post('/vendors', [CanteenController::class, 'storeVendor'])->name('vendors.store');
+    Route::put('/vendors/{vendor}', [CanteenController::class, 'updateVendor'])->name('vendors.update');
+    Route::delete('/vendors/{vendor}', [CanteenController::class, 'destroyVendor'])->name('vendors.destroy');
 });
 
 // Smart Attendance System (GPS Geofence + IP + Selfie + Shifts)

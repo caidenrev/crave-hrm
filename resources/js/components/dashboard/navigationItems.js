@@ -64,8 +64,18 @@ export const MENU_OPERASIONAL = [
     icon: UtensilsCrossed,
     children: [
       { label: "Voucher QR Saya", href: "/canteen", icon: QrCode },
-      { label: "Scanner Merchant", href: "/canteen/scanner", icon: ScanBarcode },
-      { label: "Rekonsiliasi Vendor", href: "/canteen/settlement", icon: FileSpreadsheet },
+      {
+        label: "Scanner Merchant",
+        href: "/canteen/scanner",
+        icon: ScanBarcode,
+        roles: ["super_admin", "company_admin", "hr_admin", "supervisor", "merchant"],
+      },
+      {
+        label: "Rekonsiliasi Vendor",
+        href: "/canteen/settlement",
+        icon: FileSpreadsheet,
+        roles: ["super_admin", "company_admin", "hr_admin"],
+      },
     ],
   },
   {

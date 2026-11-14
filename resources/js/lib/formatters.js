@@ -68,3 +68,5 @@ export function getInitials(name) {
   }
   return (parts[0][0] + parts[1][0]).toUpperCase();
 }
+
+export const formatTanggalId = formatTanggal;
