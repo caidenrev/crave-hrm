@@ -113,7 +113,7 @@ function DialogContent({
         data-slot="dialog-content"
         className={cn(
           // Base & Desktop Centered Modal
-          "fixed top-[50%] left-[50%] z-[10001] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none sm:max-w-lg",
+          "fixed top-1/2 left-1/2 z-[10001] grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none sm:max-w-lg",
           className,
           // Mobile Bottom Sheet Mode (< 640px) matching Gambar 2
           "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:max-w-none max-sm:rounded-t-[28px] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:border-t max-sm:max-h-[88vh] max-sm:overflow-y-auto max-sm:p-5 max-sm:pb-8"
