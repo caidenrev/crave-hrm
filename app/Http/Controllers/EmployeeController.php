@@ -174,6 +174,14 @@ class EmployeeController extends Controller
 
     public function destroy(Employee $employee)
     {
+        // If employee was converted from recruitment, sync candidate status
+        \App\Models\Candidate::withoutGlobalScopes()
+            ->where('employee_id', $employee->id)
+            ->update([
+                'is_converted_to_employee' => false,
+                'employee_id' => null,
+            ]);
+
         $employee->delete();
 
         return back()->with('success', 'Data karyawan berhasil dihapus.');

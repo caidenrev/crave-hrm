@@ -371,11 +371,11 @@ revan-laravel/
 * Create: `resources/js/pages/Recruitment/KanbanBoard.jsx` (Drag-and-drop / stage pipeline)
 * Create: `resources/js/pages/Recruitment/CandidateDetail.jsx` (Scorecard & e-offering)
 
-- [ ] **Step 1: Write migrations for job vacancies and applicant stages**
-- [ ] **Step 2: Build public career portal page (accessible without login)**
-- [ ] **Step 3: Build ATS Kanban Board with stages (Applied, Screening, Interview, Offering, Hired)**
-- [ ] **Step 4: Implement "Convert to Employee" button transferring hired candidate to employees table**
-- [ ] **Step 5: Test candidate application, stage transition, and employee onboarding**
+- [x] **Step 1: Write migrations for job vacancies and applicant stages**
+- [x] **Step 2: Build public career portal page (accessible without login)**
+- [x] **Step 3: Build ATS Kanban Board with stages (Applied, Screening, Interview, Offering, Hired)**
+- [x] **Step 4: Implement "Convert to Employee" button transferring hired candidate to employees table**
+- [x] **Step 5: Test candidate application, stage transition, and employee onboarding**
 
 ---
 

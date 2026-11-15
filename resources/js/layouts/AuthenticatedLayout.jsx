@@ -3,6 +3,7 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { MobileBottomNav } from "@/components/dashboard/MobileBottomNav";
 import { MobileMenuDrawer } from "@/components/dashboard/MobileMenuDrawer";
+import { ToastNotification } from "@/components/ui/ToastNotification";
 import { cn } from "@/lib/utils";
 
 export default function AuthenticatedLayout({
@@ -16,6 +17,9 @@ export default function AuthenticatedLayout({
 
   return (
     <div className="min-h-screen w-full bg-background">
+      {/* Global Toast Notification System */}
+      <ToastNotification />
+
       {/* Desktop SideNav */}
       <Sidebar collapsed={collapsed} setCollapsed={setCollapsed} />
 
