@@ -16,7 +16,7 @@ export function ViewToggle({ view = "card", onViewChange, className = "" }) {
         type="button"
         onClick={() => onViewChange("card")}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all",
+          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold cursor-pointer transition-all",
           view === "card"
             ? "bg-card text-foreground shadow-soft font-bold"
             : "text-muted-foreground hover:text-foreground"
@@ -32,7 +32,7 @@ export function ViewToggle({ view = "card", onViewChange, className = "" }) {
         type="button"
         onClick={() => onViewChange("list")}
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold transition-all",
+          "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold cursor-pointer transition-all",
           view === "list"
             ? "bg-card text-foreground shadow-soft font-bold"
             : "text-muted-foreground hover:text-foreground"

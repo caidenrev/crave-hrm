@@ -36,7 +36,7 @@ export function MobileBottomNav({ onOpenMobileMenu }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all",
+                "flex flex-col items-center justify-center py-1 px-2.5 rounded-xl cursor-pointer transition-all",
                 isActive
                   ? "text-primary font-bold scale-105"
                   : "text-muted-foreground hover:text-foreground"
@@ -55,7 +55,7 @@ export function MobileBottomNav({ onOpenMobileMenu }) {
           type="button"
           onClick={onOpenMobileMenu}
           className={cn(
-            "flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all",
+            "flex flex-col items-center justify-center py-1 px-2.5 rounded-xl cursor-pointer transition-all",
             isMenuPageActive
               ? "text-primary font-bold scale-105"
               : "text-muted-foreground hover:text-foreground"

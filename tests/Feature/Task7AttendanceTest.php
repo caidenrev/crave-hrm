@@ -195,7 +195,7 @@ class Task7AttendanceTest extends TestCase
             'branch_id' => $this->branchA->id,
             'shift_id' => $this->shiftPagi->id,
             'date' => $today,
-            'clock_in_time' => '08:00:00',
+            'clock_in_time' => now()->subHours(2)->format('H:i:s'),
             'clock_in_lat' => -6.175392,
             'clock_in_lng' => 106.827153,
             'status' => 'present',
@@ -325,7 +325,7 @@ class Task7AttendanceTest extends TestCase
             'company_id' => $this->companyA->id,
             'employee_id' => $this->employeeA->id,
             'date' => Carbon::today()->format('Y-m-d'),
-            'clock_in_time' => '08:00:00',
+            'clock_in_time' => now()->subHours(2)->format('H:i:s'),
             'status' => 'present',
             'geofence_status' => 'valid_geofence',
         ]);

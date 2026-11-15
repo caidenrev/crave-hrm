@@ -70,7 +70,7 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
 
   const itemClass = (active) =>
     cn(
-      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
+      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold cursor-pointer transition-colors",
       active
         ? "bg-primary text-primary-foreground shadow-soft"
         : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
@@ -277,7 +277,7 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
               type="button"
               onClick={() => toggleTheme(false)}
               className={cn(
-                "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all",
+                "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold cursor-pointer transition-all",
                 !isDark ? "bg-card shadow-soft text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -287,7 +287,7 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
               type="button"
               onClick={() => toggleTheme(true)}
               className={cn(
-                "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all",
+                "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold cursor-pointer transition-all",
                 isDark ? "bg-card shadow-soft text-foreground" : "text-muted-foreground hover:text-foreground"
               )}
             >
@@ -298,7 +298,7 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
           {/* User Profile Info */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-2 rounded-2xl border bg-card p-2 shadow-soft outline-none hover:bg-accent transition-colors">
+              <button className="flex w-full items-center gap-2 rounded-2xl border bg-card p-2 shadow-soft outline-none hover:bg-accent cursor-pointer transition-colors">
                 <div className="size-8 rounded-full overflow-hidden shrink-0 border border-border bg-muted shadow-2xs">
                   <img
                     src="/profile-logo.jpeg"

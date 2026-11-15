@@ -347,13 +347,13 @@ revan-laravel/
 * Create: `resources/js/pages/Payroll/Export.jsx` (Route: `/payroll/export` — submenu *Ekspor Bank & Rekap*: download batch BCA/Mandiri/BRI/BNI & Excel)
 * Create: `resources/js/pages/Payroll/PayslipModal.jsx` (Modal pratinjau slip gaji)
 
-- [ ] **Step 1: Write migrations for payroll runs and payroll items**
-- [ ] **Step 2: Implement `Pph21TerCalculator` based on official 2024 monthly TER tables**
-- [ ] **Step 3: Implement `BpjsCalculator` with employer & employee split rates**
-- [ ] **Step 4: Build `Payroll/Index.jsx` automated payroll batch generation runner (`/payroll`)**
-- [ ] **Step 5: Build `Payroll/Slips.jsx` & `PayslipModal.jsx` PDF generation via DomPDF with company letterhead (`/payroll/slips`)**
-- [ ] **Step 6: Build `Payroll/Export.jsx` & `BankExportService` generating downloadable CSV/TXT for BCA, Mandiri, BRI, BNI (`/payroll/export`)**
-- [ ] **Step 7: Verify payroll calculation matches manual tax & BPJS benchmark**
+- [x] **Step 1: Write migrations for payroll runs and payroll items**
+- [x] **Step 2: Implement `Pph21TerCalculator` based on official 2024 monthly TER tables**
+- [x] **Step 3: Implement `BpjsCalculator` with employer & employee split rates**
+- [x] **Step 4: Build `Payroll/Index.jsx` automated payroll batch generation runner (`/payroll`)**
+- [x] **Step 5: Build `Payroll/Slips.jsx` & `PayslipModal.jsx` PDF generation via DomPDF with company letterhead (`/payroll/slips`)**
+- [x] **Step 6: Build `Payroll/Export.jsx` & `BankExportService` generating downloadable CSV/TXT for BCA, Mandiri, BRI, BNI (`/payroll/export`)**
+- [x] **Step 7: Verify payroll calculation matches manual tax & BPJS benchmark**
 
 ---
 

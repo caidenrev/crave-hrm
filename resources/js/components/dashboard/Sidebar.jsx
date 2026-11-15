@@ -108,7 +108,7 @@ export function Sidebar({ collapsed, setCollapsed }) {
 
   const itemClass = (active) =>
     cn(
-      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
+      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold cursor-pointer transition-colors",
       collapsed && "justify-center px-0",
       active
         ? "bg-primary text-primary-foreground shadow-soft"
@@ -364,7 +364,7 @@ export function Sidebar({ collapsed, setCollapsed }) {
                   type="button"
                   onClick={() => toggleTheme(false)}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all",
+                    "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold cursor-pointer transition-all",
                     !isDark ? "bg-card shadow-soft text-foreground" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -374,7 +374,7 @@ export function Sidebar({ collapsed, setCollapsed }) {
                   type="button"
                   onClick={() => toggleTheme(true)}
                   className={cn(
-                    "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all",
+                    "flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-bold cursor-pointer transition-all",
                     isDark ? "bg-card shadow-soft text-foreground" : "text-muted-foreground hover:text-foreground"
                   )}
                 >
@@ -387,7 +387,7 @@ export function Sidebar({ collapsed, setCollapsed }) {
               <DropdownMenuTrigger asChild>
                 <button
                   className={cn(
-                    "flex w-full items-center gap-2 rounded-2xl border bg-card p-2 shadow-soft outline-none hover:bg-accent transition-colors",
+                    "flex w-full items-center gap-2 rounded-2xl border bg-card p-2 shadow-soft outline-none hover:bg-accent cursor-pointer transition-colors",
                     collapsed &&
                       "justify-center border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
                   )}

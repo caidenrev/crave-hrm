@@ -10,6 +10,7 @@ use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\PayrollController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -116,6 +117,22 @@ Route::prefix('attendance')->name('attendance.')->group(function () {
     // Daily Recap & HR Monitoring
     Route::get('/recap', [AttendanceController::class, 'recap'])->name('recap');
     Route::patch('/recap/{attendance}/correct', [AttendanceController::class, 'correctAttendance'])->name('recap.correct');
+});
+
+// Payroll Management (PPh 21 TER 2024, BPJS, Slips & Bank Batch)
+Route::prefix('payroll')->name('payroll.')->group(function () {
+    Route::get('/', [PayrollController::class, 'index'])->name('index');
+    Route::post('/run', [PayrollController::class, 'runPayroll'])->name('run');
+    Route::patch('/{period}/finalize', [PayrollController::class, 'finalize'])->name('finalize');
+
+    // Payslips
+    Route::get('/slips', [PayrollController::class, 'slips'])->name('slips');
+    Route::get('/slips/{item}/print', [PayrollController::class, 'printSlip'])->name('slips.print');
+
+    // Bank Batch & Master Recap Export
+    Route::get('/export', [PayrollController::class, 'export'])->name('export');
+    Route::post('/export/bank', [PayrollController::class, 'exportBank'])->name('export.bank');
+    Route::post('/export/excel', [PayrollController::class, 'exportExcel'])->name('export.excel');
 });
 
 // Organization, Branches, Chart & RBAC Matrix

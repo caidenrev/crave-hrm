@@ -236,7 +236,7 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
-                className="size-9 rounded-xl border border-border/70 bg-card p-0.5 shadow-soft hover:bg-accent hover:border-primary/40 outline-none transition-all flex items-center justify-center shrink-0"
+                className="size-9 rounded-xl border border-border/70 bg-card p-0.5 shadow-soft hover:bg-accent hover:border-primary/40 outline-none transition-all flex items-center justify-center shrink-0 cursor-pointer"
                 aria-label="Menu Pengguna"
               >
                 <div className="size-full rounded-lg overflow-hidden shrink-0 border border-border/40 bg-muted">

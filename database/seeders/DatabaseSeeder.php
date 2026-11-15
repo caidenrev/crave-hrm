@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ShiftSeeder::class,
             LeaveTypeSeeder::class,
             CanteenSeeder::class,
+            PayrollSeeder::class,
         ]);
     }
 }

@@ -406,7 +406,7 @@ class CanteenController extends Controller
         $totalExpenditure = (float) $vouchersInMonth->sum('nominal_value');
         $activeVendorsCount = $vendors->where('status', 'active')->count();
 
-        $totalEmployees = Employee::where('company_id', $companyId)->where('status', 'active')->count();
+        $totalEmployees = Employee::where('company_id', $companyId)->where('is_active', true)->count();
         $uniqueEmployeesWhoAte = $vouchersInMonth->pluck('employee_id')->unique()->count();
         $utilizationRate = $totalEmployees > 0 ? round(($uniqueEmployeesWhoAte / $totalEmployees) * 100, 1) : 0;
 
@@ -478,9 +478,9 @@ class CanteenController extends Controller
             'redeemed_at' => $v->redeemed_at ? $v->redeemed_at->format('d/m/Y H:i') : null,
             'vendor_name' => $v->vendor?->name ?? '-',
             'employee' => [
-                'name' => $v->employee->name,
-                'nik' => $v->employee->nik,
-                'department' => $v->employee->department?->name ?? '-',
+                'name' => $v->employee?->nama_lengkap ?? $v->employee?->name ?? '-',
+                'nik' => $v->employee?->nik ?? '-',
+                'department' => $v->employee?->department?->name ?? '-',
             ],
         ]);
 

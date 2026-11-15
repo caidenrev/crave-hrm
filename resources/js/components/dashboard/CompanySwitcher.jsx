@@ -39,7 +39,7 @@ export function CompanySwitcher({ collapsed = false }) {
           type="button"
           aria-label="Pilih entitas perusahaan atau cabang"
           className={cn(
-            "group flex w-full items-center justify-between gap-2.5 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/60 hover:border-border text-foreground transition-all duration-150 text-left outline-none focus-visible:ring-1 focus-visible:ring-ring select-none",
+            "group flex w-full items-center justify-between gap-2.5 rounded-xl border border-border/50 bg-background/50 hover:bg-muted/60 hover:border-border text-foreground transition-all duration-150 text-left outline-none focus-visible:ring-1 focus-visible:ring-ring select-none cursor-pointer",
             collapsed ? "p-1.5 justify-center" : "px-2.5 py-2"
           )}
         >
