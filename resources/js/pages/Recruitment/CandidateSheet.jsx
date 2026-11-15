@@ -528,7 +528,7 @@ export function CandidateSheet({
                       value={offeredSalary}
                       onChange={(e) => setOfferedSalary(e.target.value)}
                       placeholder="Contoh: 18000000"
-                      className="rounded-xl h-9 text-xs font-mono font-bold"
+                      className="rounded-xl h-9 text-xs font-bold"
                     />
                   </div>
 

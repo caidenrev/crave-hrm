@@ -285,7 +285,7 @@ export default function PublicPortal({
                   </div>
 
                   {job.show_salary && (job.min_salary || job.max_salary) && (
-                    <div className="mt-3 text-xs font-mono font-bold text-primary">
+                    <div className="mt-3 text-xs font-bold text-primary">
                       {job.min_salary && job.max_salary
                         ? `${formatRupiah(job.min_salary)} – ${formatRupiah(job.max_salary)} / bln`
                         : formatRupiah(job.min_salary || job.max_salary)}

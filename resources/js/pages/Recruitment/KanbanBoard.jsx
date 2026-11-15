@@ -440,7 +440,7 @@ export default function KanbanBoard({
                                   <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                                     <CheckCircle2 className="size-3" /> Resmi Karyawan
                                   </span>
-                                  <span className="text-[10px] text-muted-foreground font-mono">
+                                  <span className="text-[10px] text-muted-foreground font-semibold">
                                     {candidate.employee?.nik || "Active"}
                                   </span>
                                 </div>
@@ -459,7 +459,7 @@ export default function KanbanBoard({
                                 </div>
                               ) : (
                                 <>
-                                  <span className="text-[10px] text-muted-foreground font-mono">
+                                  <span className="text-[10px] text-muted-foreground font-medium">
                                     {candidate.source}
                                   </span>
 
@@ -548,7 +548,7 @@ export default function KanbanBoard({
                           <div className="font-extrabold text-xs text-foreground">
                             {job.title}
                           </div>
-                          <div className="text-[11px] text-muted-foreground font-mono">
+                          <div className="text-[11px] text-muted-foreground font-medium">
                             {job.employment_type} &bull; {job.experience_level}
                           </div>
                         </TableCell>
