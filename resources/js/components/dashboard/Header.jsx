@@ -9,7 +9,6 @@ import {
   LogOut,
   AlertTriangle,
   Receipt,
-  Menu,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -81,18 +80,8 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
   return (
     <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur">
       <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-2.5 px-3 py-2.5 sm:gap-4 sm:px-6 sm:py-3">
-        {/* Title & Subtitle + Mobile Hamburger */}
-        <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2.5 pr-1 sm:pr-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onOpenMobileMenu}
-            className="size-8 rounded-xl text-muted-foreground hover:text-foreground lg:hidden shrink-0 -ml-1"
-            aria-label="Buka Menu Navigasi"
-          >
-            <Menu className="size-4.5" />
-          </Button>
-
+        {/* Title & Subtitle */}
+        <div className="flex min-w-0 flex-1 items-center pr-1 sm:pr-2">
           <div className="min-w-0 flex-1">
             <h1 className="text-base font-extrabold tracking-tight sm:text-xl text-foreground truncate">
               {title}
