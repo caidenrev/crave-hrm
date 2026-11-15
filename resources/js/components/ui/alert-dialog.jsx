@@ -100,6 +100,8 @@ function MobileDragHandle({ onClose }) {
 function AlertDialogContent({
   className,
   size = "default",
+  style,
+  onOpenAutoFocus,
   children,
   ...props
 }) {
@@ -109,16 +111,21 @@ function AlertDialogContent({
       <AlertDialogPrimitive.Content
         data-slot="alert-dialog-content"
         data-size={size}
+        onOpenAutoFocus={onOpenAutoFocus || ((e) => e.preventDefault())}
         className={cn(
-          // Base & Desktop Centered Modal
-          "group/alert-dialog-content fixed top-[50%] left-[50%] z-[10001] grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-lg",
-          className,
-          // Mobile Bottom Sheet Mode (< 640px) matching Gambar 2
-          "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:max-w-none max-sm:rounded-t-[28px] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:border-t max-sm:max-h-[88vh] max-sm:overflow-y-auto max-sm:p-5 max-sm:pb-8"
+          "group/alert-dialog-content fixed z-[10001] grid w-full max-w-[calc(100%-2rem)] rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-lg",
+          className
         )}
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          margin: 0,
+          ...style,
+        }}
         {...props}
       >
-        {/* Interactive Mobile Pull / Drag Down to Dismiss Handle */}
         <MobileDragHandle onClose={() => {
           const cancelBtn = document.querySelector('[data-slot="alert-dialog-cancel"]');
           cancelBtn?.click();

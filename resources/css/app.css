@@ -277,7 +277,7 @@
 }
 
 /* Mobile Bottom Sheet Animation (< 640px) */
-@media not all and (width >= 40rem) {
+@media (max-width: 639.98px) {
   [data-slot="dialog-content"][data-state="open"],
   [data-slot="alert-dialog-content"][data-state="open"] {
     animation: sheetSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -292,7 +292,18 @@
 }
 
 /* Desktop Centered Modal Animation (>= 640px) */
-@media (width >= 40rem) {
+@media (min-width: 640px) {
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    bottom: auto !important;
+    right: auto !important;
+    transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
+  }
+
   [data-slot="dialog-content"][data-state="open"],
   [data-slot="alert-dialog-content"][data-state="open"] {
     animation: modalScaleIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;

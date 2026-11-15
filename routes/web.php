@@ -2,21 +2,31 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CanteenController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\RecruitmentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Dashboard');
-})->name('dashboard');
+// Authentication Routes (Crave POS Guest Layout)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
+});
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::post('/company/switch', [CompanyController::class, 'switchCompany'])->name('company.switch');
 
@@ -142,6 +152,7 @@ Route::prefix('organization')->name('organization.')->group(function () {
     Route::patch('/chart/placement/{employee}', [OrganizationController::class, 'updatePlacement'])->name('chart.placement');
     Route::post('/chart/departments', [OrganizationController::class, 'storeDepartment'])->name('chart.departments.store');
     Route::get('/rbac-matrix', [OrganizationController::class, 'rbacMatrix'])->name('rbac-matrix');
+    Route::post('/rbac-matrix', [OrganizationController::class, 'updateRbacMatrix'])->name('rbac-matrix.update');
 
     // Branches & Geofence
     Route::prefix('branches')->name('branches.')->group(function () {
@@ -152,5 +163,25 @@ Route::prefix('organization')->name('organization.')->group(function () {
         Route::delete('/{branch}', [BranchController::class, 'destroy'])->name('destroy');
     });
 });
+
+// Public Career Portal (Guest / Tanpa Login)
+Route::get('/careers', [RecruitmentController::class, 'publicPortal'])->name('careers.index');
+Route::get('/careers/{companySlug}', [RecruitmentController::class, 'publicPortal'])->name('careers.company');
+Route::post('/careers/apply/{jobSlug}', [RecruitmentController::class, 'publicApply'])->name('careers.apply');
+
+// Crave E-Recruitment & ATS Kanban (Admin)
+Route::prefix('recruitment')->name('recruitment.')->group(function () {
+    Route::get('/', [RecruitmentController::class, 'index'])->name('index');
+    Route::post('/jobs', [RecruitmentController::class, 'storeJob'])->name('jobs.store');
+    Route::put('/jobs/{job}', [RecruitmentController::class, 'updateJob'])->name('jobs.update');
+    Route::delete('/jobs/{job}', [RecruitmentController::class, 'destroyJob'])->name('jobs.destroy');
+    Route::patch('/candidates/{candidate}/stage', [RecruitmentController::class, 'updateStage'])->name('candidates.stage');
+    Route::patch('/candidates/{candidate}/scorecard', [RecruitmentController::class, 'updateScorecard'])->name('candidates.scorecard');
+    Route::post('/candidates/{candidate}/schedule', [RecruitmentController::class, 'scheduleInterview'])->name('candidates.schedule');
+    Route::post('/candidates/{candidate}/convert', [RecruitmentController::class, 'convertToEmployee'])->name('candidates.convert');
+    Route::get('/candidates/{candidate}/offering', [RecruitmentController::class, 'offeringLetter'])->name('candidates.offering');
+    Route::delete('/candidates/{candidate}', [RecruitmentController::class, 'destroyCandidate'])->name('candidates.destroy');
+});
+
 
 
