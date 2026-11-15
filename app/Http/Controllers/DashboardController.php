@@ -101,7 +101,7 @@ class DashboardController extends Controller
             ->latest('id')
             ->first();
         $estimatedPayroll = $latestPayrollPeriod
-            ? (float) PayrollItem::where('payroll_period_id', $latestPayrollPeriod->id)->sum('gaji_bersih')
+            ? (float) PayrollItem::where('payroll_period_id', $latestPayrollPeriod->id)->sum('take_home_pay')
             : (float) Employee::where('company_id', $companyId)->where('is_active', true)->sum('gaji_pokok');
 
         // Weekly Attendance Breakdown (Past 7 Days)

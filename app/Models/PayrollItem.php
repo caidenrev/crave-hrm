@@ -77,6 +77,16 @@ class PayrollItem extends Model
         return $this->belongsTo(PayrollPeriod::class, 'payroll_period_id');
     }
 
+    public function payrollPeriod(): BelongsTo
+    {
+        return $this->belongsTo(PayrollPeriod::class, 'payroll_period_id');
+    }
+
+    public function getGajiBersihAttribute()
+    {
+        return $this->take_home_pay;
+    }
+
     public function employee(): BelongsTo
     {
         return $this->belongsTo(Employee::class);

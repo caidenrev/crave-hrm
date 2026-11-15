@@ -130,8 +130,8 @@ export default function Dashboard({
     },
     {
       label: "Slip Gaji Terakhir",
-      value: empPayslip ? formatRupiah(empPayslip.gaji_bersih) : "Tersedia",
-      delta: empPayslip?.payroll_period?.name || "Bulan Lalu",
+      value: empPayslip ? formatRupiah(empPayslip.take_home_pay || empPayslip.gaji_bersih || 0) : "Tersedia",
+      delta: empPayslip?.payroll_period?.name || empPayslip?.period?.name || "Bulan Lalu",
       up: true,
       icon: Receipt,
       href: "/payroll/slips",
