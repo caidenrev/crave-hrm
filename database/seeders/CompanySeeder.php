@@ -109,12 +109,14 @@ class CompanySeeder extends Seeder
         $eka->companies()->attach($sub1->id, ['role' => 'company_admin', 'branch_id' => $branchJakarta->id, 'is_primary' => false]);
         $eka->companies()->attach($sub2->id, ['role' => 'company_admin', 'is_primary' => false]);
 
-        // Egi has holding_admin access
+        // Egi has holding_admin access in Holding and company_admin in subsidiaries
         $egi->companies()->attach($holding->id, ['role' => 'holding_admin', 'is_primary' => true]);
         $egi->companies()->attach($sub1->id, ['role' => 'company_admin', 'is_primary' => false]);
+        $egi->companies()->attach($sub2->id, ['role' => 'company_admin', 'is_primary' => false]);
 
-        // Aufa has holding_admin access in Holding and company_admin in Sub1
+        // Aufa has holding_admin access in Holding and company_admin in subsidiaries
         $aufa->companies()->attach($holding->id, ['role' => 'holding_admin', 'is_primary' => true]);
         $aufa->companies()->attach($sub1->id, ['role' => 'company_admin', 'branch_id' => $branchJakarta->id, 'is_primary' => false]);
+        $aufa->companies()->attach($sub2->id, ['role' => 'company_admin', 'is_primary' => false]);
     }
 }

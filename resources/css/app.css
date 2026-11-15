@@ -295,9 +295,13 @@
 @media (min-width: 640px) {
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"] {
+    position: fixed !important;
     top: 50% !important;
     left: 50% !important;
+    bottom: auto !important;
+    right: auto !important;
     transform: translate(-50%, -50%) !important;
+    margin: 0 !important;
   }
 
   [data-slot="dialog-content"][data-state="open"],
