@@ -169,115 +169,116 @@ export default function KanbanBoard({
       title="Crave E-Recruitment"
       subtitle="Kelola rekrutmen talenta, portal karir publik, pipeline ATS, dan onboarding karyawan baru"
       actions={
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => window.open(`/careers/${companySlug}`, "_blank")}
-            className="rounded-xl text-xs font-semibold h-9 gap-1.5 shadow-soft"
+            className="hidden sm:inline-flex rounded-xl text-xs font-semibold h-8 sm:h-9 gap-1.5 shadow-soft"
           >
             <ExternalLink className="size-3.5 text-primary" />
-            <span className="hidden sm:inline">Lihat</span> Portal Karir
+            <span>Lihat Portal Karir</span>
           </Button>
 
           <Button
             size="sm"
             onClick={handleCreateJob}
-            className="rounded-xl text-xs font-bold h-9 bg-primary text-primary-foreground gap-1.5 shadow-soft"
+            className="rounded-xl text-xs font-bold h-8 sm:h-9 bg-primary text-primary-foreground gap-1.5 shadow-soft px-2.5 sm:px-3"
           >
-            <Plus className="size-4" />
-            <span>Tambah Lowongan</span>
+            <Plus className="size-3.5 sm:size-4" />
+            <span className="hidden sm:inline">Tambah Lowongan</span>
+            <span className="sm:hidden">Lowongan</span>
           </Button>
         </div>
       }
     >
       <Head title="Crave E-Recruitment & ATS Kanban" />
 
-      <div className="space-y-6">
-        {/* Top 4 KPI Cards (Crave POS Design Tokens: Hero Blue + 3 White card-soft) */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="space-y-4 sm:space-y-5 lg:space-y-6">
+        {/* Top 4 KPI Cards (Crave POS Design Tokens: Hero Blue + 3 White card-soft in 2x2 Grid on Mobile) */}
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
           {/* Card 1: Hero Blue */}
-          <div className="rounded-2xl p-5 bg-primary text-primary-foreground shadow-soft flex flex-col justify-between relative overflow-hidden">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-primary-foreground/80">
-                Total Pelamar Masuk
+          <div className="flex flex-col justify-between rounded-2xl border border-primary bg-primary p-3 shadow-lg shadow-primary/25 sm:rounded-3xl sm:p-4 text-primary-foreground relative overflow-hidden">
+            <div className="flex items-start justify-between gap-1.5 sm:gap-2">
+              <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-primary-foreground/90 truncate">
+                Total Pelamar
               </span>
-              <Users className="size-5 text-primary-foreground/80" />
+              <Users className="size-4 sm:size-5 shrink-0 text-primary-foreground/90" />
             </div>
-            <div className="mt-3">
-              <div className="text-3xl font-black tracking-tight">
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl">
                 {metrics.total_candidates || 0}
               </div>
-              <div className="text-[12px] text-primary-foreground/80 mt-0.5">
-                {metrics.open_jobs_count || 0} lowongan aktif dibuka
+              <div className="text-[11px] sm:text-[12px] text-primary-foreground/80 mt-0.5 truncate">
+                {metrics.open_jobs_count || 0} lowongan aktif
               </div>
             </div>
           </div>
 
           {/* Card 2: Interview */}
-          <div className="card-soft p-5 bg-card border flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Tahap Interview
+          <div className="card-soft flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-sm sm:rounded-3xl sm:p-4 text-card-foreground">
+            <div className="flex items-start justify-between gap-1.5 sm:gap-2">
+              <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground truncate">
+                Interview
               </span>
-              <Video className="size-5 text-muted-foreground" />
+              <Video className="size-4 sm:size-5 shrink-0 text-muted-foreground" />
             </div>
-            <div className="mt-3">
-              <div className="text-3xl font-black tracking-tight text-foreground">
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl text-foreground">
                 {metrics.interview_count || 0}
               </div>
-              <div className="text-[12px] text-muted-foreground mt-0.5">
-                Kandidat dijadwalkan wawancara
+              <div className="text-[11px] sm:text-[12px] text-muted-foreground mt-0.5 truncate">
+                Kandidat wawancara
               </div>
             </div>
           </div>
 
           {/* Card 3: Offering */}
-          <div className="card-soft p-5 bg-card border flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Tahap Penawaran (Offering)
+          <div className="card-soft flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-sm sm:rounded-3xl sm:p-4 text-card-foreground">
+            <div className="flex items-start justify-between gap-1.5 sm:gap-2">
+              <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground truncate">
+                Offering
               </span>
-              <Award className="size-5 text-muted-foreground" />
+              <Award className="size-4 sm:size-5 shrink-0 text-muted-foreground" />
             </div>
-            <div className="mt-3">
-              <div className="text-3xl font-black tracking-tight text-foreground">
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl text-foreground">
                 {metrics.offering_count || 0}
               </div>
-              <div className="text-[12px] text-muted-foreground mt-0.5">
-                Surat penawaran kerja dikirim
+              <div className="text-[11px] sm:text-[12px] text-muted-foreground mt-0.5 truncate">
+                Surat penawaran
               </div>
             </div>
           </div>
 
           {/* Card 4: Hired */}
-          <div className="card-soft p-5 bg-card border flex flex-col justify-between">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                Diterima &amp; Onboard
+          <div className="card-soft flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-sm sm:rounded-3xl sm:p-4 text-card-foreground">
+            <div className="flex items-start justify-between gap-1.5 sm:gap-2">
+              <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 truncate">
+                Diterima
               </span>
-              <UserCheck className="size-5 text-muted-foreground" />
+              <UserCheck className="size-4 sm:size-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <div className="mt-3">
-              <div className="text-3xl font-black tracking-tight text-foreground">
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl text-foreground">
                 {metrics.hired_count || 0}
               </div>
-              <div className="text-[12px] text-muted-foreground mt-0.5">
-                Kandidat lolos seleksi final
+              <div className="text-[11px] sm:text-[12px] text-muted-foreground mt-0.5 truncate">
+                Siap / telah onboard
               </div>
             </div>
           </div>
         </div>
 
         {/* View Switcher Pills & Filter Toolbar */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-muted/40 p-2 rounded-2xl border border-border/50">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 bg-muted/40 p-2 rounded-2xl border border-border/50">
           {/* Sub-Route Navigation Pills */}
-          <div className="flex items-center rounded-xl bg-card p-1 shadow-2xs border border-border/60">
+          <div className="grid grid-cols-2 sm:flex items-center rounded-xl bg-card p-1 shadow-2xs border border-border/60">
             <button
               type="button"
               onClick={() => setActiveView("kanban")}
               className={cn(
-                "px-3.5 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all",
+                "px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all text-center truncate",
                 activeView === "kanban"
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
@@ -289,7 +290,7 @@ export default function KanbanBoard({
               type="button"
               onClick={() => setActiveView("jobs")}
               className={cn(
-                "px-3.5 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all",
+                "px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer transition-all text-center truncate",
                 activeView === "jobs"
                   ? "bg-primary text-primary-foreground shadow-xs"
                   : "text-muted-foreground hover:text-foreground"
