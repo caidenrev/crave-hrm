@@ -194,3 +194,4 @@ class AuthController extends Controller
         return redirect('/login')->with('success', 'Anda telah berhasil keluar dari sistem Crave HRM.');
     }
 }
+

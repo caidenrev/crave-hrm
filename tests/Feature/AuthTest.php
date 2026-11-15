@@ -134,3 +134,4 @@ class AuthTest extends TestCase
         $response->assertRedirect('/login');
     }
 }
+
