@@ -12,9 +12,11 @@ import {
   MoreVertical,
 } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-} from "@/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerTitle,
+  DrawerDescription,
+} from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -36,7 +38,7 @@ import { cn } from "@/lib/utils";
 export function MobileMenuDrawer({ open, onOpenChange }) {
   const { url, props } = usePage();
   const user = props.auth?.user;
-  const currentPath = url.split("?")[0];
+  const currentPath = (url || "").split("?")[0];
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isDark, setIsDark] = useState(false);
@@ -70,10 +72,10 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
 
   const itemClass = (active) =>
     cn(
-      "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold cursor-pointer transition-colors",
+      "flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold cursor-pointer transition-colors",
       active
-        ? "bg-primary text-primary-foreground shadow-soft"
-        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+        ? "bg-primary text-primary-foreground shadow-soft font-bold"
+        : "text-foreground/80 hover:bg-muted hover:text-foreground"
     );
 
   const query = searchQuery.trim().toLowerCase();
@@ -147,10 +149,10 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
                       href={child.href}
                       onClick={() => onOpenChange(false)}
                       className={cn(
-                        "flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors",
+                        "flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-xs font-medium transition-colors",
                         isChildActive
                           ? "bg-primary/10 text-primary font-bold"
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       )}
                     >
                       <ChildIcon className="size-4 shrink-0" />
@@ -182,14 +184,13 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side="left"
-        showCloseButton={false}
-        className="w-[300px] sm:w-[320px] p-0 flex flex-col h-full bg-sidebar border-r border-border"
-      >
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="h-[85vh] max-h-[85vh] rounded-t-[28px] border-t border-border shadow-2xl p-0 flex flex-col bg-background overflow-hidden outline-none">
+        <DrawerTitle className="sr-only">Menu Navigasi</DrawerTitle>
+        <DrawerDescription className="sr-only">Pilihan menu operasional dan modul Crave HRM</DrawerDescription>
+
         {/* Top Header Drawer with Brand & Close Button */}
-        <div className="flex shrink-0 flex-col gap-3 px-3.5 pt-4 pb-2 border-b border-border/50">
+        <div className="flex shrink-0 flex-col gap-3 px-4 pt-1 pb-3 border-b border-border/50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="grid size-8 shrink-0 place-items-center">
@@ -224,53 +225,53 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
 
           {/* Quick Module Search */}
           <div className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari modul..."
-              className="rounded-xl bg-muted pl-9 pr-8 text-xs border-transparent focus-visible:border-primary/50"
+              className="rounded-xl bg-muted/80 pl-10 pr-9 text-xs border-transparent focus-visible:border-primary/50"
             />
             {searchQuery ? (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 <X className="size-3.5" />
               </button>
             ) : (
-              <SlidersHorizontal className="pointer-events-none absolute right-3 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
+              <SlidersHorizontal className="pointer-events-none absolute right-3.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground" />
             )}
           </div>
         </div>
 
         {/* Scrollable Navigation Body */}
-        <div className="flex-1 overflow-y-auto space-y-4 px-3.5 py-3">
+        <div className="flex-1 overflow-y-auto space-y-4 px-4 py-3">
           <div className="space-y-1">
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               Operasional
             </p>
             {filteredMenu.map(renderItem)}
           </div>
 
           <div className="space-y-1">
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               Talenta & Tim
             </p>
             {filteredTalenta.map(renderItem)}
           </div>
 
           <div className="space-y-1">
-            <p className="px-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="px-3 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               Pengaturan
             </p>
             {filteredPengaturan.map(renderItem)}
           </div>
         </div>
 
-        {/* Bottom Theme & Account Footer */}
-        <div className="mt-auto shrink-0 flex flex-col gap-2.5 p-3.5 border-t border-border/60 bg-sidebar">
+        {/* Bottom Theme & Account Footer (Gambar 2 standard) */}
+        <div className="mt-auto shrink-0 flex flex-col gap-2.5 p-3.5 border-t border-border/60 bg-background/95 backdrop-blur-md">
           {/* Light / Dark Mode Toggle */}
           <div className="grid grid-cols-2 gap-1 rounded-2xl bg-muted p-1">
             <button
@@ -298,8 +299,8 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
           {/* User Profile Info */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex w-full items-center gap-2 rounded-2xl border bg-card p-2 shadow-soft outline-none hover:bg-accent cursor-pointer transition-colors">
-                <div className="size-8 rounded-full overflow-hidden shrink-0 border border-border bg-muted shadow-2xs">
+              <button className="flex w-full items-center gap-2.5 rounded-2xl border bg-card p-2.5 shadow-soft outline-none hover:bg-accent cursor-pointer transition-colors">
+                <div className="size-8.5 rounded-full overflow-hidden shrink-0 border border-border bg-muted shadow-2xs">
                   <img
                     src="/profile-logo.jpeg"
                     alt="Profile"
@@ -331,8 +332,8 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 }
 

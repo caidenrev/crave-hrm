@@ -261,7 +261,7 @@ export default function Export({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono">
+              <div className="text-xl font-black tracking-tight sm:text-2xl">
                 {formatRupiah(totalAmount)}
               </div>
               <div className="text-[12px] text-white/80">Total Siap Ditransfer</div>
@@ -279,7 +279,7 @@ export default function Export({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 {totalEmployees}
               </div>
               <div className="text-[12px] text-muted-foreground">Karyawan Penerima Upah</div>
@@ -297,7 +297,7 @@ export default function Export({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 4 Bank
               </div>
               <div className="text-[12px] text-muted-foreground">BCA, Mandiri, BRI, BNI</div>
@@ -315,7 +315,7 @@ export default function Export({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 Batch Transfer
               </div>
               <div className="text-[12px] text-muted-foreground">Validasi Nomor Rekening</div>
@@ -376,7 +376,7 @@ export default function Export({
                       <h3 className="font-bold text-sm text-foreground">
                         {bank.name}
                       </h3>
-                      <p className="text-xs text-muted-foreground font-mono">
+                      <p className="text-xs text-muted-foreground">
                         Ekstensi: {bank.ext}
                       </p>
                     </div>
@@ -429,7 +429,7 @@ export default function Export({
                 <TableRow>
                   <TableHead className="text-xs font-bold">Bank Mitra</TableHead>
                   <TableHead className="text-xs font-bold text-center">Jumlah Penerima</TableHead>
-                  <TableHead className="text-xs font-bold font-mono text-right">Total Nominal Transfer</TableHead>
+                  <TableHead className="text-xs font-bold text-right">Total Nominal Transfer</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -449,7 +449,7 @@ export default function Export({
                       <TableCell className="text-center text-xs">
                         {data.count} Karyawan
                       </TableCell>
-                      <TableCell className="text-right text-xs font-mono font-bold text-foreground">
+                      <TableCell className="text-right text-xs font-bold text-foreground">
                         {formatRupiah(data.total_amount)}
                       </TableCell>
                     </TableRow>

@@ -39,7 +39,7 @@ export default function AuthenticatedLayout({
           onOpenMobileMenu={() => setMobileMenuOpen(true)}
         />
 
-        <main className="mx-auto max-w-[1400px] px-3 pb-24 pt-3 sm:px-6 sm:pt-4 lg:pb-10">
+        <main className="mx-auto max-w-[1400px] px-3 pb-28 pt-3 sm:px-6 sm:pt-4 sm:pb-24 lg:pb-10">
           {children}
         </main>
       </div>

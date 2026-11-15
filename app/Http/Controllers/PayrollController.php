@@ -28,11 +28,24 @@ class PayrollController extends Controller
     ) {}
 
     /**
+     * Resolve active company id from session or current user/company fallback.
+     */
+    protected function getActiveCompanyId(): ?int
+    {
+        $user = auth()->user();
+        $companyId = session('active_company_id') ?? $user?->currentCompany()?->id ?? Company::first()?->id;
+        if ($companyId && !session()->has('active_company_id')) {
+            session(['active_company_id' => $companyId]);
+        }
+        return $companyId;
+    }
+
+    /**
      * Display Payroll Runner & Batch Overview.
      */
     public function index(Request $request): Response
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
 
         $periods = PayrollPeriod::where('company_id', $companyId)
             ->with('processor:id,name')
@@ -108,7 +121,7 @@ class PayrollController extends Controller
      */
     public function runPayroll(Request $request)
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
 
         $validated = $request->validate([
             'month' => 'required|integer|min:1|max:12',
@@ -242,7 +255,7 @@ class PayrollController extends Controller
      */
     public function finalize(PayrollPeriod $period)
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
         if ($period->company_id !== $companyId) {
             abort(403);
         }
@@ -266,7 +279,7 @@ class PayrollController extends Controller
      */
     public function slips(Request $request): Response
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
 
         $periods = PayrollPeriod::where('company_id', $companyId)
             ->orderByDesc('year')
@@ -310,7 +323,7 @@ class PayrollController extends Controller
      */
     public function printSlip(PayrollItem $item)
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
         if ($item->company_id !== $companyId) {
             abort(403);
         }
@@ -327,7 +340,7 @@ class PayrollController extends Controller
      */
     public function export(Request $request): Response
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
 
         $periods = PayrollPeriod::where('company_id', $companyId)
             ->orderByDesc('year')
@@ -363,7 +376,7 @@ class PayrollController extends Controller
      */
     public function exportBank(Request $request): StreamedResponse
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
 
         $validated = $request->validate([
             'payroll_period_id' => 'required|exists:payroll_periods,id',
@@ -391,7 +404,7 @@ class PayrollController extends Controller
      */
     public function exportExcel(Request $request): StreamedResponse
     {
-        $companyId = session('active_company_id');
+        $companyId = $this->getActiveCompanyId();
 
         $validated = $request->validate([
             'payroll_period_id' => 'required|exists:payroll_periods,id',

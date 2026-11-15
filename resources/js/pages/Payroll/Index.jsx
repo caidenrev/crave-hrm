@@ -283,7 +283,7 @@ export default function Index({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono">
+              <div className="text-xl font-black tracking-tight sm:text-2xl">
                 {formatRupiah(metrics.total_net_payroll || 0)}
               </div>
               <div className="text-[12px] text-white/80">
@@ -304,7 +304,7 @@ export default function Index({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 {formatRupiah(metrics.total_gross_payroll || 0)}
               </div>
               <div className="text-[12px] text-muted-foreground">
@@ -324,7 +324,7 @@ export default function Index({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 {formatRupiah(metrics.total_tax_pph21 || 0)}
               </div>
               <div className="text-[12px] text-muted-foreground">
@@ -344,7 +344,7 @@ export default function Index({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 {formatRupiah(metrics.total_bpjs_contributions || 0)}
               </div>
               <div className="text-[12px] text-muted-foreground">
@@ -544,11 +544,11 @@ export default function Index({
                   <TableRow>
                     <TableHead className="text-xs font-bold">Karyawan</TableHead>
                     <TableHead className="text-xs font-bold">PTKP &amp; TER</TableHead>
-                    <TableHead className="text-xs font-bold font-mono text-right">Gaji Pokok</TableHead>
-                    <TableHead className="text-xs font-bold font-mono text-right">Bruto</TableHead>
-                    <TableHead className="text-xs font-bold font-mono text-right">PPh 21</TableHead>
-                    <TableHead className="text-xs font-bold font-mono text-right">BPJS (Karyawan)</TableHead>
-                    <TableHead className="text-xs font-bold font-mono text-right">Take Home Pay</TableHead>
+                    <TableHead className="text-xs font-bold text-right">Gaji Pokok</TableHead>
+                    <TableHead className="text-xs font-bold text-right">Bruto</TableHead>
+                    <TableHead className="text-xs font-bold text-right">PPh 21</TableHead>
+                    <TableHead className="text-xs font-bold text-right">BPJS (Karyawan)</TableHead>
+                    <TableHead className="text-xs font-bold text-right">Take Home Pay</TableHead>
                     <TableHead className="text-xs font-bold text-center">Status</TableHead>
                     <TableHead className="text-xs font-bold text-center">Aksi</TableHead>
                   </TableRow>
@@ -594,23 +594,23 @@ export default function Index({
                             </div>
                           </TableCell>
 
-                          <TableCell className="text-right text-xs font-mono">
+                          <TableCell className="text-right text-xs font-medium">
                             {formatRupiah(item.gaji_pokok)}
                           </TableCell>
 
-                          <TableCell className="text-right text-xs font-mono font-medium text-foreground">
+                          <TableCell className="text-right text-xs font-semibold text-foreground">
                             {formatRupiah(item.penghasilan_bruto)}
                           </TableCell>
 
-                          <TableCell className="text-right text-xs font-mono text-rose-600 dark:text-rose-400">
+                          <TableCell className="text-right text-xs font-semibold text-rose-600 dark:text-rose-400">
                             {formatRupiah(item.pph21)}
                           </TableCell>
 
-                          <TableCell className="text-right text-xs font-mono text-rose-600 dark:text-rose-400">
+                          <TableCell className="text-right text-xs font-semibold text-rose-600 dark:text-rose-400">
                             {formatRupiah(totalBpjsEmp)}
                           </TableCell>
 
-                          <TableCell className="text-right text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                          <TableCell className="text-right text-xs font-bold text-emerald-600 dark:text-emerald-400">
                             {formatRupiah(item.take_home_pay)}
                           </TableCell>
 
@@ -702,25 +702,25 @@ export default function Index({
                     <div className="rounded-xl bg-muted/40 p-3 space-y-1.5 text-xs">
                       <div className="flex justify-between text-muted-foreground">
                         <span>Penghasilan Bruto:</span>
-                        <span className="font-semibold text-foreground font-mono">
+                        <span className="font-semibold text-foreground">
                           {formatRupiah(item.penghasilan_bruto)}
                         </span>
                       </div>
                       <div className="flex justify-between text-muted-foreground">
                         <span>PPh 21 TER ({Number(item.ter_rate).toFixed(2)}%):</span>
-                        <span className="font-semibold text-rose-600 dark:text-rose-400 font-mono">
+                        <span className="font-semibold text-rose-600 dark:text-rose-400">
                           {formatRupiah(item.pph21)}
                         </span>
                       </div>
                       <div className="flex justify-between text-muted-foreground">
                         <span>Total Potongan:</span>
-                        <span className="font-semibold text-rose-600 dark:text-rose-400 font-mono">
+                        <span className="font-semibold text-rose-600 dark:text-rose-400">
                           {formatRupiah(item.total_potongan)}
                         </span>
                       </div>
                       <div className="flex justify-between border-t border-border/40 pt-1.5 font-bold text-foreground">
                         <span>Take Home Pay:</span>
-                        <span className="font-mono text-emerald-600 dark:text-emerald-400 text-sm">
+                        <span className="font-bold text-emerald-600 dark:text-emerald-400 text-sm">
                           {formatRupiah(item.take_home_pay)}
                         </span>
                       </div>

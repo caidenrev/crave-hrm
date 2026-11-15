@@ -23,7 +23,7 @@ export function ConfirmDeleteDialog({
 }) {
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="rounded-2xl max-w-sm p-5 border border-border/70 shadow-lg">
+      <AlertDialogContent className="sm:rounded-2xl sm:max-w-sm p-5 border border-border/70 shadow-lg">
         <AlertDialogHeader className="space-y-2">
           <div className="flex items-center gap-2.5">
             <div className="size-9 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center shrink-0">

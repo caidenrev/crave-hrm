@@ -123,7 +123,7 @@ export default function Slips({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono">
+              <div className="text-xl font-black tracking-tight sm:text-2xl">
                 {formatRupiah(stats.total_paid || 0)}
               </div>
               <div className="text-[12px] text-white/80">Total Take Home Pay</div>
@@ -141,7 +141,7 @@ export default function Slips({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 {stats.total_slips || 0}
               </div>
               <div className="text-[12px] text-muted-foreground">Lembar Slip Gaji</div>
@@ -159,7 +159,7 @@ export default function Slips({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 {formatRupiah(stats.total_tax || 0)}
               </div>
               <div className="text-[12px] text-muted-foreground">Total PPh 21 Dipotong</div>
@@ -177,7 +177,7 @@ export default function Slips({
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-lg font-black tracking-tight sm:text-2xl font-mono text-foreground">
+              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
                 100%
               </div>
               <div className="text-[12px] text-muted-foreground">Siap Dicetak &amp; Diunduh</div>
@@ -239,9 +239,9 @@ export default function Slips({
                   <TableHead className="text-xs font-bold">Karyawan</TableHead>
                   <TableHead className="text-xs font-bold">Periode</TableHead>
                   <TableHead className="text-xs font-bold">PTKP / Kategori</TableHead>
-                  <TableHead className="text-xs font-bold font-mono text-right">Gaji Bruto</TableHead>
-                  <TableHead className="text-xs font-bold font-mono text-right">Potongan</TableHead>
-                  <TableHead className="text-xs font-bold font-mono text-right">Take Home Pay</TableHead>
+                  <TableHead className="text-xs font-bold text-right">Gaji Bruto</TableHead>
+                  <TableHead className="text-xs font-bold text-right">Potongan</TableHead>
+                  <TableHead className="text-xs font-bold text-right">Take Home Pay</TableHead>
                   <TableHead className="text-xs font-bold text-center">Status</TableHead>
                   <TableHead className="text-xs font-bold text-center">Aksi</TableHead>
                 </TableRow>
@@ -284,15 +284,15 @@ export default function Slips({
                           </div>
                         </TableCell>
 
-                        <TableCell className="text-right text-xs font-mono">
+                        <TableCell className="text-right text-xs font-medium">
                           {formatRupiah(item.penghasilan_bruto)}
                         </TableCell>
 
-                        <TableCell className="text-right text-xs font-mono text-rose-600 dark:text-rose-400">
+                        <TableCell className="text-right text-xs font-semibold text-rose-600 dark:text-rose-400">
                           {formatRupiah(item.total_potongan)}
                         </TableCell>
 
-                        <TableCell className="text-right text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                        <TableCell className="text-right text-xs font-bold text-emerald-600 dark:text-emerald-400">
                           {formatRupiah(item.take_home_pay)}
                         </TableCell>
 

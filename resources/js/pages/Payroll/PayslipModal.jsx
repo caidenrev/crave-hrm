@@ -106,20 +106,20 @@ export default function PayslipModal({ open, onOpenChange, item }) {
               <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                 A. Penghasilan
               </span>
-              <span className="text-xs text-muted-foreground font-mono">Bruto</span>
+              <span className="text-xs text-muted-foreground font-semibold">Bruto</span>
             </div>
 
             <div className="space-y-1.5 text-xs">
               <div className="flex justify-between py-1">
                 <span className="text-muted-foreground">Gaji Pokok</span>
-                <span className="font-semibold text-foreground font-mono">
+                <span className="font-semibold text-foreground">
                   {formatRupiah(item.gaji_pokok)}
                 </span>
               </div>
               {Number(item.tunjangan_tetap) > 0 && (
                 <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                   <span className="text-muted-foreground">Tunjangan Tetap</span>
-                  <span className="font-semibold text-foreground font-mono">
+                  <span className="font-semibold text-foreground">
                     {formatRupiah(item.tunjangan_tetap)}
                   </span>
                 </div>
@@ -127,7 +127,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
               {Number(item.tunjangan_tidak_tetap) > 0 && (
                 <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                   <span className="text-muted-foreground">Tunjangan Variabel</span>
-                  <span className="font-semibold text-foreground font-mono">
+                  <span className="font-semibold text-foreground">
                     {formatRupiah(item.tunjangan_tidak_tetap)}
                   </span>
                 </div>
@@ -135,7 +135,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
               {Number(item.uang_lembur) > 0 && (
                 <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                   <span className="text-muted-foreground">Uang Lembur (PP 35/2021)</span>
-                  <span className="font-semibold text-foreground font-mono">
+                  <span className="font-semibold text-foreground">
                     {formatRupiah(item.uang_lembur)}
                   </span>
                 </div>
@@ -143,7 +143,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
               {Number(item.reimbursement_total) > 0 && (
                 <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                   <span className="text-muted-foreground">Reimbursement</span>
-                  <span className="font-semibold text-foreground font-mono">
+                  <span className="font-semibold text-foreground">
                     {formatRupiah(item.reimbursement_total)}
                   </span>
                 </div>
@@ -152,7 +152,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
 
             <div className="flex justify-between items-center rounded-lg bg-emerald-500/10 p-2.5 text-xs font-bold text-emerald-700 dark:text-emerald-300 mt-3">
               <span>Total Bruto</span>
-              <span className="font-mono">{formatRupiah(item.penghasilan_bruto)}</span>
+              <span className="font-bold">{formatRupiah(item.penghasilan_bruto)}</span>
             </div>
           </div>
 
@@ -162,7 +162,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
               <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
                 B. Potongan
               </span>
-              <span className="text-xs text-muted-foreground font-mono">Karyawan</span>
+              <span className="text-xs text-muted-foreground font-semibold">Karyawan</span>
             </div>
 
             <div className="space-y-1.5 text-xs">
@@ -170,32 +170,32 @@ export default function PayslipModal({ open, onOpenChange, item }) {
                 <span className="text-muted-foreground">
                   PPh 21 TER ({Number(item.ter_rate || 0).toFixed(2)}%)
                 </span>
-                <span className="font-semibold text-foreground font-mono">
+                <span className="font-semibold text-foreground">
                   {formatRupiah(item.pph21)}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                 <span className="text-muted-foreground">BPJS Kesehatan (1%)</span>
-                <span className="font-semibold text-foreground font-mono">
+                <span className="font-semibold text-foreground">
                   {formatRupiah(item.bpjs_kes_employee)}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                 <span className="text-muted-foreground">BPJS TK JHT (2%)</span>
-                <span className="font-semibold text-foreground font-mono">
+                <span className="font-semibold text-foreground">
                   {formatRupiah(item.bpjs_jht_employee)}
                 </span>
               </div>
               <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                 <span className="text-muted-foreground">BPJS TK JP (1%)</span>
-                <span className="font-semibold text-foreground font-mono">
+                <span className="font-semibold text-foreground">
                   {formatRupiah(item.bpjs_jp_employee)}
                 </span>
               </div>
               {Number(item.potongan_keterlambatan) > 0 && (
                 <div className="flex justify-between py-1 border-t border-dashed border-border/30">
                   <span className="text-muted-foreground">Potongan Absensi</span>
-                  <span className="font-semibold text-foreground font-mono">
+                  <span className="font-semibold text-foreground">
                     {formatRupiah(item.potongan_keterlambatan)}
                   </span>
                 </div>
@@ -204,7 +204,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
 
             <div className="flex justify-between items-center rounded-lg bg-rose-500/10 p-2.5 text-xs font-bold text-rose-700 dark:text-rose-300 mt-3">
               <span>Total Potongan</span>
-              <span className="font-mono">{formatRupiah(item.total_potongan)}</span>
+              <span className="font-bold">{formatRupiah(item.total_potongan)}</span>
             </div>
           </div>
         </div>
@@ -219,7 +219,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
               Transfer ke {employee.bank_name || "Bank"} {employee.bank_account_number || ""}
             </p>
           </div>
-          <div className="text-xl sm:text-2xl font-black tracking-tight font-mono">
+          <div className="text-xl sm:text-2xl font-black tracking-tight">
             {formatRupiah(item.take_home_pay)}
           </div>
         </div>
