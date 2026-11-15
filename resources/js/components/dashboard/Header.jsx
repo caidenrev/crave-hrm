@@ -276,7 +276,10 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
                 <span>Sesi Perangkat</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive">
+              <DropdownMenuItem
+                className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                onClick={() => router.post('/logout')}
+              >
                 <LogOut className="mr-2 size-4" />
                 <span>Keluar</span>
               </DropdownMenuItem>

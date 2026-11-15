@@ -218,9 +218,64 @@ class OrganizationController extends Controller
             ],
         ];
 
+        $companyId = session('active_company_id');
+        if (!$companyId) {
+            $companyId = Company::where('is_holding', true)->value('id') ?? Company::value('id');
+        }
+
+        $savedPermissions = \App\Models\RolePermission::where('company_id', $companyId)->get()->groupBy('permission_key');
+
+        foreach ($modules as &$group) {
+            foreach ($group['items'] as &$item) {
+                if ($savedPermissions->has($item['key'])) {
+                    $savedForPerm = $savedPermissions->get($item['key'])->pluck('is_allowed', 'role');
+                    foreach ($item['matrix'] as $r => $val) {
+                        if ($savedForPerm->has($r)) {
+                            $item['matrix'][$r] = (bool) $savedForPerm->get($r);
+                        }
+                    }
+                }
+            }
+        }
+        unset($group, $item);
+
         return Inertia::render('Organization/RbacMatrix', [
             'roles' => $roles,
             'modules' => $modules,
         ]);
+    }
+
+    public function updateRbacMatrix(Request $request)
+    {
+        $validated = $request->validate([
+            'matrix' => 'required|array',
+        ]);
+
+        $companyId = session('active_company_id');
+        if (!$companyId) {
+            $companyId = Company::where('is_holding', true)->value('id') ?? Company::value('id');
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($companyId, $validated) {
+            foreach ($validated['matrix'] as $permKey => $roleMap) {
+                if (!is_array($roleMap)) {
+                    continue;
+                }
+                foreach ($roleMap as $role => $allowed) {
+                    \App\Models\RolePermission::updateOrCreate(
+                        [
+                            'company_id' => $companyId,
+                            'role' => $role,
+                            'permission_key' => $permKey,
+                        ],
+                        [
+                            'is_allowed' => (bool) $allowed,
+                        ]
+                    );
+                }
+            }
+        });
+
+        return back()->with('success', 'Matriks hak akses peran berhasil disimpan permanen ke database.');
     }
 }

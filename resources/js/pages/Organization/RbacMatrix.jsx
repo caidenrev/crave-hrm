@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,7 @@ import {
   MapPin,
   Wallet,
   Users,
+  Loader2,
 } from "lucide-react";
 
 export default function RbacMatrix({ roles, modules }) {
@@ -34,6 +35,7 @@ export default function RbacMatrix({ roles, modules }) {
     return initial;
   });
 
+  const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   const handleToggle = (itemKey, roleId) => {
@@ -49,8 +51,28 @@ export default function RbacMatrix({ roles, modules }) {
   };
 
   const handleSave = () => {
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 3000);
+    setSaving(true);
+    router.post(
+      "/organization/rbac-matrix",
+      { matrix: matrixState },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setSaving(false);
+          setSavedSuccess(true);
+          if (typeof window !== "undefined" && window.craveToast) {
+            window.craveToast.success("Matriks hak akses peran berhasil disimpan permanen ke database.");
+          }
+          setTimeout(() => setSavedSuccess(false), 3000);
+        },
+        onError: () => {
+          setSaving(false);
+          if (typeof window !== "undefined" && window.craveToast) {
+            window.craveToast.error("Gagal menyimpan matriks hak akses.");
+          }
+        },
+      }
+    );
   };
 
   const handleReset = () => {
@@ -73,7 +95,8 @@ export default function RbacMatrix({ roles, modules }) {
             variant="outline"
             size="sm"
             onClick={handleReset}
-            className="rounded-xl text-xs"
+            disabled={saving}
+            className="rounded-xl text-xs cursor-pointer shadow-soft"
           >
             <RotateCcw className="size-3.5 mr-1" />
             Reset
@@ -82,10 +105,20 @@ export default function RbacMatrix({ roles, modules }) {
           <Button
             size="sm"
             onClick={handleSave}
-            className="rounded-xl text-xs"
+            disabled={saving}
+            className="rounded-xl text-xs font-bold bg-primary text-primary-foreground cursor-pointer shadow-soft gap-1.5"
           >
-            <Save className="size-3.5 mr-1" />
-            {savedSuccess ? "Tersimpan" : "Simpan"}
+            {saving ? (
+              <>
+                <Loader2 className="size-3.5 animate-spin" />
+                <span>Menyimpan...</span>
+              </>
+            ) : (
+              <>
+                <Save className="size-3.5" />
+                <span>{savedSuccess ? "Tersimpan" : "Simpan Matriks"}</span>
+              </>
+            )}
           </Button>
         </div>
       }

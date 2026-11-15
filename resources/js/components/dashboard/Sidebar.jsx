@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, usePage } from "@inertiajs/react";
+import { Link, usePage, router } from "@inertiajs/react";
 import {
   LayoutDashboard,
   Clock,
@@ -421,7 +421,10 @@ export function Sidebar({ collapsed, setCollapsed }) {
                   <UserIcon className="mr-2 size-4" />
                   <span>Pengaturan Profil</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive">
+                <DropdownMenuItem
+                  className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"
+                  onClick={() => router.post('/logout')}
+                >
                   <LogOut className="mr-2 size-4" />
                   <span>Keluar</span>
                 </DropdownMenuItem>
