@@ -115,17 +115,13 @@ function DialogContent({
         data-slot="dialog-content"
         onOpenAutoFocus={onOpenAutoFocus || ((e) => e.preventDefault())}
         className={cn(
-          "fixed z-[10001] grid w-full max-w-[calc(100%-2rem)] rounded-2xl border bg-background shadow-2xl duration-200 outline-none sm:max-w-lg",
-          className
+          // Base & Desktop Centered Modal
+          "fixed top-1/2 left-1/2 z-[10001] grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none sm:max-w-lg",
+          className,
+          // Mobile Bottom Sheet Mode (< 640px)
+          "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:w-full max-sm:max-w-none max-sm:rounded-t-[28px] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:border-t max-sm:max-h-[90vh] max-sm:overflow-y-auto max-sm:p-5 max-sm:pb-8"
         )}
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          margin: 0,
-          ...style,
-        }}
+        style={style}
         {...props}
       >
         <MobileDragHandle onClose={() => closeRef.current?.click()} />

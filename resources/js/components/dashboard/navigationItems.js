@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 
 export const MENU_OPERASIONAL = [
-  { label: "Dashboard", href: "/", icon: LayoutDashboard },
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   {
     label: "Presensi",
     href: "/attendance",

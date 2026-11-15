@@ -35,7 +35,7 @@ class DashboardTest extends TestCase
 
         $response = $this->actingAs($user)
             ->withSession(['active_company_id' => $company->id])
-            ->get('/');
+            ->get('/dashboard');
 
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
@@ -45,6 +45,8 @@ class DashboardTest extends TestCase
             ->has('attendanceWeekly')
             ->has('departmentShare')
             ->has('recentAttendances')
+            ->has('payrollCostMonthly')
+            ->has('payrollCostByDept')
         );
     }
 
@@ -71,7 +73,7 @@ class DashboardTest extends TestCase
 
         $response = $this->actingAs($user)
             ->withSession(['active_company_id' => $company->id])
-            ->get('/');
+            ->get('/dashboard');
 
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
@@ -125,7 +127,7 @@ class DashboardTest extends TestCase
 
         $response = $this->actingAs($user)
             ->withSession(['active_company_id' => $company->id])
-            ->get('/');
+            ->get('/dashboard');
 
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page

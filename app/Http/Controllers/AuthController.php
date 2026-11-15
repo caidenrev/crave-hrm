@@ -22,7 +22,7 @@ class AuthController extends Controller
     public function showLogin()
     {
         if (Auth::check()) {
-            return redirect()->intended('/');
+            return redirect()->intended('/dashboard');
         }
 
         return Inertia::render('Auth/Login', [
@@ -81,7 +81,7 @@ class AuthController extends Controller
                 session(['active_company_id' => $primaryCompany->id]);
             }
 
-            return redirect()->intended('/')->with('success', "Selamat datang kembali, {$user->name}!");
+            return redirect()->intended('/dashboard')->with('success', "Selamat datang kembali, {$user->name}!");
         }
 
         RateLimiter::hit($throttleKey, 60);
@@ -94,7 +94,7 @@ class AuthController extends Controller
     public function showRegister()
     {
         if (Auth::check()) {
-            return redirect()->intended('/');
+            return redirect()->intended('/dashboard');
         }
 
         return Inertia::render('Auth/Register');
@@ -181,7 +181,7 @@ class AuthController extends Controller
             session(['active_company_id' => $primaryCompany->id]);
         }
 
-        return redirect('/')->with('success', "Akun perusahaan {$request->company_name} berhasil dibuat!");
+        return redirect('/dashboard')->with('success', "Akun perusahaan {$request->company_name} berhasil dibuat!");
     }
 
     public function logout(Request $request)

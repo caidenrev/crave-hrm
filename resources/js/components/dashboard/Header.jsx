@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/popover";
 
 const ALL_MODULES = [
-  { title: "Dashboard", subtitle: "Ringkasan metrik & KPI bisnis", href: "/", tag: "Operasional" },
+  { title: "Dashboard", subtitle: "Ringkasan metrik & KPI bisnis", href: "/dashboard", tag: "Operasional" },
   { title: "Data Karyawan", subtitle: "Daftar talenta & profil karyawan", href: "/employees", tag: "Talenta" },
   { title: "Pengumuman Internal", subtitle: "Papan edaran & kebijakan resmi", href: "/announcements", tag: "Pengaturan" },
   { title: "Cabang & Geofence", subtitle: "Lokasi cabang & koordinat presensi", href: "/organization/branches", tag: "Organisasi" },

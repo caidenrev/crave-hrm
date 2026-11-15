@@ -45,7 +45,7 @@ class AuthTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect('/');
+        $response->assertRedirect('/dashboard');
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
@@ -109,7 +109,7 @@ class AuthTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect('/');
+        $response->assertRedirect('/dashboard');
 
         $this->assertDatabaseHas('users', [
             'email' => 'mitra@suksesabadi.com',

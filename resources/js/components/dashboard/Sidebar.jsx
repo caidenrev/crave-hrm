@@ -212,7 +212,7 @@ export function Sidebar({ collapsed, setCollapsed }) {
     }
 
     const isActive =
-      currentPath === item.href || (item.href !== "/" && currentPath.startsWith(item.href));
+      currentPath === item.href || (item.href !== "/" && item.href !== "/dashboard" && currentPath.startsWith(item.href));
 
     return (
       <Row key={item.href} collapsed={collapsed} label={item.label}>

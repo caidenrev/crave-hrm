@@ -84,7 +84,7 @@ export function JobPostingModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto p-6">
+      <DialogContent className="sm:max-w-2xl sm:rounded-2xl max-h-[90vh] overflow-y-auto p-5 sm:p-6">
         <DialogHeader>
           <div className="flex items-center gap-2.5">
             <div className="size-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">

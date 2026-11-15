@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sedang Offline - Crave HRM</title>
+  <meta name="theme-color" content="#1B5CFE">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #FAFAFC;
+      color: #111827;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #ECEEF4;
+      border-radius: 24px;
+      padding: 36px 32px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 25px -5px rgba(17, 24, 39, 0.05);
+    }
+    .logo {
+      height: 48px;
+      width: auto;
+      margin-bottom: 24px;
+    }
+    h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #111827;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    p {
+      font-size: 14px;
+      color: #6B7280;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      padding: 0 24px;
+      border-radius: 12px;
+      background-color: #1B5CFE;
+      color: #FFFFFF;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(27, 92, 254, 0.25);
+      transition: background-color 0.15s ease;
+    }
+    .btn:hover {
+      background-color: #1447D0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="/light-mode-logo.png" alt="Crave HRM" class="logo">
+    <h1>Koneksi Internet Terputus</h1>
+    <p>Perangkat Anda sedang offline. Periksa kembali sambungan Wi-Fi atau data seluler Anda, lalu coba muat ulang halaman.</p>
+    <button class="btn" onclick="window.location.reload()">Coba Muat Ulang</button>
+  </div>
+</body>
+</html>

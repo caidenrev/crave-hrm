@@ -36,7 +36,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        $isGuestAuthRoute = $request->is('login') || $request->is('register') || $request->is('careers*');
+        $isGuestAuthRoute = $request->is('login') || $request->is('register') || $request->is('careers*') || $request->is('/') || $request->is('landing');
 
         if (!$user && !$isGuestAuthRoute && \Illuminate\Support\Facades\Schema::hasTable('users')) {
             try {

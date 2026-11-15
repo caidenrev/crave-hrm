@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 120" fill="none">
+  <!-- BSI Star Emblem -->
+  <g transform="translate(15, 15)">
+    <circle cx="45" cy="45" r="42" fill="#00A39D"/>
+    <!-- 8-point geometric star -->
+    <path d="M45 12 L54 36 L78 45 L54 54 L45 78 L36 54 L12 45 L36 36 Z" fill="#F58220"/>
+    <circle cx="45" cy="45" r="10" fill="#FFFFFF"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="120" y="58" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="40" font-weight="900" fill="#00A39D" letter-spacing="-0.5">BSI</text>
+  <text x="122" y="84" font-family="'Plus Jakarta Sans', system-ui, -apple-system, sans-serif" font-size="14" font-weight="800" fill="#F58220" letter-spacing="1.2">BANK SYARIAH INDONESIA</text>
+</svg>

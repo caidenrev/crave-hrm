@@ -12,6 +12,12 @@
 /.phpunit.cache
 /.vscode
 /.zed
+/.agents/
+/.claude/
+/.kiro/
+/skills-lock.json
+/landing-page-reference.webp
+/ui-reference.html
 /auth.json
 /node_modules
 /public/build

@@ -24,13 +24,6 @@ export default function PayslipModal({ open, onOpenChange, item }) {
       <DialogContent
         onOpenAutoFocus={(e) => e.preventDefault()}
         className="w-full sm:max-w-xl md:max-w-2xl max-h-[82vh] flex flex-col p-0 rounded-2xl overflow-hidden shadow-2xl border border-border/80 bg-card"
-        style={{
-          position: "fixed",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          margin: 0,
-        }}
       >
         {/* Pinned Header */}
         <div className="px-5 py-3.5 border-b shrink-0 bg-card flex items-center justify-between gap-3">

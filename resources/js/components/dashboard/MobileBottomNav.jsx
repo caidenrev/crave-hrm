@@ -10,7 +10,7 @@ import {
 import GlassNav from "@/components/dashboard/GlassNav";
 
 const tabs = [
-  { id: "dashboard", label: "Dasbor", to: "/", icon: LayoutDashboard, noFill: true },
+  { id: "dashboard", label: "Dasbor", to: "/dashboard", icon: LayoutDashboard, noFill: true },
   { id: "attendance", label: "Presensi", to: "/attendance", icon: Clock, noFill: true },
   { id: "leave", label: "Cuti", to: "/leave", icon: CalendarDays, noFill: true },
   { id: "payroll", label: "Payroll", to: "/payroll", icon: FileSpreadsheet, noFill: true },
@@ -32,7 +32,7 @@ function useHtmlDark() {
 
 const getTabFromUrl = (pathname) => {
   const currentPath = (pathname || "").split("?")[0];
-  if (currentPath === "/") return "dashboard";
+  if (currentPath === "/dashboard" || currentPath.startsWith("/dashboard")) return "dashboard";
   if (currentPath.startsWith("/attendance")) return "attendance";
   if (currentPath.startsWith("/leave")) return "leave";
   if (currentPath.startsWith("/payroll")) return "payroll";

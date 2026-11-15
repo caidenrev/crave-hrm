@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PayrollController;
@@ -26,7 +27,12 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// Public Landing Page (Root 8000)
+Route::get('/', [LandingController::class, 'index'])->name('home');
+Route::get('/landing', [LandingController::class, 'index'])->name('landing');
+
+// SaaS Core Dashboard (Path /dashboard)
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::post('/company/switch', [CompanyController::class, 'switchCompany'])->name('company.switch');
 

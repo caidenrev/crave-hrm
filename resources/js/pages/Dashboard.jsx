@@ -4,6 +4,8 @@ import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
 import {
   Area,
   AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
   Cell,
   Pie,
@@ -51,11 +53,14 @@ export default function Dashboard({
   attendanceWeekly = [],
   departmentShare = [],
   recentAttendances = [],
+  payrollCostMonthly = [],
+  payrollCostByDept = [],
   employeeSelfService = {},
   announcements = [],
   upcomingHolidays = [],
 }) {
   const [chartPeriod, setChartPeriod] = useState("hari");
+  const [costViewMode, setCostViewMode] = useState("bulanan");
 
   // Format payroll value safely
   const formattedPayroll = metrics.estimated_payroll
@@ -166,7 +171,7 @@ export default function Dashboard({
         )
       }
     >
-      <Head title={isManagerial ? "Dasbor Operasional — Crave HRM" : "Dasbor Karyawan — Crave HRM"} />
+      <Head title={isManagerial ? "Dasbor Operasional | Crave HRM" : "Dasbor Karyawan | Crave HRM"} />
 
       <div className="space-y-4 sm:space-y-5">
         {/* 1. TOP METRICS CARDS (Hero Blue + 3 Card-Soft) */}
@@ -379,85 +384,111 @@ export default function Dashboard({
                 </div>
               </div>
 
-              {/* Quick Actions & Module Links */}
+              {/* Komposisi Beban SDM per Fungsi (Stacked BarChart) */}
               <div className="card-soft p-4 bg-card border border-border/50 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div>
-                      <p className="text-sm font-extrabold text-foreground">Aksi Cepat Operasional</p>
+                  <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 mb-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-extrabold text-foreground">
+                        Komposisi Beban SDM per Fungsi
+                      </p>
                       <p className="text-[11px] text-muted-foreground">
-                        Pintasan navigasi modul inti Crave HRM
+                        Alokasi kompensasi & beban operasional tenaga kerja
                       </p>
                     </div>
-                    <Badge variant="outline" className="rounded-full text-[10px]">
-                      SaaS
-                    </Badge>
+                    <Tabs value={costViewMode} onValueChange={setCostViewMode}>
+                      <TabsList className="rounded-xl h-8">
+                        <TabsTrigger value="bulanan" className="text-xs px-2.5">
+                          Bulanan
+                        </TabsTrigger>
+                        <TabsTrigger value="divisi" className="text-xs px-2.5">
+                          Divisi
+                        </TabsTrigger>
+                      </TabsList>
+                    </Tabs>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    <Link
-                      href="/payroll"
-                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 hover:border-primary/40 hover:bg-muted/30 transition-all group"
-                    >
-                      <div className="size-8 rounded-lg bg-primary/10 text-primary grid place-items-center">
-                        <FileSpreadsheet className="size-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold group-hover:text-primary transition-colors">
-                          Proses Payroll
-                        </p>
-                        <p className="text-[10px] text-muted-foreground truncate">PPh 21 & BPJS</p>
-                      </div>
-                    </Link>
+                  <div className="mt-3 h-56 w-full">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        data={costViewMode === "bulanan" ? payrollCostMonthly : payrollCostByDept}
+                        margin={{ top: 10, right: 10, left: -10, bottom: 0 }}
+                      >
+                        <CartesianGrid
+                          vertical={false}
+                          strokeDasharray="4 4"
+                          stroke="var(--color-border)"
+                        />
+                        <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={11} />
+                        <YAxis
+                          tickFormatter={(v) => `${(v / 1000000).toFixed(0)}jt`}
+                          tickLine={false}
+                          axisLine={false}
+                          fontSize={11}
+                          width={38}
+                        />
+                        <Tooltip
+                          formatter={(value, name) => [formatRupiah(value), name]}
+                          contentStyle={{
+                            borderRadius: 12,
+                            border: "1px solid var(--color-border)",
+                            backgroundColor: "var(--color-card)",
+                            color: "var(--color-foreground)",
+                            fontSize: 12,
+                          }}
+                        />
+                        <Bar
+                          dataKey="gajiPokok"
+                          name="Gaji Pokok"
+                          stackId="a"
+                          fill="var(--color-chart-1)"
+                          radius={[0, 0, 4, 4]}
+                        />
+                        <Bar
+                          dataKey="tunjangan"
+                          name="Tunjangan"
+                          stackId="a"
+                          fill="var(--color-chart-2)"
+                        />
+                        <Bar
+                          dataKey="lembur"
+                          name="Lembur PP 35"
+                          stackId="a"
+                          fill="var(--color-chart-3)"
+                        />
+                        <Bar
+                          dataKey="bpjs"
+                          name="BPJS & Manfaat"
+                          stackId="a"
+                          fill="var(--color-chart-4)"
+                          radius={[6, 6, 0, 0]}
+                        />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
 
-                    <Link
-                      href="/recruitment"
-                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 hover:border-primary/40 hover:bg-muted/30 transition-all group"
-                    >
-                      <div className="size-8 rounded-lg bg-primary/10 text-primary grid place-items-center">
-                        <Briefcase className="size-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold group-hover:text-primary transition-colors">
-                          Recruitment ATS
-                        </p>
-                        <p className="text-[10px] text-muted-foreground truncate">Kanban Pelamar</p>
-                      </div>
-                    </Link>
-
-                    <Link
-                      href="/leave/approvals"
-                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 hover:border-primary/40 hover:bg-muted/30 transition-all group"
-                    >
-                      <div className="size-8 rounded-lg bg-primary/10 text-primary grid place-items-center">
-                        <CalendarDays className="size-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold group-hover:text-primary transition-colors">
-                          Persetujuan Cuti
-                        </p>
-                        <p className="text-[10px] text-muted-foreground truncate">Antrean Approval</p>
-                      </div>
-                    </Link>
-
-                    <Link
-                      href="/organization/rbac-matrix"
-                      className="flex items-center gap-2.5 p-3 rounded-xl border border-border/60 hover:border-primary/40 hover:bg-muted/30 transition-all group"
-                    >
-                      <div className="size-8 rounded-lg bg-primary/10 text-primary grid place-items-center">
-                        <ShieldCheck className="size-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs font-bold group-hover:text-primary transition-colors">
-                          Matriks Izin RBAC
-                        </p>
-                        <p className="text-[10px] text-muted-foreground truncate">Wewenang 5 Peran</p>
-                      </div>
-                    </Link>
+                  {/* Legend Indicators with Layer Colors per Function */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 pt-3 border-t border-border/40">
+                    <div className="flex items-center gap-1.5 text-[11px]">
+                      <span className="size-2.5 rounded-full shrink-0" style={{ background: "var(--color-chart-1)" }} />
+                      <span className="text-muted-foreground truncate font-medium">Gaji Pokok</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[11px]">
+                      <span className="size-2.5 rounded-full shrink-0" style={{ background: "var(--color-chart-2)" }} />
+                      <span className="text-muted-foreground truncate font-medium">Tunjangan</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[11px]">
+                      <span className="size-2.5 rounded-full shrink-0" style={{ background: "var(--color-chart-3)" }} />
+                      <span className="text-muted-foreground truncate font-medium">Lembur PP 35</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-[11px]">
+                      <span className="size-2.5 rounded-full shrink-0" style={{ background: "var(--color-chart-4)" }} />
+                      <span className="text-muted-foreground truncate font-medium">BPJS & Manfaat</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t text-[11px] text-muted-foreground flex items-center justify-between">
+                <div className="mt-3 pt-3 border-t text-[11px] text-muted-foreground flex items-center justify-between">
                   <span>Crave HRM SaaS v2.0</span>
                   <span className="font-semibold text-primary">Crave Global Group</span>
                 </div>
