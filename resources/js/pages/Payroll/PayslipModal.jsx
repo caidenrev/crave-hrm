@@ -2,9 +2,6 @@ import React from "react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -24,36 +21,44 @@ export default function PayslipModal({ open, onOpenChange, item }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl md:max-w-2xl max-h-[84vh] flex flex-col p-0 rounded-2xl overflow-hidden shadow-2xl border border-border/80 bg-card">
+      <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
+        className="w-full sm:max-w-xl md:max-w-2xl max-h-[82vh] flex flex-col p-0 rounded-2xl overflow-hidden shadow-2xl border border-border/80 bg-card"
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          margin: 0,
+        }}
+      >
         {/* Pinned Header */}
-        <DialogHeader className="px-5 py-3.5 border-b shrink-0 bg-card">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <Avatar className="size-9 shrink-0 border border-border/60">
-                {employee.avatar_url && (
-                  <AvatarImage src={employee.avatar_url} alt={employee.nama_lengkap} />
-                )}
-                <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary uppercase">
-                  {getInitials(employee.nama_lengkap)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="min-w-0 text-left">
-                <DialogTitle className="text-base font-bold tracking-tight text-foreground truncate">
-                  Slip Gaji Karyawan
-                </DialogTitle>
-                <p className="text-[11px] text-muted-foreground truncate">
-                  Periode {period.name || "Bulan Berjalan"} &bull; Ref #{item.id}
-                </p>
-              </div>
+        <div className="px-5 py-3.5 border-b shrink-0 bg-card flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Avatar className="size-9 shrink-0 border border-border/60">
+              {employee.avatar_url && (
+                <AvatarImage src={employee.avatar_url} alt={employee.nama_lengkap} />
+              )}
+              <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary uppercase">
+                {getInitials(employee.nama_lengkap)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 text-left">
+              <h3 className="text-base font-bold tracking-tight text-foreground truncate">
+                Slip Gaji Karyawan
+              </h3>
+              <p className="text-[11px] text-muted-foreground truncate">
+                Periode {period.name || "Bulan Berjalan"} &bull; Ref #{item.id}
+              </p>
             </div>
-            <Badge
-              variant={item.payment_status === "paid" ? "default" : "secondary"}
-              className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider shrink-0"
-            >
-              {item.payment_status === "paid" ? "Sudah Dibayar" : "Belum Dibayar"}
-            </Badge>
           </div>
-        </DialogHeader>
+          <Badge
+            variant={item.payment_status === "paid" ? "default" : "secondary"}
+            className="rounded-full px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider shrink-0 mr-7"
+          >
+            {item.payment_status === "paid" ? "Sudah Dibayar" : "Belum Dibayar"}
+          </Badge>
+        </div>
 
         {/* Scrollable Content Body */}
         <div className="px-5 py-4 overflow-y-auto space-y-3.5 flex-1">
@@ -234,7 +239,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
         </div>
 
         {/* Pinned Footer */}
-        <DialogFooter className="px-5 py-3 border-t shrink-0 bg-muted/20 flex flex-row justify-between items-center">
+        <div className="px-5 py-3 border-t shrink-0 bg-muted/20 flex flex-row justify-between items-center">
           <Button
             type="button"
             variant="outline"
@@ -254,7 +259,7 @@ export default function PayslipModal({ open, onOpenChange, item }) {
             <Printer className="size-3.5" />
             Cetak / Download PDF
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );

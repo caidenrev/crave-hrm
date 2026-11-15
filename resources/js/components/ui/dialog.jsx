@@ -102,6 +102,8 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  style,
+  onOpenAutoFocus,
   ...props
 }) {
   const closeRef = React.useRef(null);
@@ -111,23 +113,28 @@ function DialogContent({
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
+        onOpenAutoFocus={onOpenAutoFocus || ((e) => e.preventDefault())}
         className={cn(
-          // Base & Desktop Centered Modal
-          "fixed top-1/2 left-1/2 z-[10001] grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none sm:max-w-lg",
-          className,
-          // Mobile Bottom Sheet Mode (< 640px) matching Gambar 2
-          "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:max-w-none max-sm:rounded-t-[28px] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:border-t max-sm:max-h-[88vh] max-sm:overflow-y-auto max-sm:p-5 max-sm:pb-8"
+          "fixed z-[10001] grid w-full max-w-[calc(100%-2rem)] rounded-2xl border bg-background shadow-2xl duration-200 outline-none sm:max-w-lg",
+          className
         )}
+        style={{
+          position: "fixed",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          margin: 0,
+          ...style,
+        }}
         {...props}
       >
-        {/* Interactive Mobile Pull / Drag Down to Dismiss Handle */}
         <MobileDragHandle onClose={() => closeRef.current?.click()} />
         {children}
         <DialogPrimitive.Close
           ref={closeRef}
           data-slot="dialog-close"
           className={cn(
-            "absolute top-4 right-4 rounded-xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none cursor-pointer data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+            "absolute top-3.5 right-3.5 rounded-xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none cursor-pointer data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-10",
             !showCloseButton && "sr-only"
           )}
         >
@@ -136,7 +143,7 @@ function DialogContent({
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
     </DialogPortal>
-  )
+  );
 }
 
 function DialogHeader({
