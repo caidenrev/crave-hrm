@@ -41,6 +41,7 @@ export default function Login({ status, turnstileSiteKey = "0x4AAAAAAGE_beCSvLpq
           widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
             sitekey: siteKey,
             theme: "light", // Kunci tema light sesuai permintaan
+            size: "flexible", // Melebarkan widget Turnstile 100% selebar input dan tombol
             callback: (token) => {
               setData("cf_turnstile_response", token);
             },
@@ -159,9 +160,9 @@ export default function Login({ status, turnstileSiteKey = "0x4AAAAAAGE_beCSvLpq
           </button>
         </div>
 
-        {/* Cloudflare Turnstile Bot Verification (Menggantikan tombol Google SSO) */}
-        <div className="pt-2 pb-1 flex flex-col items-center justify-center min-h-[70px]">
-          <div ref={turnstileRef} className="my-1" />
+        {/* Cloudflare Turnstile Bot Verification (Full-Width Flexible) */}
+        <div className="pt-2 pb-1 w-full min-h-[70px] flex flex-col items-center justify-center [&>div]:w-full [&_iframe]:w-full [&_iframe]:max-w-full">
+          <div ref={turnstileRef} className="w-full flex justify-center [&>div]:w-full [&_iframe]:w-full" />
           {errors.cf_turnstile_response && (
             <p className="text-xs text-rose-600 font-semibold mt-1.5 text-center">
               {errors.cf_turnstile_response}
