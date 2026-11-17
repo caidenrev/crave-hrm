@@ -1,0 +1,55 @@
+# ==============================================================================
+# Crave HRM - AWS Lambda Serverless Configuration (Bref PHP 8.3)
+# ==============================================================================
+service: crave-hrm
+
+provider:
+  name: aws
+  region: ap-southeast-1 # Singapore (Latency rendah ke Indonesia)
+  runtime: php-83-fpm
+  architecture: arm64 # Biaya lebih hemat & performa lebih kencang
+  stage: prod
+  environment:
+    APP_ENV: production
+    APP_DEBUG: 'false'
+    APP_URL: https://hrm.craveservices.my.id
+    SESSION_DRIVER: database
+    CACHE_STORE: database
+    QUEUE_CONNECTION: database
+    FILESYSTEM_DISK: s3
+    # Konfigurasi Database (Gunakan TiDB Cloud Serverless / RDS)
+    DB_CONNECTION: mysql
+    DB_HOST: ${env:DB_HOST}
+    DB_PORT: ${env:DB_PORT, '3306'}
+    DB_DATABASE: ${env:DB_DATABASE, 'crave_hrm'}
+    DB_USERNAME: ${env:DB_USERNAME}
+    DB_PASSWORD: ${env:DB_PASSWORD}
+
+plugins:
+  - ./vendor/bref/bref
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!tests/**'
+    - '!.git/**'
+    - '!storage/**'
+    - 'storage/framework/views/**'
+
+functions:
+  # Web application function (HTTP / Inertia React Requests)
+  web:
+    handler: public/index.php
+    description: 'Crave HRM Web HTTP Handler'
+    timeout: 28 # API Gateway max 29s
+    memorySize: 1024
+    events:
+      - httpApi: '*'
+
+  # Artisan CLI execution (migrations, seeders, queue)
+  artisan:
+    handler: artisan
+    runtime: php-83
+    description: 'Crave HRM Artisan CLI Runner'
+    timeout: 120
+    memorySize: 1024
