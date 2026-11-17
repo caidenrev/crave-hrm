@@ -12,6 +12,7 @@ APP_DIR="/var/www/crave-hrm"
 cd "$APP_DIR"
 
 echo "📥 [1/6] Mengambil kode terbaru dari Git main..."
+git config --global --add safe.directory "$APP_DIR" 2>/dev/null || true
 git fetch origin main
 git reset --hard origin/main
 

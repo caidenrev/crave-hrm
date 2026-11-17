@@ -7,6 +7,7 @@ use App\Http\Controllers\BranchController;
 use App\Http\Controllers\CanteenController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DeployWebhookController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\HolidayController;
@@ -17,6 +18,10 @@ use App\Http\Controllers\PayrollController;
 use App\Http\Controllers\RecruitmentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+// Continuous Deployment Webhook (100% Free Auto-Deploy from GitHub)
+Route::post('/deploy-webhook', [DeployWebhookController::class, 'deploy'])->name('deploy.webhook');
+Route::get('/deploy-status', [DeployWebhookController::class, 'status'])->name('deploy.status');
 
 // Authentication Routes (Crave POS Guest Layout)
 Route::middleware('guest')->group(function () {

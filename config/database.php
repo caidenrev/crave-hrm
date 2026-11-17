@@ -67,7 +67,8 @@ return [
                 }
                 if ($ca) {
                     $options[Pdo\Mysql::ATTR_SSL_CA] = $ca;
-                    $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false);
+                    $verifyCert = defined('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT') ? Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT : PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT;
+                    $options[$verifyCert] = env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false);
                 }
                 return $options;
             })() : [],
@@ -92,7 +93,8 @@ return [
                 $options = [];
                 $ca = env('MYSQL_ATTR_SSL_CA', file_exists(base_path('deploy/cacert.pem')) ? base_path('deploy/cacert.pem') : true);
                 $options[Pdo\Mysql::ATTR_SSL_CA] = $ca;
-                $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false);
+                $verifyCert = defined('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT') ? Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT : PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT;
+                $options[$verifyCert] = env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false);
                 return $options;
             })() : [],
         ],
