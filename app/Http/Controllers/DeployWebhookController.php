@@ -64,7 +64,12 @@ class DeployWebhookController extends Controller
         Log::info("[DeployWebhook] Triggering deployment for commit {$commitId} by {$pusher}");
 
         // Eksekusi script deployment di latar belakang (background)
-        $command = "sudo -u ec2-user bash {$scriptPath} > {$logPath} 2>&1 &";
+        $currentUser = trim(shell_exec('whoami') ?: '');
+        if ($currentUser === 'ec2-user') {
+            $command = "bash {$scriptPath} > {$logPath} 2>&1 &";
+        } else {
+            $command = "sudo -n -u ec2-user bash {$scriptPath} > {$logPath} 2>&1 &";
+        }
         exec($command);
 
         return response()->json([

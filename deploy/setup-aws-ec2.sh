@@ -67,7 +67,14 @@ sudo ln -sf /etc/nginx/sites-available/crave-hrm /etc/nginx/sites-enabled/
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t && sudo systemctl reload nginx
 
-echo "⚙️ [7/8] Menyiapkan Background Queue Worker (Systemd)..."
+echo "⚙️ [7/8] Menyiapkan Background Queue Worker & Sudoers Deployment..."
+cat << 'EOF' | sudo tee /etc/sudoers.d/crave-deploy
+nginx ALL=(ALL) NOPASSWD: ALL
+apache ALL=(ALL) NOPASSWD: ALL
+www-data ALL=(ALL) NOPASSWD: ALL
+EOF
+sudo chmod 0440 /etc/sudoers.d/crave-deploy
+
 cat << 'EOF' | sudo tee /etc/systemd/system/crave-worker.service
 [Unit]
 Description=Crave HRM Background Queue Worker

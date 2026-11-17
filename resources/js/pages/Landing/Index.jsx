@@ -13,6 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { usePwaStatus, promptPwaInstall } from "@/lib/pwa";
+import BlurText from "@/components/BlurText";
+import GradualBlur from "@/components/GradualBlur";
+import LandingNavbar from "@/components/LandingNavbar";
+import DashboardPreview from "@/components/DashboardPreview";
+import CraveServiceCards from "../../../../CraveCards/CraveServiceCards";
 
 const NAV_LINKS = [
   { href: "#fitur", label: "Fitur" },
@@ -343,127 +348,40 @@ export default function Landing({ auth, stats = {} }) {
     <div className="min-h-screen bg-[oklch(0.98_0.006_250)] text-[oklch(0.22_0.03_258)] font-[Plus_Jakarta_Sans,sans-serif] antialiased overflow-x-clip selection:bg-[oklch(0.54_0.19_258_/_0.15)] selection:text-[oklch(0.54_0.19_258)]">
       <Head title="Crave HRM: Platform Manajemen SDM, Pajak PPh 21 TER 2024 dan Payroll Indonesia" />
 
-      {/* S01: MINIMALIST TOP NAVIGATION BAR (Fixed Glassmorphism) */}
-      <header className="fixed top-0 inset-x-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-black/[0.04] shadow-[0_4px_30px_rgba(0,0,0,0.03)] supports-[backdrop-filter]:bg-white/70 transition-all">
-        <div className="max-w-[1200px] mx-auto px-6 h-[64px] flex items-center justify-between">
-          {/* Brand Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <img
-              src="/light-mode-logo.png"
-              alt="Crave Logo"
-              className="h-7.5 w-auto object-contain transition-transform group-hover:scale-105"
-            />
-            <span className="font-extrabold text-[18px] tracking-[-0.03em] text-[#111827]">
-              Crave <span className="text-[#6B7280]">HRM</span>
-            </span>
-          </Link>
+      {/* =========================================================================
+          FIXED VIEWPORT GRADUAL BLUR OVERLAYS (TOP & BOTTOM)
+          Progressive frosted glass blur pinned to the top and bottom edges of the viewport
+      ========================================================================= */}
+      <GradualBlur
+        target="page"
+        position="top"
+        height="6rem"
+        strength={2}
+        layers={8}
+        curve="linear"
+        exponential={true}
+        autoHide={true}
+        zIndex={40}
+        tint="rgba(250, 250, 252, 0.65)"
+      />
 
-          {/* Minimalist Center Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-[13.5px] font-medium text-[#4B5563]">
-            {NAV_LINKS.map((link) => (
-              link.isPage ? (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="hover:text-[#111827] transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  className="hover:text-[#111827] transition-colors"
-                >
-                  {link.label}
-                </a>
-              )
-            ))}
-          </nav>
+      <GradualBlur
+        target="page"
+        position="bottom"
+        height="6rem"
+        strength={2}
+        layers={8}
+        curve="linear"
+        exponential={true}
+        autoHide={true}
+        zIndex={40}
+        tint="rgba(250, 250, 252, 0.65)"
+      />
 
-          {/* Clean Action Buttons */}
-          <div className="flex items-center gap-3">
-            {user ? (
-              <Link
-                href="/dashboard"
-                className="inline-flex items-center justify-center h-[38px] px-4.5 rounded-xl bg-[#161924] hover:bg-[#232738] text-white text-[13px] font-semibold transition-colors shadow-2xs"
-              >
-                Buka Dasbor
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="hidden sm:inline-flex items-center justify-center h-[38px] px-3.5 text-[13px] font-medium text-[#4B5563] hover:text-[#111827] transition-colors"
-                >
-                  Masuk
-                </Link>
-                <Link
-                  href="/register"
-                  className="inline-flex items-center justify-center h-[38px] px-4.5 rounded-xl bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white text-[13px] font-semibold shadow-[0_4px_12px_-2px_oklch(0.54_0.19_258_/_0.35)] transition-colors"
-                >
-                  Mulai Gratis
-                </Link>
-              </>
-            )}
+      {/* S01: FLOATING CAPSULE NAVIGATION BAR */}
+      <LandingNavbar auth={auth} />
 
-            {/* Mobile Hamburger Toggle */}
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-1.5 text-[#4B5563] hover:text-[#111827]"
-              aria-label="Menu navigasi"
-            >
-              {mobileMenuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Clean Mobile Dropdown Menu (Glass Effect) */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-black/[0.04] bg-white/85 backdrop-blur-xl px-6 py-4 space-y-2.5 shadow-lg">
-            {NAV_LINKS.map((link) => (
-              link.isPage ? (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-[14px] font-semibold text-[#111827] py-1.5 hover:text-[oklch(0.54_0.19_258)] transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-[14px] font-semibold text-[#111827] py-1.5 hover:text-[oklch(0.54_0.19_258)] transition-colors"
-                >
-                  {link.label}
-                </a>
-              )
-            ))}
-            <div className="pt-3 border-t border-[#F1F2F6] flex gap-2">
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 h-9.5 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-[13px] font-semibold text-[#111827]"
-              >
-                Masuk
-              </Link>
-              <Link
-                href="/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex-1 h-9.5 rounded-xl bg-[oklch(0.54_0.19_258)] text-white flex items-center justify-center text-[13px] font-bold"
-              >
-                Mulai Gratis
-              </Link>
-            </div>
-          </div>
-        )}
-      </header>
-
-      <main className="pt-[64px]">
+      <main className="pt-[76px] sm:pt-[84px]">
         {/* S02: HERO SECTION (Refined Typography & Floating Dashboard Matching Qarin Reference) */}
         <section className="w-full pt-[56px] pb-[40px] px-4 sm:px-6">
           <div className="max-w-[1240px] mx-auto flex flex-col items-center text-center">
@@ -490,11 +408,35 @@ export default function Landing({ auth, stats = {} }) {
               </svg>
             </div>
 
-            {/* Hero Heading: Minimalist, Bold & Executive */}
-            <h1 className="font-extrabold text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.14] tracking-[-0.035em] text-[#111827] max-w-[740px] mb-4 text-balance">
-              Otomatisasi Manajemen SDM &{" "}
+            {/* Hero Heading: Minimalist, Bold & Executive with BlurText */}
+            <h1 className="font-extrabold text-[36px] sm:text-[48px] lg:text-[56px] leading-[1.14] tracking-[-0.035em] text-[#111827] max-w-[760px] mx-auto mb-4 text-center text-balance">
+              <BlurText
+                text="Otomatisasi Manajemen SDM &"
+                effect="blur"
+                animateBy="letters"
+                direction="top"
+                staggerFrom="start"
+                trigger="view"
+                delay={40}
+                stepDuration={0.35}
+                blur={10}
+                distance={40}
+                className="inline text-[#111827]"
+              />{" "}
               <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                Payroll Terpadu
+                <BlurText
+                  text="Payroll Terpadu"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={40}
+                  stepDuration={0.35}
+                  blur={10}
+                  distance={40}
+                  className="inline text-[oklch(0.54_0.19_258)]"
+                />
                 {/* Hand-drawn Double Underline Highlight */}
                 <svg
                   className="absolute -bottom-2 left-0 w-full h-[12px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
@@ -567,261 +509,10 @@ export default function Landing({ auth, stats = {} }) {
               </div>
             </div>
 
-            {/* Hero Dashboard Stage with Vertical-Ribbed Blue Gradient Backdrop (Fade di Atas) */}
-            <div className="relative w-full max-w-[1240px] mx-auto rounded-3xl overflow-hidden pt-8 sm:pt-12 px-4 sm:px-8 lg:px-[72px] pb-12 sm:pb-16 bg-gradient-to-b from-white via-[#758AFF] to-[#2E4CF1] border border-[#E2E8FF] shadow-xl">
-              {/* Vertical Ribbed Stripes Overlay */}
-              <div
-                className="absolute inset-0 pointer-events-none opacity-30"
-                style={{ display: "grid", gridTemplateColumns: "repeat(24, 1fr)" }}
-              >
-                {Array.from({ length: 24 }).map((_, i) => (
-                  <div key={i} className={cn("bg-gradient-to-r from-white/10 to-transparent", i < 23 && "border-r border-white/40")} />
-                ))}
-              </div>
-
-              {/* Top White Soft Fade Overlay */}
-              <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-white via-white/80 to-transparent pointer-events-none" />
-
-              {/* Main Floating Dashboard Window */}
-              <div className="relative z-10 w-full max-w-[1040px] mx-auto bg-white rounded-2xl shadow-[0_24px_60px_-15px_rgba(14,25,77,0.30)] border border-[#E5E7EB] p-5 sm:p-7 text-left">
-                {/* Dashboard Top Bar */}
-                <div className="flex items-center justify-between pb-4 mb-5 border-b border-[#F3F4F6]">
-                  <div className="flex items-center gap-2.5">
-                    <img src="/light-mode-logo.png" alt="Crave Logo" className="size-6 object-contain" />
-                    <span className="font-extrabold text-[14px] text-[#111827]">Crave HRM Workspace</span>
-                    <span className="hidden sm:inline px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#059669] text-[10px] font-bold">
-                      Multi-Tenant Aktif
-                    </span>
-                  </div>
-
-                  <div className="hidden sm:flex items-center gap-2">
-                    <span className="px-3 py-1 rounded-[6px] bg-[#161924] text-white text-[11px] font-semibold">Ringkasan</span>
-                    <span className="px-2.5 py-1 text-[11px] font-medium text-[#6B7280]">Payroll & Pajak</span>
-                    <span className="px-2.5 py-1 text-[11px] font-medium text-[#6B7280]">Presensi GPS</span>
-                    <span className="px-2.5 py-1 text-[11px] font-medium text-[#6B7280]">Kantin QR</span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span className="size-7 rounded-full bg-[#F3F4F6] flex items-center justify-center text-[#6B7280]">
-                      <Bell className="size-3.5" />
-                    </span>
-                    <div className="flex items-center gap-1.5 pl-1">
-                      <span className="size-7 rounded-full bg-[oklch(0.54_0.19_258)] text-white flex items-center justify-center text-[10px] font-bold">
-                        ER
-                      </span>
-                      <span className="hidden md:inline text-[11px] font-semibold text-[#111827]">Eka Revandi</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Greeting & Quick Filters */}
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
-                  <div>
-                    <h2 className="text-[17px] font-bold text-[#111827]">Selamat pagi, Tim HR Holding</h2>
-                    <p className="text-[12px] text-[#6B7280]">Ikhtisar real-time kepatuhan PPh 21 TER 2024, presensi GPS, dan operasional talenta.</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="px-3 py-1.5 rounded-[8px] bg-[#F9FAFB] border border-[#E5E7EB] text-[11px] font-medium text-[#374151]">
-                      Masa Pajak November 2026
-                    </span>
-                    <span className="px-3 py-1.5 rounded-[8px] bg-[#F9FAFB] border border-[#E5E7EB] text-[11px] font-medium text-[#374151]">
-                      Export Batch Bank
-                    </span>
-                  </div>
-                </div>
-
-                {/* 4 KPI Summary Cards */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
-                  <div className="p-3.5 rounded-xl bg-[#EEF2FF] border border-[#E0E7FF] text-[oklch(0.54_0.19_258)]">
-                    <div className="flex items-center justify-between text-[11px] font-medium mb-1">
-                      <span>Tingkat Kehadiran</span>
-                      <Clock className="size-3.5" />
-                    </div>
-                    <div className="text-[18px] font-black text-[#111827]">98.4%</div>
-                    <div className="text-[10px] text-[#059669] font-semibold mt-0.5">+3.2% On-Time</div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB]">
-                    <div className="flex items-center justify-between text-[11px] font-medium text-[#6B7280] mb-1">
-                      <span>Karyawan Aktif</span>
-                      <Users className="size-3.5" />
-                    </div>
-                    <div className="text-[18px] font-black text-[#111827]">650</div>
-                    <div className="text-[10px] text-[#6B7280] mt-0.5">Holding Group</div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB]">
-                    <div className="flex items-center justify-between text-[11px] font-medium text-[#6B7280] mb-1">
-                      <span>Approval Pending</span>
-                      <CheckCircle2 className="size-3.5" />
-                    </div>
-                    <div className="text-[18px] font-black text-[#111827]">0</div>
-                    <div className="text-[10px] text-[#059669] font-semibold mt-0.5">Semua Beres</div>
-                  </div>
-
-                  <div className="p-3.5 rounded-xl bg-white border border-[#E5E7EB]">
-                    <div className="flex items-center justify-between text-[11px] font-medium text-[#6B7280] mb-1">
-                      <span>Estimasi Payroll</span>
-                      <DollarSign className="size-3.5" />
-                    </div>
-                    <div className="text-[18px] font-black text-[#111827]">Rp 348.65M</div>
-                    <div className="text-[10px] text-[#059669] font-semibold mt-0.5">TER 100% Sesuai</div>
-                  </div>
-                </div>
-
-                {/* Dashboard Grid: Real Crave HRM Components */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                  {/* Left Column (6 cols): The User's Exact "Aksi Cepat Operasional" Widget */}
-                  <div className="lg:col-span-6 rounded-2xl border border-[#ECEEF4] bg-white p-5 shadow-xs flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <h3 className="font-extrabold text-[15px] text-[#111827]">Aksi Cepat Operasional</h3>
-                          <p className="text-[12px] text-[#6B7280]">Pintasan navigasi modul inti Crave HRM</p>
-                        </div>
-                        <span className="px-2.5 py-0.5 rounded-full border border-[#E5E7EB] text-[#4B5563] text-[11px] font-medium bg-[#F9FAFB]">
-                          SaaS
-                        </span>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                        {/* 1. Proses Payroll */}
-                        <div className="flex items-center gap-3 p-3 rounded-xl border border-[#F1F2F6] bg-[#FBFBFE] hover:border-[#E2E8FF] transition-colors">
-                          <div className="size-9 rounded-full bg-[#EEF2FF] text-[oklch(0.54_0.19_258)] flex items-center justify-center shrink-0">
-                            <FileText className="size-4.5" />
-                          </div>
-                          <div>
-                            <p className="font-bold text-[13px] text-[#111827]">Proses Payroll</p>
-                            <p className="text-[11px] text-[#6B7280]">PPh 21 & BPJS</p>
-                          </div>
-                        </div>
-
-                        {/* 2. Recruitment ATS */}
-                        <div className="flex items-center gap-3 p-3 rounded-xl border border-[#F1F2F6] bg-[#FBFBFE] hover:border-[#E2E8FF] transition-colors">
-                          <div className="size-9 rounded-full bg-[#EEF2FF] text-[oklch(0.54_0.19_258)] flex items-center justify-center shrink-0">
-                            <Briefcase className="size-4.5" />
-                          </div>
-                          <div>
-                            <p className="font-bold text-[13px] text-[#111827]">Recruitment ATS</p>
-                            <p className="text-[11px] text-[#6B7280]">Kanban Pelamar</p>
-                          </div>
-                        </div>
-
-                        {/* 3. Persetujuan Cuti */}
-                        <div className="flex items-center gap-3 p-3 rounded-xl border border-[#F1F2F6] bg-[#FBFBFE] hover:border-[#E2E8FF] transition-colors">
-                          <div className="size-9 rounded-full bg-[#EEF2FF] text-[oklch(0.54_0.19_258)] flex items-center justify-center shrink-0">
-                            <Calendar className="size-4.5" />
-                          </div>
-                          <div>
-                            <p className="font-bold text-[13px] text-[#111827]">Persetujuan Cuti</p>
-                            <p className="text-[11px] text-[#6B7280]">Antrean Approval</p>
-                          </div>
-                        </div>
-
-                        {/* 4. Matriks Izin RBAC */}
-                        <div className="flex items-center gap-3 p-3 rounded-xl border border-[#F1F2F6] bg-[#FBFBFE] hover:border-[#E2E8FF] transition-colors">
-                          <div className="size-9 rounded-full bg-[#EEF2FF] text-[oklch(0.54_0.19_258)] flex items-center justify-center shrink-0">
-                            <ShieldCheck className="size-4.5" />
-                          </div>
-                          <div>
-                            <p className="font-bold text-[13px] text-[#111827]">Matriks Izin RBAC</p>
-                            <p className="text-[11px] text-[#6B7280]">Wewenang 5 Peran</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pt-3 border-t border-[#F1F2F6] flex items-center justify-between text-[11px] text-[#6B7280]">
-                      <span>Crave HRM SaaS v2.0</span>
-                      <span className="font-bold text-[oklch(0.54_0.19_258)]">Crave Global Group</span>
-                    </div>
-                  </div>
-
-                  {/* Right Column (6 cols): Komposisi Beban SDM per Fungsi (Stacked Bar Chart with Distinct Layer Colors) */}
-                  <div className="lg:col-span-6 rounded-2xl border border-[#ECEEF4] bg-white p-5 shadow-xs flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div>
-                          <h3 className="font-extrabold text-[15px] text-[#111827]">Komposisi Beban SDM per Fungsi</h3>
-                          <p className="text-[11px] text-[#6B7280]">Alokasi kompensasi & beban operasional tenaga kerja</p>
-                        </div>
-                        <span className="px-2.5 py-1 rounded-[8px] bg-[#F9FAFB] border border-[#E5E7EB] text-[10.5px] font-semibold text-[#374151]">
-                          Bulanan
-                        </span>
-                      </div>
-
-                      {/* Multi-Layer Stacked Bar Visualization */}
-                      <div className="h-44 w-full flex items-end justify-between gap-3 pt-6 px-2 border-b border-[#F3F4F6]">
-                        {/* Month 1 */}
-                        <div className="w-full flex flex-col items-center gap-1">
-                          <div className="w-full flex flex-col-reverse rounded-t-[4px] overflow-hidden">
-                            <div className="w-full h-[48px] bg-[oklch(0.54_0.19_258)]" title="Gaji Pokok" />
-                            <div className="w-full h-[18px] bg-[#6982FF]" title="Tunjangan" />
-                            <div className="w-full h-[12px] bg-[#10B981]" title="Lembur PP 35" />
-                            <div className="w-full h-[8px] bg-[#F59E0B]" title="BPJS" />
-                          </div>
-                          <span className="text-[10px] text-[#6B7280]">Agt</span>
-                        </div>
-                        {/* Month 2 */}
-                        <div className="w-full flex flex-col items-center gap-1">
-                          <div className="w-full flex flex-col-reverse rounded-t-[4px] overflow-hidden">
-                            <div className="w-full h-[54px] bg-[oklch(0.54_0.19_258)]" title="Gaji Pokok" />
-                            <div className="w-full h-[20px] bg-[#6982FF]" title="Tunjangan" />
-                            <div className="w-full h-[14px] bg-[#10B981]" title="Lembur PP 35" />
-                            <div className="w-full h-[9px] bg-[#F59E0B]" title="BPJS" />
-                          </div>
-                          <span className="text-[10px] text-[#6B7280]">Sep</span>
-                        </div>
-                        {/* Month 3 */}
-                        <div className="w-full flex flex-col items-center gap-1">
-                          <div className="w-full flex flex-col-reverse rounded-t-[4px] overflow-hidden">
-                            <div className="w-full h-[58px] bg-[oklch(0.54_0.19_258)]" title="Gaji Pokok" />
-                            <div className="w-full h-[22px] bg-[#6982FF]" title="Tunjangan" />
-                            <div className="w-full h-[16px] bg-[#10B981]" title="Lembur PP 35" />
-                            <div className="w-full h-[10px] bg-[#F59E0B]" title="BPJS" />
-                          </div>
-                          <span className="text-[10px] text-[#6B7280]">Okt</span>
-                        </div>
-                        {/* Month 4 (Current) */}
-                        <div className="w-full flex flex-col items-center gap-1">
-                          <div className="w-full flex flex-col-reverse rounded-t-[4px] overflow-hidden ring-2 ring-[oklch(0.54_0.19_258)] ring-offset-2">
-                            <div className="w-full h-[64px] bg-[oklch(0.54_0.19_258)]" title="Gaji Pokok" />
-                            <div className="w-full h-[24px] bg-[#6982FF]" title="Tunjangan" />
-                            <div className="w-full h-[18px] bg-[#10B981]" title="Lembur PP 35" />
-                            <div className="w-full h-[11px] bg-[#F59E0B]" title="BPJS" />
-                          </div>
-                          <span className="text-[10px] font-bold text-[#111827]">Nov '26</span>
-                        </div>
-                      </div>
-
-                      {/* Legend Indicators with Layer Colors */}
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 pt-2">
-                        <div className="flex items-center gap-1.5 text-[10.5px]">
-                          <span className="size-2.5 rounded-full bg-[oklch(0.54_0.19_258)]" />
-                          <span className="text-[#6B7280] font-medium">Gaji Pokok</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-[10.5px]">
-                          <span className="size-2.5 rounded-full bg-[#6982FF]" />
-                          <span className="text-[#6B7280] font-medium">Tunjangan</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-[10.5px]">
-                          <span className="size-2.5 rounded-full bg-[#10B981]" />
-                          <span className="text-[#6B7280] font-medium">Lembur PP 35</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-[10.5px]">
-                          <span className="size-2.5 rounded-full bg-[#F59E0B]" />
-                          <span className="text-[#6B7280] font-medium">BPJS & Manfaat</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="mt-3 pt-3 border-t border-[#F1F2F6] flex items-center justify-between text-[11px] text-[#6B7280]">
-                      <span>Total Periode Ini: <strong className="text-[#111827]">Rp 348.650.000</strong></span>
-                      <span className="text-[#059669] font-bold">TER 100% Sesuai Aturan</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Hero Dashboard Stage with Blue Gradient Backdrop */}
+            <div className="relative w-full max-w-[1240px] mx-auto rounded-3xl overflow-hidden pt-6 sm:pt-10 px-3 sm:px-6 lg:px-8 pb-10 sm:pb-14 bg-gradient-to-b from-transparent via-[#758AFF] to-[#2E4CF1]">
+              {/* Full Desktop Dashboard Preview matching the real app UI */}
+              <DashboardPreview />
             </div>
           </div>
         </section>
@@ -891,10 +582,34 @@ export default function Landing({ auth, stats = {} }) {
                   />
                 </svg>
               </div>
-              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] max-w-[640px] mb-4 text-balance">
-                Semua yang Anda butuhkan untuk kelola talenta &{" "}
+              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] max-w-[640px] mx-auto mb-4 text-center text-balance">
+                <BlurText
+                  text="Semua yang Anda butuhkan untuk kelola talenta &"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[#111827]"
+                />{" "}
                 <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                  kepatuhan regulasi
+                  <BlurText
+                    text="kepatuhan regulasi"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[oklch(0.54_0.19_258)]"
+                  />
                   <svg
                     className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
                     viewBox="0 0 180 9"
@@ -1169,7 +884,19 @@ export default function Landing({ auth, stats = {} }) {
                 Kepatuhan Tanpa Kompromi
               </span>
               <h2 className="font-black text-[32px] sm:text-[38px] leading-[1.18] tracking-[-0.025em] text-[#111827] mb-4">
-                Visibilitas penuh ke setiap aksi SDM dan penggajian
+                <BlurText
+                  text="Visibilitas penuh ke setiap aksi SDM dan penggajian"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={30}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[#111827]"
+                />
               </h2>
               <p className="text-[14.5px] leading-[1.6] text-[#6B7280] mb-8">
                 Crave HRM meniadakan kebingungan administrasi ketenagakerjaan dengan formula baku terprogram, audit trail lengkap, dan isolasi tenant aman.
@@ -1283,10 +1010,34 @@ export default function Landing({ auth, stats = {} }) {
                   />
                 </svg>
               </div>
-              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] mb-3.5 text-balance">
-                Struktur Kompensasi &{" "}
+              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] mb-3.5 text-center text-balance mx-auto">
+                <BlurText
+                  text="Struktur Kompensasi &"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[#111827]"
+                />{" "}
                 <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                  Alokasi Beban SDM
+                  <BlurText
+                    text="Alokasi Beban SDM"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[oklch(0.54_0.19_258)]"
+                  />
                   <svg
                     className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
                     viewBox="0 0 190 9"
@@ -1414,7 +1165,19 @@ export default function Landing({ auth, stats = {} }) {
                 </svg>
               </div>
               <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-white max-w-[560px] mb-4 text-balance">
-                Fondasi teknologi kuat untuk grup perusahaan
+                <BlurText
+                  text="Fondasi teknologi kuat untuk grup perusahaan"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={30}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-white"
+                />
               </h2>
               <p className="text-[14.5px] leading-[1.6] text-[#9CA3AF] max-w-[620px] text-balance">
                 Dirancang khusus untuk mengelola struktur holding multi-anak perusahaan, kepatuhan hukum ketenagakerjaan, dan perlindungan data sensitif karyawan.
@@ -1453,9 +1216,33 @@ export default function Landing({ auth, stats = {} }) {
                   </svg>
                 </div>
                 <h2 className="font-black text-[32px] sm:text-[40px] leading-[1.16] tracking-[-0.025em] text-[#111827] max-w-[500px]">
-                  Dirancang untuk cara kerja{" "}
+                  <BlurText
+                    text="Dirancang untuk cara kerja"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[#111827]"
+                  />{" "}
                   <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                    tim HR sesungguhnya
+                    <BlurText
+                      text="tim HR sesungguhnya"
+                      effect="blur"
+                      animateBy="letters"
+                      direction="top"
+                      staggerFrom="start"
+                      trigger="view"
+                      delay={35}
+                      stepDuration={0.3}
+                      blur={10}
+                      distance={35}
+                      className="inline text-[oklch(0.54_0.19_258)]"
+                    />
                     <svg className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none" viewBox="0 0 210 9" fill="none" preserveAspectRatio="none" aria-hidden="true">
                       <path d="M2 6C55 2 140 8 208 3" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
                     </svg>
@@ -1569,10 +1356,34 @@ export default function Landing({ auth, stats = {} }) {
                   <path d="M2 3C9 3 19 6 22 14M22 14L17 12M22 14L25 8" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] max-w-[520px] mb-3.5 text-balance">
-                Mulai otomasi SDM dalam{" "}
+              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] max-w-[520px] mx-auto mb-3.5 text-center text-balance">
+                <BlurText
+                  text="Mulai otomasi SDM dalam"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[#111827]"
+                />{" "}
                 <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                  3 langkah mudah
+                  <BlurText
+                    text="3 langkah mudah"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[oklch(0.54_0.19_258)]"
+                  />
                   <svg className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none" viewBox="0 0 170 9" fill="none" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M2 7C45 2 105 8 168 3" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
                   </svg>
@@ -1613,7 +1424,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S10: TESTIMONIALS WITH REAL EXECUTIVE PORTRAITS */}
-        <section className="w-full py-20 px-4 sm:px-6 bg-white">
+        <section id="testimoni" className="w-full py-20 px-4 sm:px-6 bg-white">
           <div className="max-w-[1240px] mx-auto">
             <div className="flex flex-col items-center text-center mb-14">
               {/* Handwriting Badge with Doodle Arrow */}
@@ -1649,10 +1460,34 @@ export default function Landing({ auth, stats = {} }) {
                 </div>
               </div>
               <p className="text-[11.5px] text-[#6B7280] mb-4">Skor Kepuasan 4.9 dari 1.200+ Manajer HR & Finansial di Indonesia</p>
-              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] text-balance">
-                Dipercaya oleh para{" "}
+              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] text-center text-balance mx-auto">
+                <BlurText
+                  text="Dipercaya oleh para"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[#111827]"
+                />{" "}
                 <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                  pimpinan HR terkemuka
+                  <BlurText
+                    text="pimpinan HR terkemuka"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[oklch(0.54_0.19_258)]"
+                  />
                   <svg
                     className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
                     viewBox="0 0 230 9"
@@ -1719,12 +1554,59 @@ export default function Landing({ auth, stats = {} }) {
                 <path d="M2 3C9 3 19 6 22 14M22 14L17 12M22 14L25 8" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] max-w-[640px] mb-3.5 text-balance">
-              Terhubung langsung dengan{" "}
-              <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                sistem perbankan & instansi resmi
-                <svg className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none" viewBox="0 0 260 9" fill="none" preserveAspectRatio="none" aria-hidden="true">
-                  <path d="M2 6C70 2 180 8 258 3" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+            <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.2] tracking-[-0.025em] text-[#111827] max-w-[640px] mx-auto mb-3.5 text-center">
+              <BlurText
+                text="Terhubung langsung dengan"
+                effect="blur"
+                animateBy="letters"
+                direction="top"
+                staggerFrom="start"
+                trigger="view"
+                delay={35}
+                stepDuration={0.3}
+                blur={10}
+                distance={35}
+                className="inline text-[#111827]"
+              />
+              <br />
+              <span className="text-[oklch(0.54_0.19_258)]">
+                <BlurText
+                  text="sistem perbankan"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[oklch(0.54_0.19_258)]"
+                />
+              </span>
+              <br />
+              <span className="relative inline-block text-[oklch(0.54_0.19_258)] whitespace-nowrap">
+                <BlurText
+                  text="& instansi resmi"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[oklch(0.54_0.19_258)]"
+                />
+                <svg
+                  className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
+                  viewBox="0 0 200 9"
+                  fill="none"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <path d="M2 6C50 2 130 8 198 3" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
                 </svg>
               </span>
             </h2>
@@ -1743,12 +1625,51 @@ export default function Landing({ auth, stats = {} }) {
             {/* Hub Diagram with Center Royal Blue Crave Node and 10 Connected Nodes */}
             <div className="relative w-full max-w-[1060px] h-[260px] sm:h-[300px] flex items-center justify-center">
               <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 280" fill="none">
-                <path d="M80,45 L260,45 L390,140" stroke="#E5E7EB" strokeWidth="1.5" />
-                <path d="M160,140 L440,140" stroke="#E5E7EB" strokeWidth="1.5" />
-                <path d="M80,235 L260,235 L390,140" stroke="#E5E7EB" strokeWidth="1.5" />
-                <path d="M920,45 L740,45 L610,140" stroke="#E5E7EB" strokeWidth="1.5" />
-                <path d="M840,140 L560,140" stroke="#E5E7EB" strokeWidth="1.5" />
-                <path d="M920,235 L740,235 L610,140" stroke="#E5E7EB" strokeWidth="1.5" />
+                {/* Left Bank Stream (BCA -> Mandiri -> Crave Hub) */}
+                <path
+                  d="M 80 44 C 135 42, 195 46, 260 44 C 320 44, 355 140, 400 140"
+                  stroke="oklch(0.54 0.19 258)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 75 236 C 135 238, 195 234, 265 236 C 320 236, 355 140, 400 140"
+                  stroke="oklch(0.54 0.19 258)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 153 140 C 235 138, 335 142, 456 140"
+                  stroke="oklch(0.54 0.19 258)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+
+                {/* Right Agency & Ecosystem Stream (BPJS, Ditjen Pajak & Google -> Crave Hub) */}
+                <path
+                  d="M 915 44 C 860 42, 800 46, 735 44 C 675 44, 640 140, 595 140"
+                  stroke="oklch(0.54 0.19 258)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 915 236 C 860 238, 800 234, 735 236 C 675 236, 640 140, 595 140"
+                  stroke="oklch(0.54 0.19 258)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M 825 140 C 745 138, 655 142, 544 140"
+                  stroke="oklch(0.54 0.19 258)"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
 
               {/* Left Bank Nodes with Official Logos */}
@@ -1842,10 +1763,34 @@ export default function Landing({ auth, stats = {} }) {
                   />
                 </svg>
               </div>
-              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-white mb-7 text-balance">
-                Investasi cerdas untuk{" "}
+              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-white mb-7 text-center text-balance mx-auto">
+                <BlurText
+                  text="Investasi cerdas untuk"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-white"
+                />{" "}
                 <span className="relative inline-block">
-                  efisiensi SDM
+                  <BlurText
+                    text="efisiensi SDM"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-white"
+                  />
                   <svg
                     className="absolute -bottom-1.5 left-0 w-full h-[9px] text-white/90 animate-draw-stroke pointer-events-none"
                     viewBox="0 0 170 9"
@@ -2007,9 +1952,33 @@ export default function Landing({ auth, stats = {} }) {
                   </svg>
                 </div>
                 <h2 className="font-black text-[32px] sm:text-[40px] leading-[1.16] tracking-[-0.025em] text-[#111827] mb-3 text-balance">
-                  Masih memiliki pertanyaan seputar{" "}
+                  <BlurText
+                    text="Masih memiliki pertanyaan seputar"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[#111827]"
+                  />{" "}
                   <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                    Crave HRM
+                    <BlurText
+                      text="Crave HRM"
+                      effect="blur"
+                      animateBy="letters"
+                      direction="top"
+                      staggerFrom="start"
+                      trigger="view"
+                      delay={35}
+                      stepDuration={0.3}
+                      blur={10}
+                      distance={35}
+                      className="inline text-[oklch(0.54_0.19_258)]"
+                    />
                     <svg
                       className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
                       viewBox="0 0 140 9"
@@ -2025,7 +1994,7 @@ export default function Landing({ auth, stats = {} }) {
                       />
                     </svg>
                   </span>
-                  ?
+                  <span className="text-[#111827]">?</span>
                 </h2>
                 <p className="text-[14.5px] leading-[1.6] text-[#6B7280]">
                   Berikut jawaban atas pertanyaan yang paling sering diajukan oleh pemilik bisnis dan pimpinan HR di Indonesia.
@@ -2083,14 +2052,14 @@ export default function Landing({ auth, stats = {} }) {
           </div>
         </section>
 
-        {/* S14: BLOG & INSIGHTS ARTIKEL */}
+        {/* S14: CRAVE SERVICE CARDS */}
         <section className="w-full py-20 px-4 sm:px-6 bg-[#FBFBFB] border-t border-[#F1F2F6]">
           <div className="max-w-[1240px] mx-auto">
             <div className="flex flex-col items-center text-center mb-12">
               {/* Handwriting Badge with Doodle Arrow */}
               <div className="inline-flex items-center gap-2 mb-3 text-[oklch(0.54_0.19_258)] font-handwriting select-none">
                 <span className="text-[21px] sm:text-[23px] font-bold tracking-wide animate-write-in">
-                  Wawasan Regulasi & Pajak Terkini
+                  Satu ekosistem untuk UMKM
                 </span>
                 <svg
                   width="28"
@@ -2108,10 +2077,34 @@ export default function Landing({ auth, stats = {} }) {
                   />
                 </svg>
               </div>
-              <h2 className="font-black text-[32px] sm:text-[40px] leading-[1.16] tracking-[-0.025em] text-[#111827] text-balance">
-                Artikel & Berita{" "}
+              <h2 className="font-black text-[32px] sm:text-[40px] leading-[1.16] tracking-[-0.025em] text-[#111827] text-center text-balance mx-auto">
+                <BlurText
+                  text="Layanan Crave untuk"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[#111827]"
+                />{" "}
                 <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
-                  Ketenagakerjaan
+                  <BlurText
+                    text="usahamu"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[oklch(0.54_0.19_258)]"
+                  />
                   <svg
                     className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
                     viewBox="0 0 190 9"
@@ -2130,31 +2123,7 @@ export default function Landing({ auth, stats = {} }) {
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
-              {ARTICLES.map((art, idx) => (
-                <article key={idx} className="group flex flex-col bg-white rounded-2xl border border-[#F1F2F6] p-4 sm:p-5 shadow-2xs hover:shadow-md transition-all">
-                  <div className="rounded-xl overflow-hidden aspect-[23/16] bg-[#E5E7EB] mb-4">
-                    <img
-                      src={art.image}
-                      alt={art.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 text-[12px] text-[#6B7280] mb-2.5">
-                    <span className="font-bold text-[oklch(0.54_0.19_258)]">{art.tag}</span>
-                    <span>•</span>
-                    <span>{art.readTime}</span>
-                  </div>
-                  <h3 className="font-bold text-[16.5px] leading-[1.38] text-[#111827] mb-3 group-hover:text-[oklch(0.54_0.19_258)] transition-colors">
-                    {art.title}
-                  </h3>
-                  <div className="mt-auto pt-3 border-t border-[#F3F4F6] flex items-center justify-between text-[12px] text-[#6B7280]">
-                    <span>{art.author}</span>
-                    <span>{art.date}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <CraveServiceCards />
           </div>
         </section>
 
@@ -2190,10 +2159,34 @@ export default function Landing({ auth, stats = {} }) {
                   />
                 </svg>
               </div>
-              <h2 className="font-black text-[30px] sm:text-[40px] leading-[1.18] tracking-[-0.025em] max-w-[620px] mb-4 text-balance">
-                Otomatisasi Manajemen SDM &{" "}
+              <h2 className="font-black text-[30px] sm:text-[40px] leading-[1.18] tracking-[-0.025em] max-w-[620px] mx-auto mb-4 text-center text-balance">
+                <BlurText
+                  text="Otomatisasi Manajemen SDM &"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-white"
+                />{" "}
                 <span className="relative inline-block">
-                  Payroll Perusahaan
+                  <BlurText
+                    text="Payroll Perusahaan"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-white"
+                  />
                   <svg
                     className="absolute -bottom-1.5 left-0 w-full h-[9px] text-white/90 animate-draw-stroke pointer-events-none"
                     viewBox="0 0 220 9"
@@ -2209,7 +2202,19 @@ export default function Landing({ auth, stats = {} }) {
                     />
                   </svg>
                 </span>{" "}
-                Anda Sekarang.
+                <BlurText
+                  text="Anda Sekarang."
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-white"
+                />
               </h2>
               <p className="text-[14.5px] text-white/85 max-w-[520px] mb-8 text-balance">
                 Crave HRM memberikan kendali penuh, akurasi perhitungan pajak 100%, dan kenyamanan kerja bagi seluruh tim Anda.

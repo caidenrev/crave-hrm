@@ -6,7 +6,14 @@
 set -e
 
 # Pastikan PATH mencakup binary composer, php, dan node
-export PATH=$PATH:/usr/local/bin:/usr/bin
+export PATH=$PATH:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin
+export NODE_OPTIONS="--max-old-space-size=1536"
+
+# Load NVM jika terinstall di home user
+if [ -d "$HOME/.nvm" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+fi
 
 APP_DIR="/var/www/crave-hrm"
 cd "$APP_DIR"

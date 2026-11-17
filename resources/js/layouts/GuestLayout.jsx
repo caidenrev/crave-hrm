@@ -46,15 +46,15 @@ export default function GuestLayout({ children, title, subtitle, mode = "login" 
         <div className="absolute -top-20 -right-20 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -left-20 w-80 h-80 bg-black/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col items-center justify-start pt-14 sm:pt-16 md:pt-0 md:items-start md:justify-center h-full px-6 md:px-14 lg:px-16 xl:px-20 md:-translate-y-6">
+        <div className="relative z-10 flex flex-col items-center justify-start pt-20 sm:pt-24 md:pt-0 md:items-start md:justify-center h-full px-6 md:px-14 lg:px-16 xl:px-20 md:-translate-y-6">
           {/* Brand Logo & Name */}
-          <div className="flex items-center gap-3 sm:gap-4 md:gap-5 pointer-events-auto">
+          <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-5 pointer-events-auto w-full md:w-auto text-center">
             <img
               src="/dark-mode-logo.png"
               alt="Crave Logo"
-              className="h-12 sm:h-16 md:h-20 object-contain drop-shadow-md shrink-0"
+              className="h-11 sm:h-13 md:h-20 object-contain drop-shadow-md shrink-0"
             />
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none flex items-center gap-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-none flex items-center justify-center gap-2">
               <span>Crave</span>
               <span className="text-primary-foreground/90 font-black">HRM</span>
             </h1>
