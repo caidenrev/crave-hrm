@@ -6,17 +6,12 @@ import { ToastNotification } from "@/components/ui/ToastNotification";
 
 export default function GuestLayout({ children, title, subtitle, mode = "login" }) {
   useEffect(() => {
-    const savedTheme = localStorage.getItem("crave-theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    // Kunci halaman auth (Login & Register) selalu dalam mode LIGHT bersih
+    document.documentElement.classList.remove("dark");
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-slate-50 dark:bg-slate-950 md:flex md:items-center overflow-x-hidden selection:bg-primary/20 selection:text-primary font-sans">
+    <div className="relative min-h-screen bg-[#F4F6FB] text-slate-900 md:flex md:items-center overflow-x-hidden selection:bg-primary/20 selection:text-primary font-sans">
       <ToastNotification />
 
       {/* Back Button to Landing Page (Crave POS Pattern) */}
@@ -106,14 +101,14 @@ export default function GuestLayout({ children, title, subtitle, mode = "login" 
 
       {/* RIGHT FORM CONTAINER (Crave POS Floating White Card) */}
       <div className="w-full max-w-md mx-auto relative z-10 md:w-full md:max-w-xl lg:max-w-2xl md:ml-[calc(50%-2rem)] lg:ml-[calc(50%-2.5rem)] xl:ml-[calc(50%-4rem)] md:mr-8 lg:mr-12 xl:mr-20 mt-[26vh] sm:mt-[30vh] md:mt-0 px-3 sm:px-6 md:px-0 py-4 sm:py-6 md:py-6 lg:py-8">
-        <div className="bg-card text-card-foreground rounded-t-[2.5rem] md:rounded-3xl shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.1)] md:shadow-2xl border border-border/70 p-6 sm:p-8 md:p-8 flex flex-col min-h-[68vh] md:min-h-0">
+        <div className="bg-white text-slate-900 rounded-t-[2.5rem] md:rounded-3xl shadow-[0_-8px_30px_-15px_rgba(0,0,0,0.06)] md:shadow-2xl border border-slate-200/90 p-6 sm:p-8 md:p-8 flex flex-col min-h-[68vh] md:min-h-0">
           {/* Header Title & Subtitle */}
           <div className="mb-4 sm:mb-5">
-            <h2 className="text-[24px] sm:text-[26px] md:text-[28px] font-bold text-foreground tracking-tight leading-tight">
+            <h2 className="text-[24px] sm:text-[26px] md:text-[28px] font-bold text-slate-900 tracking-tight leading-tight">
               {title}
             </h2>
             {subtitle && (
-              <p className="text-[13px] sm:text-[14px] text-muted-foreground mt-0.5">
+              <p className="text-[13px] sm:text-[14px] text-slate-500 mt-0.5">
                 {subtitle}
               </p>
             )}

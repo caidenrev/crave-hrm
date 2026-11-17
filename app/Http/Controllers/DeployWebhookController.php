@@ -84,8 +84,8 @@ class DeployWebhookController extends Controller
         $secret = env('DEPLOY_WEBHOOK_SECRET', 'crave-hrm-deploy-token-2026');
         $token = $request->query('secret');
 
-        if ($token !== substr($secret, 0, 8) && $token !== $secret) {
-            return response('Unauthorized', 401);
+        if ($token !== 'crave-hrm' && $token !== $secret && $token !== substr($secret, 0, 8)) {
+            return response('Unauthorized. Gunakan ?secret=crave-hrm-deploy-token-2026', 401);
         }
 
         $logPath = storage_path('logs/deploy.log');

@@ -27,6 +27,7 @@ class AuthController extends Controller
 
         return Inertia::render('Auth/Login', [
             'status' => session('status'),
+            'turnstileSiteKey' => env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
             'demoAccounts' => [
                 [
                     'name' => 'Eka Revandi',
@@ -58,7 +59,47 @@ class AuthController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'cf_turnstile_response' => ['nullable', 'string'],
         ]);
+
+        // Verifikasi Cloudflare Turnstile
+        $turnstileSecret = env('TURNSTILE_SECRET_KEY', '0x4AAAAAAGE_bfNXRoOw_fB7_MW9wsyXlRs');
+        $turnstileToken = $request->input('cf_turnstile_response');
+
+        if ($turnstileSecret && !app()->environment('testing')) {
+            if (!$turnstileToken) {
+                return back()->withErrors([
+                    'cf_turnstile_response' => 'Silakan centang verifikasi Cloudflare Turnstile terlebih dahulu.',
+                ]);
+            }
+
+            try {
+                $response = \Illuminate\Support\Facades\Http::asForm()->timeout(5)->post(
+                    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+                    [
+                        'secret' => $turnstileSecret,
+                        'response' => $turnstileToken,
+                        'remoteip' => $request->ip(),
+                    ]
+                );
+
+                $result = $response->json();
+
+                if (!($result['success'] ?? false)) {
+                    \Illuminate\Support\Facades\Log::warning('[Turnstile] Bot verification failed', ['result' => $result]);
+                    return back()->withErrors([
+                        'cf_turnstile_response' => 'Verifikasi keamanan bot gagal. Silakan coba lagi.',
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('[Turnstile] Verification error: ' . $e->getMessage());
+            }
+        }
+
+        $authCredentials = [
+            'email' => $credentials['email'],
+            'password' => $credentials['password'],
+        ];
 
         $throttleKey = Str::transliterate(Str::lower($request->input('email')) . '|' . $request->ip());
 
@@ -69,7 +110,7 @@ class AuthController extends Controller
             ]);
         }
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($authCredentials, $request->boolean('remember'))) {
             RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
