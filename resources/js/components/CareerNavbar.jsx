@@ -5,6 +5,7 @@ import { Link } from "@inertiajs/react";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { smoothScrollTo } from "@/lib/smoothScroll";
 
 const NAV_ITEMS = [
   { name: "Cari Lowongan", href: "#posisi" },
@@ -31,10 +32,7 @@ export default function CareerNavbar({ companyName = "Crave Group" }) {
     if (href.startsWith("#")) {
       e.preventDefault();
       setMobileMenuOpen(false);
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-      }
+      smoothScrollTo(href);
     } else {
       setMobileMenuOpen(false);
     }

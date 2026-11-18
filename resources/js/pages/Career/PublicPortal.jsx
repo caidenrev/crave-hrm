@@ -523,7 +523,7 @@ export default function PublicPortal({
       </div>
 
       {/* DAFTAR + DETAIL */}
-      <main id="posisi" className="flex-1 max-w-6xl w-full mx-auto px-6 pt-12 pb-16 scroll-mt-4">
+      <main id="posisi" className="flex-1 max-w-6xl w-full mx-auto px-6 pt-12 pb-16 scroll-mt-20 sm:scroll-mt-24">
         <div className="flex items-baseline gap-2 mb-5" aria-live="polite">
           <h2 className="text-sm font-semibold">Lowongan tersedia</h2>
           <span className="text-sm text-[#9CA3AF]">{jobs.length}</span>
@@ -617,7 +617,7 @@ export default function PublicPortal({
       </main>
 
       {/* BUDAYA */}
-      <section id="budaya" className="border-t border-[#EEF0F3] bg-[#F8F9FB] scroll-mt-4">
+      <section id="budaya" className="border-t border-[#EEF0F3] bg-[#F8F9FB] scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-6xl mx-auto px-6 py-16">
           <HandwriteTag text="Budaya & benefit nyata" />
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#111827]">

@@ -1,8 +1,12 @@
 import '../css/app.css';
 import '@/lib/pwa';
+import { initSmoothScroll } from '@/lib/smoothScroll';
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import { TooltipProvider } from '@/components/ui/tooltip';
+
+// Inisialisasi sistem universal smooth scrolling & hash navigation
+initSmoothScroll();
 
 const appName = import.meta.env.VITE_APP_NAME || 'Crave HRM';
 

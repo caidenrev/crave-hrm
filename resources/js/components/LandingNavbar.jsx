@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/Logo";
+import { smoothScrollTo } from "@/lib/smoothScroll";
 import {
   Navbar,
   NavBody,
@@ -42,10 +43,7 @@ export function LandingNavbar({ auth }) {
     if (item.link?.startsWith("#")) {
       e.preventDefault();
       setIsMobileMenuOpen(false);
-      const target = document.querySelector(item.link);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth" });
-      }
+      smoothScrollTo(item.link);
     } else {
       setIsMobileMenuOpen(false);
     }

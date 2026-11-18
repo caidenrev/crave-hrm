@@ -522,7 +522,7 @@ export default function Landing({ auth, stats = {} }) {
         <section className="w-full py-10 bg-white border-y border-[#F1F2F6] overflow-hidden">
           <div className="max-w-[1240px] mx-auto text-center px-4 mb-7">
             <p className="text-[12.5px] sm:text-[13px] font-bold text-[#6B7280] tracking-wider uppercase">
-              Terintegrasi Resmi dengan Ekosistem Perbankan & Lembaga Ketenagakerjaan Indonesia
+              Di Percaya oleh Perusahaan di Seluruh Indonesia
             </p>
           </div>
 
@@ -558,7 +558,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S04: BENTO GRID FEATURE SECTION + BLUE KPI BANNER */}
-        <section id="fitur" className="w-full py-20 px-4 sm:px-6 bg-[#FBFBFB]">
+        <section id="fitur" className="w-full py-20 px-4 sm:px-6 bg-[#FBFBFB] scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1240px] mx-auto">
             {/* Section Header */}
             <div className="flex flex-col items-center text-center mb-14">
@@ -715,7 +715,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S05: VISIBILITY / COMPLIANCE DEEP DIVE WITH REAL TEAM PHOTO */}
-        <section id="kepatuhan" className="w-full py-20 px-4 sm:px-6 bg-white">
+        <section id="kepatuhan" className="w-full py-20 px-4 sm:px-6 bg-white scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Column (5 cols) */}
             <div className="lg:col-span-5 pr-0 lg:pr-4">
@@ -991,7 +991,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S07: DARK FEATURES GRID */}
-        <section id="keunggulan" className="w-full px-4 sm:px-6 py-6">
+        <section id="keunggulan" className="w-full px-4 sm:px-6 py-6 scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1280px] mx-auto rounded-3xl bg-gradient-to-b from-[#252629] to-[#17181B] text-white py-20 px-6 sm:px-14 shadow-xl">
             {/* Header */}
             <div className="flex flex-col items-center text-center mb-16">
@@ -1263,7 +1263,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S10: TESTIMONIALS WITH REAL EXECUTIVE PORTRAITS */}
-        <section id="testimoni" className="w-full py-20 px-4 sm:px-6 bg-white">
+        <section id="testimoni" className="w-full py-20 px-4 sm:px-6 bg-white scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1240px] mx-auto">
             <div className="flex flex-col items-center text-center mb-14">
               {/* Handwriting Badge with Doodle Arrow */}
@@ -1382,7 +1382,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S11: INTEGRATIONS HUB */}
-        <section id="integrasi" className="w-full py-20 px-4 sm:px-6 bg-white border-t border-[#F1F2F6]">
+        <section id="integrasi" className="w-full py-20 px-4 sm:px-6 bg-white border-t border-[#F1F2F6] scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1240px] mx-auto flex flex-col items-center text-center">
             {/* Handwriting Badge with Doodle Arrow */}
             <div className="inline-flex items-center gap-2 mb-3 text-[oklch(0.54_0.19_258)] font-handwriting select-none">
@@ -1578,7 +1578,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S12: PRICING SECTION */}
-        <section id="harga" className="w-full px-4 sm:px-6 py-8">
+        <section id="harga" className="w-full px-4 sm:px-6 py-8 scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1280px] mx-auto rounded-3xl bg-gradient-to-b from-[#3A59FF] via-[#4E6BFF] to-[#8396FF] py-20 px-6 sm:px-12 shadow-lg">
             <div className="flex flex-col items-center text-center mb-12">
               {/* Handwriting Badge with Doodle Arrow */}
@@ -1764,7 +1764,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S13: FAQ WITH REAL HR CONSULTANT PHOTO */}
-        <section id="faq" className="w-full py-20 px-4 sm:px-6 bg-white">
+        <section id="faq" className="w-full py-20 px-4 sm:px-6 bg-white scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1240px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             {/* Left Column (5 cols): Specialist Support Card */}
             <div className="lg:col-span-5 space-y-6">
@@ -1892,7 +1892,7 @@ export default function Landing({ auth, stats = {} }) {
         </section>
 
         {/* S14: CRAVE SERVICE CARDS */}
-        <section className="w-full py-20 px-4 sm:px-6 bg-[#FBFBFB] border-t border-[#F1F2F6]">
+        <section id="ekosistem" className="w-full py-20 px-4 sm:px-6 bg-[#FBFBFB] border-t border-[#F1F2F6] scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-[1240px] mx-auto">
             <div className="flex flex-col items-center text-center mb-12">
               {/* Handwriting Badge with Doodle Arrow */}

@@ -9,6 +9,7 @@ import {
   useMotionValueEvent,
 } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { smoothScrollTo } from "@/lib/smoothScroll";
 
 export const Navbar = ({ children, className }) => {
   const ref = useRef(null);
@@ -97,11 +98,8 @@ export const NavItems = ({ items, className, onItemClick, isScrolled }) => {
             onMouseEnter={() => setHovered(idx)}
             onClick={(e) => {
               if (item.link?.startsWith("#")) {
-                const target = document.querySelector(item.link);
-                if (target) {
-                  e.preventDefault();
-                  target.scrollIntoView({ behavior: "smooth" });
-                }
+                e.preventDefault();
+                smoothScrollTo(item.link);
               }
               if (onItemClick) onItemClick();
             }}
