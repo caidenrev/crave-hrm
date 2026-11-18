@@ -18,6 +18,7 @@ import GradualBlur from "@/components/GradualBlur";
 import LandingNavbar from "@/components/LandingNavbar";
 import DashboardPreview from "@/components/DashboardPreview";
 import CraveServiceCards from "../../../../CraveCards/CraveServiceCards";
+import { FeatureGrid, FeatureBento } from "@/components/FeatureSections";
 
 const NAV_LINKS = [
   { href: "#fitur", label: "Fitur" },
@@ -632,139 +633,8 @@ export default function Landing({ auth, stats = {} }) {
             </div>
 
             {/* Bento Grid (Left 2 Stacked Cards + Right 1 Tall Card) */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-              {/* Left Column (6 cols) */}
-              <div className="lg:col-span-6 flex flex-col gap-6">
-                {/* Top-Left: Smart Attendance Geofence */}
-                <article className="rounded-2xl bg-[#F4F5FA] border border-[#ECEEF6] p-6 sm:p-7 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-                  <div className="sm:col-span-6">
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <img src="/images/icon-attendance-3d.png" alt="Presensi 3D" className="size-9 object-contain drop-shadow-xs" />
-                      <span className="text-[11px] font-bold text-[oklch(0.54_0.19_258)] uppercase tracking-wider block">
-                        Anti-Titip Absen
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-[19px] leading-[1.3] text-[#111827] mb-2.5">
-                      Presensi GPS & Whitelist IP
-                    </h3>
-                    <p className="text-[13.5px] leading-[1.55] text-[#6B7280]">
-                      Validasi lokasi meter-presisi dengan geofence radius kantor dan selfie anti-fake GPS real-time.
-                    </p>
-                  </div>
-                  <div className="sm:col-span-6 bg-white rounded-xl p-4 shadow-xs border border-[#F1F2F6]">
-                    <div className="flex items-center justify-between mb-3">
-                      <span className="text-[11.5px] font-bold text-[#111827]">Tingkat On-Time</span>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-[#ECFDF5] text-[#059669] font-bold">98.6%</span>
-                    </div>
-                    <div className="flex items-end justify-between gap-1.5 h-[90px] pt-4 px-1">
-                      <div className="flex flex-col items-center gap-1 w-full">
-                        <div className="w-full h-[40px] rounded-t-[3px] bg-[#6982FF]" />
-                        <span className="text-[9px] text-[#9CA3AF]">Sen</span>
-                      </div>
-                      <div className="flex flex-col items-center gap-1 w-full">
-                        <div className="w-full h-[65px] rounded-t-[3px] bg-[oklch(0.54_0.19_258)]" />
-                        <span className="text-[9px] text-[#9CA3AF]">Sel</span>
-                      </div>
-                      <div className="flex flex-col items-center gap-1 w-full">
-                        <div className="w-full h-[55px] rounded-t-[3px] bg-[#6982FF]" />
-                        <span className="text-[9px] text-[#9CA3AF]">Rab</span>
-                      </div>
-                      <div className="flex flex-col items-center gap-1 w-full">
-                        <div className="w-full h-[80px] rounded-t-[3px] bg-[oklch(0.48_0.20_258)]" />
-                        <span className="text-[9px] font-bold text-[#111827]">Kam</span>
-                      </div>
-                      <div className="flex flex-col items-center gap-1 w-full">
-                        <div className="w-full h-[70px] rounded-t-[3px] bg-[oklch(0.54_0.19_258)]" />
-                        <span className="text-[9px] text-[#9CA3AF]">Jum</span>
-                      </div>
-                    </div>
-                  </div>
-                </article>
-
-                {/* Bottom-Left: Canteen Pass Dynamic QR 60s */}
-                <article className="rounded-2xl bg-[#F4F5FA] border border-[#ECEEF6] p-6 sm:p-7 grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
-                  <div className="sm:col-span-6">
-                    <div className="flex items-center gap-2.5 mb-2">
-                      <img src="/images/icon-canteen-3d.png" alt="Kantin 3D" className="size-9 object-contain drop-shadow-xs" />
-                      <span className="text-[11px] font-bold text-[oklch(0.54_0.19_258)] uppercase tracking-wider block">
-                        One-Time Use (HMAC)
-                      </span>
-                    </div>
-                    <h3 className="font-bold text-[19px] leading-[1.3] text-[#111827] mb-2.5">
-                      Voucher Kantin QR 60 Detik
-                    </h3>
-                    <p className="text-[13.5px] leading-[1.55] text-[#6B7280]">
-                      Token makan berganti setiap 60 detik anti-screenshot. Scan kasir instan kurang dari 0.5 detik.
-                    </p>
-                  </div>
-                  <div className="sm:col-span-6 bg-white rounded-xl p-4 shadow-xs border border-[#F1F2F6]">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <QrCode className="size-4 text-[oklch(0.54_0.19_258)]" />
-                        <span className="text-[12px] font-bold text-[#111827]">Voucher Aktif</span>
-                      </div>
-                      <span className="px-2 py-0.5 rounded bg-[#FEF3C7] text-[#D97706] font-mono text-[10.5px] font-bold">
-                        {qrCountdown}s
-                      </span>
-                    </div>
-                    <div className="p-2.5 rounded-lg bg-[#F9FAFB] border border-[#F3F4F6] text-center">
-                      <div className="text-[11px] text-[#6B7280]">Subsidi Makan Siang Karyawan</div>
-                      <div className="text-[14px] font-black text-[oklch(0.54_0.19_258)]">Rp 25.000 / porsi</div>
-                      <div className="text-[9.5px] text-[#10B981] font-semibold mt-1">Status: Siap Pindai di Merchant</div>
-                    </div>
-                  </div>
-                </article>
-              </div>
-
-              {/* Right Column (6 cols): Tall Card - Real-Time Payroll & Tax Compliance */}
-              <article className="lg:col-span-6 rounded-2xl bg-[#F4F5FA] border border-[#ECEEF6] p-6 sm:p-8 flex flex-col justify-between">
-                <div className="mb-6">
-                  <div className="flex items-center gap-3 mb-2">
-                    <img src="/images/icon-payroll-3d.png" alt="Payroll 3D" className="size-11 object-contain drop-shadow-xs" />
-                    <div>
-                      <span className="text-[11px] font-bold text-[oklch(0.54_0.19_258)] uppercase tracking-wider block">
-                        Kepatuhan Perpajakan
-                      </span>
-                      <h3 className="font-bold text-[20px] leading-[1.3] text-[#111827]">
-                        Kalkulator Otomatis PPh 21 TER & BPJS
-                      </h3>
-                    </div>
-                  </div>
-                  <p className="text-[14px] leading-[1.6] text-[#6B7280] max-w-[480px]">
-                    Klasifikasi Kategori TER A, B, atau C berbasis PTKP secara matematis presisi tanpa salah hitung. Cetak slip gaji dan file batch bank dalam 1 klik.
-                  </p>
-                </div>
-
-                {/* SVG Smooth Area Line Chart */}
-                <div className="bg-white rounded-xl p-5 shadow-xs border border-[#F1F2F6]">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="size-2.5 rounded-full bg-[#10B981]" />
-                      <span className="text-[12.5px] font-bold text-[#111827]">Kepatuhan Payroll Perusahaan</span>
-                    </div>
-                    <span className="px-2.5 py-1 rounded-full bg-[#F3F4F6] text-[11px] font-bold text-[#111827]">100% Sesuai Aturan</span>
-                  </div>
-
-                  <div className="w-full h-[180px] relative">
-                    <svg className="w-full h-full overflow-visible" viewBox="0 0 500 180" fill="none">
-                      <defs>
-                        <linearGradient id="payrollAreaGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="0%" stopColor="#3B5BFF" stopOpacity="0.25" />
-                          <stop offset="100%" stopColor="#3B5BFF" stopOpacity="0.01" />
-                        </linearGradient>
-                      </defs>
-                      <line x1="0" y1="35" x2="500" y2="35" stroke="#F3F4F6" strokeWidth="1" />
-                      <line x1="0" y1="80" x2="500" y2="80" stroke="#F3F4F6" strokeWidth="1" />
-                      <line x1="0" y1="125" x2="500" y2="125" stroke="#F3F4F6" strokeWidth="1" />
-                      <line x1="0" y1="170" x2="500" y2="170" stroke="#F3F4F6" strokeWidth="1" />
-
-                      <path d="M0,140 C50,135 90,150 140,115 C190,80 230,110 280,75 C330,40 380,60 430,35 C465,20 485,30 500,25 L500,170 L0,170 Z" fill="url(#payrollAreaGrad)" />
-                      <path d="M0,140 C50,135 90,150 140,115 C190,80 230,110 280,75 C330,40 380,60 430,35 C465,20 485,30 500,25" stroke="#3B5BFF" strokeWidth="2.5" strokeLinecap="round" />
-                      <circle cx="430" cy="35" r="4.5" fill="#3B5BFF" stroke="#FFFFFF" strokeWidth="2" />
-                    </svg>
-                  </div>
-                </div>
-              </article>
+            <div className="mb-8">
+              <FeatureBento />
             </div>
 
             {/* Blue KPI Banner */}
@@ -839,38 +709,7 @@ export default function Landing({ auth, stats = {} }) {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {CORE_MODULES.map((mod) => (
-                  <article
-                    key={mod.title}
-                    className="rounded-2xl bg-white border border-[#ECEEF6] p-6 flex flex-col justify-between shadow-2xs hover:shadow-md hover:border-[#D8E0FF] transition-all group"
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="size-16 rounded-2xl bg-[#F8FAFC] border border-[#F1F2F6] p-2 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
-                          <img src={mod.image3d} alt={mod.title} className="size-12 object-contain drop-shadow-sm" />
-                        </div>
-                        <span className="px-3 py-1 rounded-full bg-[#F5F7FF] border border-[#E2E8FF] text-[oklch(0.54_0.19_258)] text-[11px] font-bold">
-                          {mod.tag}
-                        </span>
-                      </div>
-                      <h3 className="font-bold text-[18px] text-[#111827] mb-2 group-hover:text-[oklch(0.54_0.19_258)] transition-colors">
-                        {mod.title}
-                      </h3>
-                      <p className="text-[13.5px] leading-[1.6] text-[#6B7280] mb-4">
-                        {mod.desc}
-                      </p>
-                    </div>
-                    <div className="pt-3 border-t border-[#F8F9FA] flex items-center justify-between text-[11.5px] font-bold text-[oklch(0.54_0.19_258)]">
-                      <span className="flex items-center gap-1.5">
-                        <CheckCircle2 className="size-3.5 text-[#10B981]" />
-                        <span>{mod.metric}</span>
-                      </span>
-                      <ArrowRight className="size-3.5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                    </div>
-                  </article>
-                ))}
-              </div>
+              <FeatureGrid />
             </div>
           </div>
         </section>
