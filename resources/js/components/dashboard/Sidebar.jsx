@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, usePage, router } from "@inertiajs/react";
+import { getEmployeeAvatar } from "@/lib/avatars";
 import {
   LayoutDashboard,
   Clock,
@@ -392,10 +393,11 @@ export function Sidebar({ collapsed, setCollapsed }) {
                       "justify-center border-0 bg-transparent p-0 shadow-none hover:bg-transparent"
                   )}
                 >
-                  <div className="size-8 rounded-full overflow-hidden shrink-0 border border-border bg-muted shadow-2xs">
+                  <div className="size-8 rounded-full overflow-hidden shrink-0 border border-border bg-white shadow-2xs">
                     <img
-                      src="/profile-logo.jpeg"
-                      alt="Profile"
+                      src={getEmployeeAvatar(user)}
+                      alt={user?.name || "Profil"}
+                      decoding="async"
                       className="size-full object-cover"
                     />
                   </div>

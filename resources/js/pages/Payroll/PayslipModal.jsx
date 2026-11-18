@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatRupiah, getInitials } from "@/lib/formatters";
@@ -28,14 +28,11 @@ export default function PayslipModal({ open, onOpenChange, item }) {
         {/* Pinned Header */}
         <div className="px-5 py-3.5 border-b shrink-0 bg-card flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
-            <Avatar className="size-9 shrink-0 border border-border/60">
-              {employee.avatar_url && (
-                <AvatarImage src={employee.avatar_url} alt={employee.nama_lengkap} />
-              )}
-              <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary uppercase">
-                {getInitials(employee.nama_lengkap)}
-              </AvatarFallback>
-            </Avatar>
+            <EmployeeAvatar
+              person={employee}
+              name={employee.nama_lengkap}
+              className="size-9 border border-border/60"
+            />
             <div className="min-w-0 text-left">
               <h3 className="text-base font-bold tracking-tight text-foreground truncate">
                 Slip Gaji Karyawan

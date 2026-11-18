@@ -36,7 +36,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { formatRupiah, getInitials } from "@/lib/formatters";
 
 const chartColors = [
@@ -351,11 +351,12 @@ export default function Dashboard({
                         className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl bg-muted/40 p-2.5"
                       >
                         <div className="flex min-w-0 items-center gap-2.5">
-                          <Avatar className="size-8 shrink-0">
-                            <AvatarFallback className="bg-primary/10 text-[10px] font-black text-primary uppercase">
-                              {getInitials(item.name)}
-                            </AvatarFallback>
-                          </Avatar>
+                          <EmployeeAvatar
+                            person={item}
+                            name={item.name}
+                            className="size-8"
+                            fallbackClassName="text-[10px] font-black"
+                          />
                           <div className="min-w-0">
                             <p className="truncate text-xs font-bold text-foreground">{item.name}</p>
                             <p className="truncate text-[10px] text-muted-foreground">

@@ -20,7 +20,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import {
   Dialog,
   DialogContent,
@@ -452,12 +452,12 @@ export default function OrgChart({
                                   className="group card-soft p-3.5 flex items-start justify-between gap-3 bg-card hover:shadow-xs transition-all border border-border/70"
                                 >
                                   <div className="flex items-start gap-3 min-w-0">
-                                    <Avatar className="size-10 rounded-xl border border-border/60 shrink-0">
-                                      <AvatarImage src={emp.avatar_url} />
-                                      <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold text-xs">
-                                        {initials}
-                                      </AvatarFallback>
-                                    </Avatar>
+                                    <EmployeeAvatar
+                                      person={emp}
+                                      name={emp.nama_lengkap}
+                                      className="size-10 rounded-xl border border-border/60"
+                                      fallbackClassName="rounded-xl text-xs"
+                                    />
 
                                     <div className="min-w-0">
                                       <p className="text-xs font-bold text-foreground truncate">
@@ -524,14 +524,12 @@ export default function OrgChart({
 
           {editingEmployee && (
             <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/40 border border-border/60 my-1">
-              <Avatar className="size-9 rounded-xl border border-border/60 shrink-0">
-                <AvatarImage src={editingEmployee.avatar_url} />
-                <AvatarFallback className="rounded-xl bg-primary/10 text-primary font-bold text-xs">
-                  {editingEmployee.nama_lengkap
-                    ? editingEmployee.nama_lengkap.substring(0, 2).toUpperCase()
-                    : "EM"}
-                </AvatarFallback>
-              </Avatar>
+              <EmployeeAvatar
+                person={editingEmployee}
+                name={editingEmployee.nama_lengkap}
+                className="size-9 rounded-xl border border-border/60"
+                fallbackClassName="rounded-xl text-xs"
+              />
               <div className="min-w-0">
                 <p className="text-xs font-bold text-foreground truncate">
                   {editingEmployee.nama_lengkap}

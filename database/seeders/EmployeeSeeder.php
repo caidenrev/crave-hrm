@@ -110,7 +110,7 @@ class EmployeeSeeder extends Seeder
                     'bank_name' => 'BCA',
                     'bank_account_number' => '8801928371',
                     'gaji_pokok' => 45000000,
-                    'avatar_url' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+                    'avatar_url' => '/images/avatars/avatar-1.jpg',
                     'is_active' => true,
                 ]
             );
@@ -133,7 +133,7 @@ class EmployeeSeeder extends Seeder
                     'bank_name' => 'Mandiri',
                     'bank_account_number' => '127009847261',
                     'gaji_pokok' => 38000000,
-                    'avatar_url' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+                    'avatar_url' => '/images/avatars/avatar-2.jpg',
                     'is_active' => true,
                 ]
             );
@@ -156,7 +156,7 @@ class EmployeeSeeder extends Seeder
                     'bank_name' => 'BCA',
                     'bank_account_number' => '8803456712',
                     'gaji_pokok' => 35000000,
-                    'avatar_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+                    'avatar_url' => '/images/avatars/avatar-3.jpg',
                     'is_active' => true,
                 ]
             );
@@ -310,7 +310,7 @@ class EmployeeSeeder extends Seeder
             'bank_name' => 'BCA',
             'bank_account_number' => '8210339912',
             'gaji_pokok' => 28000000,
-            'avatar_url' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+            'avatar_url' => '/images/avatars/avatar-2.jpg',
             'is_active' => true,
         ]);
 
@@ -332,7 +332,7 @@ class EmployeeSeeder extends Seeder
             'bank_name' => 'Mandiri',
             'bank_account_number' => '1370019283741',
             'gaji_pokok' => 18000000,
-            'avatar_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+            'avatar_url' => '/images/avatars/avatar-3.jpg',
             'is_active' => true,
         ]);
 

@@ -21,7 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { formatRupiah, formatTanggalId } from "@/lib/formatters";
 
 export default function VoucherCard({
@@ -229,12 +229,12 @@ export default function VoucherCard({
 
               {/* Employee Info Header */}
               <div className="py-4 flex items-center gap-3">
-                <Avatar className="size-11 rounded-2xl border border-border/50">
-                  <AvatarImage src={employee?.avatar} alt={employee?.name} />
-                  <AvatarFallback className="rounded-2xl bg-primary/10 text-primary font-bold text-xs">
-                    {employee?.name ? employee.name.slice(0, 2).toUpperCase() : "CR"}
-                  </AvatarFallback>
-                </Avatar>
+                <EmployeeAvatar
+                  person={employee}
+                  name={employee?.name}
+                  className="size-11 rounded-2xl border border-border/50"
+                  fallbackClassName="rounded-2xl text-xs"
+                />
                 <div className="min-w-0 flex-1">
                   <h4 className="text-sm font-extrabold text-foreground truncate">
                     {employee?.name || "Karyawan Crave"}

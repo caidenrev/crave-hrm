@@ -380,7 +380,7 @@ class PayrollController extends Controller
 
         $validated = $request->validate([
             'payroll_period_id' => 'required|exists:payroll_periods,id',
-            'bank_format' => 'required|string|in:BCA,MANDIRI,BRI,BNI',
+            'bank_format' => 'required|string|in:' . implode(',', BankExportService::SUPPORTED_BANKS),
         ]);
 
         $period = PayrollPeriod::where('company_id', $companyId)
@@ -449,10 +449,10 @@ class PayrollController extends Controller
 
                 foreach ($period->items as $item) {
                     fputcsv($output, [
-                        $item->employee->nik ?? '',
-                        $item->employee->nama_lengkap ?? '',
-                        $item->employee->department->name ?? '',
-                        $item->employee->designation->name ?? '',
+                        BankExportService::sanitizeCell($item->employee->nik ?? '', ''),
+                        BankExportService::sanitizeCell($item->employee->nama_lengkap ?? '', ''),
+                        BankExportService::sanitizeCell($item->employee->department->name ?? '', ''),
+                        BankExportService::sanitizeCell($item->employee->designation->name ?? '', ''),
                         $item->ptkp_status,
                         $item->ter_category,
                         number_format($item->ter_rate, 2),
@@ -468,8 +468,8 @@ class PayrollController extends Controller
                         $item->bpjs_jp_employee,
                         $item->total_potongan,
                         $item->take_home_pay,
-                        $item->employee->bank_name ?? '',
-                        $item->employee->bank_account_number ?? '',
+                        BankExportService::sanitizeCell($item->employee->bank_name ?? '', ''),
+                        BankExportService::sanitizeCell($item->employee->bank_account_number ?? '', ''),
                         $item->payment_status,
                     ]);
                 }

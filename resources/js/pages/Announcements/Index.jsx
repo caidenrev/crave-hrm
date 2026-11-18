@@ -52,7 +52,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 
 const chartColors = [
   "var(--color-chart-1)",
@@ -571,11 +571,12 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
 
                     <div className="flex items-center justify-between pt-3 border-t border-border/50 text-xs text-muted-foreground mt-2">
                       <div className="flex items-center gap-2">
-                        <Avatar className="size-6">
-                          <AvatarFallback className="text-[10px] bg-primary/10 text-primary font-bold">
-                            {item.author?.name ? item.author.name.substring(0, 2).toUpperCase() : "AD"}
-                          </AvatarFallback>
-                        </Avatar>
+                        <EmployeeAvatar
+                          person={item.author}
+                          name={item.author?.name || "Admin HR"}
+                          className="size-6"
+                          fallbackClassName="text-[10px]"
+                        />
                         <span className="font-medium text-foreground truncate max-w-[120px]">
                           {item.author?.name || "Admin HR"}
                         </span>
@@ -747,11 +748,12 @@ export default function Index({ announcements, filters = {}, stats = {} }) {
 
                   <div className="flex items-center justify-between pt-3 border-t border-border/50 text-xs text-muted-foreground mt-2">
                     <div className="flex items-center gap-2">
-                      <Avatar className="size-6">
-                        <AvatarFallback className="text-[10px] bg-muted font-bold text-muted-foreground">
-                          {item.author?.name ? item.author.name.substring(0, 2).toUpperCase() : "AD"}
-                        </AvatarFallback>
-                      </Avatar>
+                      <EmployeeAvatar
+                        person={item.author}
+                        name={item.author?.name || "Admin HR"}
+                        className="size-6"
+                        fallbackClassName="text-[10px]"
+                      />
                       <span className="truncate max-w-[110px] text-foreground font-medium">
                         {item.author?.name || "Admin HR"}
                       </span>

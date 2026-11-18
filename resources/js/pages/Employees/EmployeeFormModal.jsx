@@ -330,6 +330,11 @@ export function EmployeeFormModal({
                 <option value="Mandiri">Mandiri</option>
                 <option value="BRI">BRI</option>
                 <option value="BNI">BNI</option>
+                <option value="BSI">BSI (Bank Syariah Indonesia)</option>
+                <option value="CIMB Niaga">CIMB Niaga</option>
+                <option value="Permata">PermataBank</option>
+                <option value="Danamon">Danamon</option>
+                <option value="BTN">BTN</option>
                 <option value="Lainnya">Lainnya</option>
               </select>
             </div>

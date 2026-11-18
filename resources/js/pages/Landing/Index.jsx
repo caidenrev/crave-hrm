@@ -31,15 +31,114 @@ const NAV_LINKS = [
 ];
 
 const PARTNER_LOGOS = [
-  { name: "Bank Central Asia (BCA)", src: "/Logo BCA_Biru.png", height: "h-7 sm:h-8", alt: "Logo BCA" },
-  { name: "Bank Mandiri", src: "/Logo MANDIRI_Biru.png", height: "h-6 sm:h-7", alt: "Logo Mandiri" },
-  { name: "Bank Rakyat Indonesia (BRI)", src: "/Logo BRI_Biru.png", height: "h-6 sm:h-7", alt: "Logo BRI" },
-  { name: "Bank Negara Indonesia (BNI)", src: "/Logo BNI.png", height: "h-6 sm:h-7", alt: "Logo BNI" },
-  { name: "BPJS Kesehatan", src: "/images/partners/bpjs-kesehatan.svg", height: "h-7 sm:h-8", alt: "Logo BPJS Kesehatan" },
-  { name: "BPJS Ketenagakerjaan", src: "/images/partners/bpjs-ketenagakerjaan.svg", height: "h-7 sm:h-8", alt: "Logo BPJS Ketenagakerjaan" },
-  { name: "Ditjen Pajak RI", src: "/images/partners/ditjen-pajak.svg", height: "h-7 sm:h-8", alt: "Logo Ditjen Pajak" },
-  { name: "Bank Syariah Indonesia (BSI)", src: "/images/partners/bsi.svg", height: "h-6 sm:h-7", alt: "Logo BSI" },
-  { name: "Bank CIMB Niaga", src: "/images/partners/cimb-niaga.svg", height: "h-6 sm:h-7", alt: "Logo CIMB Niaga" },
+  { name: "Bank Central Asia (BCA)", src: "/images/partners/Logo BCA_Biru.png", height: "h-6 sm:h-7", alt: "Logo BCA" },
+  { name: "Bank Mandiri", src: "/images/partners/Logo MANDIRI_Biru.png", height: "h-5 sm:h-6", alt: "Logo Mandiri" },
+  { name: "Bank Rakyat Indonesia (BRI)", src: "/images/partners/Logo BRI_Biru.png", height: "h-5 sm:h-6", alt: "Logo BRI" },
+  { name: "Bank Negara Indonesia (BNI)", src: "/images/partners/Logo BNI.png", height: "h-5 sm:h-6", alt: "Logo BNI" },
+  { name: "BPJS Kesehatan", src: "/images/partners/Logo BPJS KESEHATAN_Biru.png", height: "h-8 sm:h-9", alt: "Logo BPJS Kesehatan" },
+  { name: "BPJS Ketenagakerjaan", src: "/images/partners/Logo BPJS KETENAGAKERJAAN_Biru.png", height: "h-6 sm:h-7", alt: "Logo BPJS Ketenagakerjaan" },
+  { name: "Direktorat Jenderal Pajak (DJP)", src: "/images/partners/Logo DJP_Biru.png", height: "h-6 sm:h-7", alt: "Logo Ditjen Pajak" },
+  { name: "Kementerian Ketenagakerjaan RI", src: "/images/partners/Logo KEMNAKER.png", height: "h-7 sm:h-8", alt: "Logo Kemnaker RI" },
+  { name: "Bank Syariah Indonesia (BSI)", src: "/images/partners/Logo BSI_Hijau.png", height: "h-6 sm:h-7", alt: "Logo BSI" },
+  { name: "Bank CIMB Niaga", src: "/images/partners/Logo CIMB_Merah.png", height: "h-4.5 sm:h-5.5", alt: "Logo CIMB Niaga" },
+  { name: "PermataBank", src: "/images/partners/Logo PERMATA_Biru.png", height: "h-6 sm:h-7", alt: "Logo PermataBank" },
+  { name: "Bank Danamon", src: "/images/partners/Logo DANAMON.png", height: "h-5 sm:h-6", alt: "Logo Bank Danamon" },
+  { name: "Bank Tabungan Negara (BTN)", src: "/images/partners/Logo BTN_Biru.png", height: "h-5.5 sm:h-6.5", alt: "Logo Bank BTN" },
+  { name: "Google Workspace", src: "/images/partners/Logo WORKSPACE.png", height: "h-4.5 sm:h-5.5", alt: "Logo Google Workspace" },
+  { name: "Microsoft 365", src: "/images/partners/Logo MC365.png", height: "h-5.5 sm:h-6.5", alt: "Logo Microsoft 365" },
+];
+
+const INTEGRATION_HUB_NODES = [
+  {
+    id: "bca",
+    name: "Bank Central Asia (BCA)",
+    category: "Perbankan",
+    src: "/images/partners/Logo BCA_Biru.png",
+    logoClass: "h-4 sm:h-5",
+    detail: "Ekspor massal format KlikBCA Bisnis Batch CSV siap unggah untuk pencairan gaji otomatis.",
+    desktopPos: "left-[2%] lg:left-[3%] top-[7%]",
+  },
+  {
+    id: "mandiri",
+    name: "Bank Mandiri",
+    category: "Perbankan",
+    src: "/images/partners/Logo MANDIRI_Biru.png",
+    logoClass: "h-3.5 sm:h-4.5",
+    detail: "Kompatibel dengan Mandiri Cash Management (MCM 2.0) untuk transfer payroll korporat multi-entitas.",
+    desktopPos: "left-[20%] lg:left-[22%] top-[7%]",
+  },
+  {
+    id: "bri",
+    name: "Bank Rakyat Indonesia (BRI)",
+    category: "Perbankan",
+    src: "/images/partners/Logo BRI_Biru.png",
+    logoClass: "h-3.5 sm:h-4.5",
+    detail: "Mendukung format BRI CMS Direct untuk distribusi gaji karyawan cabang di seluruh Indonesia.",
+    desktopPos: "left-[10%] lg:left-[12%] top-[42%]",
+  },
+  {
+    id: "bni",
+    name: "Bank Negara Indonesia (BNI)",
+    category: "Perbankan",
+    src: "/images/partners/Logo BNI.png",
+    logoClass: "h-3.5 sm:h-4.5",
+    detail: "Rekap file BNI Direct Payroll tervalidasi dengan nomor rekening terenkripsi AES-256.",
+    desktopPos: "left-[2%] lg:left-[3%] bottom-[7%]",
+  },
+  {
+    id: "bsi",
+    name: "Bank Syariah Indonesia (BSI)",
+    category: "Perbankan",
+    src: "/images/partners/Logo BSI_Hijau.png",
+    logoClass: "h-4 sm:h-5",
+    detail: "Dukungan format transfer massal Bank Syariah Indonesia untuk payroll syariah perusahaan.",
+    desktopPos: "left-[20%] lg:left-[22%] bottom-[7%]",
+  },
+  {
+    id: "bpjs-kes",
+    name: "BPJS Kesehatan",
+    category: "Regulasi",
+    src: "/images/partners/Logo BPJS KESEHATAN_Biru.png",
+    logoClass: "h-6 sm:h-7",
+    detail: "Split iuran otomatis 4% perusahaan : 1% karyawan dengan batas upah Rp 12 juta & rekap e-Dabu.",
+    desktopPos: "right-[20%] lg:right-[22%] top-[7%]",
+  },
+  {
+    id: "bpjs-tk",
+    name: "BPJS Ketenagakerjaan",
+    category: "Regulasi",
+    src: "/images/partners/Logo BPJS KETENAGAKERJAAN_Biru.png",
+    logoClass: "h-4.5 sm:h-5.5",
+    detail: "Kalkulasi presisi JHT, JKK, JKM, dan JP (batas plafon JP otomatis) siap lapor ke portal SIPP.",
+    desktopPos: "right-[2%] lg:right-[3%] top-[7%]",
+  },
+  {
+    id: "djp",
+    name: "Direktorat Jenderal Pajak (DJP)",
+    category: "Regulasi",
+    src: "/images/partners/Logo DJP_Biru.png",
+    logoClass: "h-4.5 sm:h-5.5",
+    detail: "Kalkulator PPh 21 TER 2024 (Kategori A, B, C sesuai PP 58/2023) dan rekap e-Bupot 21/26.",
+    desktopPos: "right-[10%] lg:right-[12%] top-[42%]",
+  },
+  {
+    id: "cimb",
+    name: "Bank CIMB Niaga",
+    category: "Perbankan",
+    src: "/images/partners/Logo CIMB_Merah.png",
+    logoClass: "h-3.5 sm:h-4",
+    detail: "Format batch transfer BizChannel@CIMB untuk pencairan gaji dan reimbursement karyawan.",
+    desktopPos: "right-[20%] lg:right-[22%] bottom-[7%]",
+  },
+  {
+    id: "workspace",
+    name: "Google Workspace",
+    category: "Ekosistem",
+    src: "/images/partners/Logo WORKSPACE.png",
+    logoClass: "h-3.5 sm:h-4",
+    detail: "Sinkronisasi email korporat, notifikasi slip gaji, dan undangan wawancara rekrutmen otomatis.",
+    desktopPos: "right-[2%] lg:right-[3%] bottom-[7%]",
+  },
 ];
 
 const CORE_MODULES = [
@@ -245,7 +344,37 @@ export default function Landing({ auth, stats = {} }) {
   });
   const [showIosGuide, setShowIosGuide] = useState(false);
   const [showDesktopGuide, setShowDesktopGuide] = useState(false);
+  const [showAndroidGuide, setShowAndroidGuide] = useState(false);
   const [showContactSales, setShowContactSales] = useState(false);
+  const [activeIntegrationNode, setActiveIntegrationNode] = useState(null);
+
+  const renderHeroPlatformIcon = (os) => {
+    if (os === "ios" || os === "macos") {
+      return (
+        <img
+          src="/images/partners/Logo APPLE_Putih.png"
+          alt=""
+          aria-hidden="true"
+          className="h-4.5 w-auto object-contain shrink-0"
+        />
+      );
+    }
+    if (os === "windows") {
+      return (
+        <svg className="size-4.5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M2 3.8 10.8 2.6v8.7H2V3.8zm9.8-1.3L22 1v10.3H11.8V2.5zM2 12.7h8.8v8.7L2 20.2v-7.5zm9.8 0H22V23l-10.2-1.5v-8.8z" />
+        </svg>
+      );
+    }
+    if (os === "android") {
+      return (
+        <svg className="size-5 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M17.52 9.43l1.39-2.4a.42.42 0 0 0-.15-.57.42.42 0 0 0-.57.15l-1.42 2.45a8.56 8.56 0 0 0-9.54 0L5.81 6.61a.42.42 0 0 0-.57-.15.42.42 0 0 0-.15.57l1.39 2.4A7.97 7.97 0 0 0 3 16h18a7.97 7.97 0 0 0-3.48-6.57zM8.5 13.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm7 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+        </svg>
+      );
+    }
+    return <Download className="size-4.5 shrink-0" aria-hidden="true" />;
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -316,8 +445,38 @@ export default function Landing({ auth, stats = {} }) {
     }
 
     if (!success && pwaStatus !== "terpasang") {
-      setShowDesktopGuide(true);
+      if (clientPlatform.os === "android") {
+        setShowAndroidGuide(true);
+      } else {
+        setShowDesktopGuide(true);
+      }
     }
+  };
+
+  const handlePlatformChipClick = async (targetOs) => {
+    if (targetOs === "apple") {
+      setShowIosGuide(true);
+      return;
+    }
+    if (targetOs === "android") {
+      if (clientPlatform.os === "android") {
+        const success = await promptPwaInstall();
+        if (success) {
+          window.location.replace("/login");
+          return;
+        }
+      }
+      setShowAndroidGuide(true);
+      return;
+    }
+    if (clientPlatform.os === "windows" || clientPlatform.os === "desktop") {
+      const success = await promptPwaInstall();
+      if (success) {
+        window.location.replace("/login");
+        return;
+      }
+    }
+    setShowDesktopGuide(true);
   };
 
   useEffect(() => {
@@ -463,7 +622,7 @@ export default function Landing({ auth, stats = {} }) {
             </p>
 
             {/* Hero Single Smart Download Button + Contact Sales */}
-            <div className="flex flex-wrap items-center justify-center gap-3.5 mb-8">
+            <div className="flex flex-wrap items-center justify-center gap-3.5 mb-5">
               {pwaStatus === "terpasang" ? (
                 <Link
                   href="/dashboard"
@@ -478,7 +637,7 @@ export default function Landing({ auth, stats = {} }) {
                   onClick={handleDirectInstall}
                   className="inline-flex items-center justify-center gap-2.5 h-[50px] px-7 rounded-xl bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white text-[14.5px] font-bold shadow-[0_8px_20px_-4px_oklch(0.54_0.19_258_/_0.45)] transition-all active:scale-[0.98] cursor-pointer"
                 >
-                  <clientPlatform.icon className="size-5 shrink-0" />
+                  {renderHeroPlatformIcon(clientPlatform.os)}
                   <span>{clientPlatform.heroLabel}</span>
                 </button>
               )}
@@ -493,7 +652,54 @@ export default function Landing({ auth, stats = {} }) {
               </button>
             </div>
 
-            {/* Platform Subline: Pure Clean Reassurance Without Split-Dropdown Clutter */}
+            {/* Interactive Platform Availability Strip (Windows, Apple macOS/iOS, Android) */}
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-7 relative z-20">
+              <span className="text-[12px] font-semibold text-[#6B7280] mr-1">
+                Tersedia untuk:
+              </span>
+              <button
+                type="button"
+                onClick={() => handlePlatformChipClick("windows")}
+                aria-label="Panduan instalasi Crave HRM di Windows"
+                className="inline-flex items-center justify-center h-11 sm:h-10 px-3.5 rounded-xl bg-white hover:bg-[#F9FAFB] border border-[#E5E7EB] hover:border-[#CBD5E1] shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <img
+                  src="/images/partners/Logo WINDOWS.png"
+                  alt="Windows"
+                  decoding="async"
+                  className="h-5 sm:h-5.5 w-auto object-contain select-none"
+                />
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePlatformChipClick("apple")}
+                aria-label="Panduan instalasi Crave HRM di macOS dan iOS"
+                className="inline-flex items-center justify-center gap-2 h-11 sm:h-10 px-3.5 rounded-xl bg-white hover:bg-[#F9FAFB] border border-[#E5E7EB] hover:border-[#CBD5E1] shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <img
+                  src="/images/partners/Logo APPLE_Hitam.png"
+                  alt="Apple"
+                  decoding="async"
+                  className="h-4 w-auto object-contain select-none"
+                />
+                <span className="text-[12.5px] font-bold text-[#111827] tracking-tight">
+                  macOS &amp; iOS
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handlePlatformChipClick("android")}
+                aria-label="Panduan instalasi Crave HRM di Android"
+                className="inline-flex items-center justify-center h-11 sm:h-10 px-3.5 rounded-xl bg-white hover:bg-[#F9FAFB] border border-[#E5E7EB] hover:border-[#CBD5E1] shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <img
+                  src="/images/partners/Logo Android.png"
+                  alt="Android"
+                  decoding="async"
+                  className="h-6 sm:h-6.5 w-auto object-contain select-none"
+                />
+              </button>
+            </div>
 
             {/* Clean Trust Indicators */}
             <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-[12.5px] sm:text-[13px] font-medium text-[#4B5563] mb-14 relative z-20">
@@ -548,9 +754,10 @@ export default function Landing({ auth, stats = {} }) {
                     alt={partner.alt}
                     className={cn(
                       partner.height,
-                      "w-auto max-w-[140px] sm:max-w-[170px] object-contain transition-all duration-300 opacity-80 group-hover:opacity-100 group-hover:scale-105 select-none"
+                      "w-auto max-w-[140px] sm:max-w-[170px] object-contain transition-all duration-300 opacity-85 group-hover:opacity-100 group-hover:scale-105 select-none"
                     )}
                     loading="lazy"
+                    decoding="async"
                   />
                 </div>
               ))}
@@ -1381,117 +1588,173 @@ export default function Landing({ auth, stats = {} }) {
               <ArrowRight className="size-4" />
             </Link>
 
-            {/* Hub Diagram with Center Royal Blue Crave Node and 10 Connected Nodes */}
-            <div className="relative w-full max-w-[1060px] h-[260px] sm:h-[300px] flex items-center justify-center">
-              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 280" fill="none">
-                {/* Left Bank Stream (BCA -> Mandiri -> Crave Hub) */}
-                <path
-                  d="M 80 44 C 135 42, 195 46, 260 44 C 320 44, 355 140, 400 140"
-                  stroke="oklch(0.54 0.19 258)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M 75 236 C 135 238, 195 234, 265 236 C 320 236, 355 140, 400 140"
-                  stroke="oklch(0.54 0.19 258)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M 153 140 C 235 138, 335 142, 456 140"
-                  stroke="oklch(0.54 0.19 258)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
+            {/* Responsive Integration Hub: Mobile Clean Grid (< md) + Desktop Interactive Hub & Spoke (md+) */}
+            <div className="w-full max-w-[1060px]">
+              {/* Mobile & Small Tablet Layout (< md): Zero overlap, spacious touch targets */}
+              <div className="md:hidden flex flex-col items-center gap-5">
+                <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl bg-[oklch(0.54_0.19_258)] text-white shadow-[0_14px_30px_-8px_rgba(59,91,255,0.45)]">
+                  <img
+                    src="/dark-mode-logo.png"
+                    alt="Crave HRM Hub"
+                    className="h-7 w-auto object-contain brightness-0 invert"
+                    decoding="async"
+                  />
+                  <div className="text-left">
+                    <div className="text-[13px] font-black leading-tight">Crave HRM Hub</div>
+                    <div className="text-[10.5px] text-white/80 font-medium">10 Integrasi Aktif</div>
+                  </div>
+                </div>
 
-                {/* Right Agency & Ecosystem Stream (BPJS, Ditjen Pajak & Google -> Crave Hub) */}
-                <path
-                  d="M 915 44 C 860 42, 800 46, 735 44 C 675 44, 640 140, 595 140"
-                  stroke="oklch(0.54 0.19 258)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M 915 236 C 860 238, 800 234, 735 236 C 675 236, 640 140, 595 140"
-                  stroke="oklch(0.54 0.19 258)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M 825 140 C 745 138, 655 142, 544 140"
-                  stroke="oklch(0.54 0.19 258)"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-
-              {/* Left Bank Nodes with Official Logos */}
-              {/* 1. BCA */}
-              <div className="absolute left-[2%] sm:left-[3%] top-[6%] sm:top-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="KlikBCA Bisnis Batch">
-                <img src="/Logo BCA_Biru.png" alt="Logo Bank BCA" className="h-4 sm:h-6 w-auto object-contain" />
+                <div className="grid grid-cols-2 gap-2.5 w-full">
+                  {INTEGRATION_HUB_NODES.map((node) => {
+                    const isSelected = activeIntegrationNode?.id === node.id;
+                    return (
+                      <button
+                        key={node.id}
+                        type="button"
+                        onClick={() => setActiveIntegrationNode(isSelected ? null : node)}
+                        aria-pressed={isSelected}
+                        className={cn(
+                          "min-h-[54px] px-3 py-2.5 rounded-2xl bg-white border flex items-center justify-center transition-all cursor-pointer",
+                          isSelected
+                            ? "border-[oklch(0.54_0.19_258)] ring-2 ring-[oklch(0.54_0.19_258)]/15 shadow-sm"
+                            : "border-[#E5E7EB] hover:border-[#CBD5E1] shadow-2xs"
+                        )}
+                        title={node.name}
+                      >
+                        <img
+                          src={node.src}
+                          alt={`Logo ${node.name}`}
+                          loading="lazy"
+                          decoding="async"
+                          className={cn(node.logoClass, "w-auto max-w-[120px] object-contain")}
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* 2. Mandiri */}
-              <div className="absolute left-[20%] sm:left-[22%] top-[6%] sm:top-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="Bank Mandiri MCM 2.0">
-                <img src="/Logo MANDIRI_Biru.png" alt="Logo Bank Mandiri" className="h-3.5 sm:h-5 w-auto object-contain" />
-              </div>
+              {/* Desktop Interactive Hub & Spoke Diagram (md+) */}
+              <div className="hidden md:flex relative w-full h-[300px] items-center justify-center">
+                <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1000 280" fill="none">
+                  {/* Left Bank Stream (BCA -> Mandiri -> Crave Hub) */}
+                  <path
+                    d="M 80 44 C 135 42, 195 46, 260 44 C 320 44, 355 140, 400 140"
+                    stroke="oklch(0.54 0.19 258)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeOpacity="0.85"
+                  />
+                  <path
+                    d="M 75 236 C 135 238, 195 234, 265 236 C 320 236, 355 140, 400 140"
+                    stroke="oklch(0.54 0.19 258)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeOpacity="0.85"
+                  />
+                  <path
+                    d="M 153 140 C 235 138, 335 142, 456 140"
+                    stroke="oklch(0.54 0.19 258)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeOpacity="0.85"
+                  />
 
-              {/* 3. BRI */}
-              <div className="absolute left-[10%] sm:left-[12%] top-[40%] sm:top-[42%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="Bank BRI CMS Direct">
-                <img src="/Logo BRI_Biru.png" alt="Logo Bank BRI" className="h-3.5 sm:h-5 w-auto object-contain" />
-              </div>
-
-              {/* 4. BNI */}
-              <div className="absolute left-[2%] sm:left-[3%] bottom-[6%] sm:bottom-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="Bank BNI Direct Payroll">
-                <img src="/Logo BNI.png" alt="Logo Bank BNI" className="h-3.5 sm:h-5 w-auto object-contain" />
-              </div>
-
-              {/* 5. BSI */}
-              <div className="absolute left-[20%] sm:left-[22%] bottom-[6%] sm:bottom-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="Bank Syariah Indonesia (BSI)">
-                <img src="/images/partners/bsi.svg" alt="Logo BSI" className="h-4 sm:h-5.5 w-auto object-contain" />
-              </div>
-
-              {/* Center Crave Hub Icon (Seamless Solid Blue, No White Border) */}
-              <div className="relative z-10 size-[80px] sm:size-[88px] rounded-[22px] sm:rounded-[26px] bg-gradient-to-br from-[#3B66FF] to-[oklch(0.54_0.19_258)] shadow-[0_18px_40px_-8px_rgba(59,91,255,0.50)] flex items-center justify-center">
-                <img src="/dark-mode-logo.png" alt="Crave HRM Hub" className="h-9 sm:h-11 object-contain brightness-0 invert" />
-              </div>
-
-              {/* Right Agency & Ecosystem Nodes with Official Logos */}
-              {/* 6. BPJS Kesehatan */}
-              <div className="absolute right-[20%] sm:right-[22%] top-[6%] sm:top-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="BPJS Kesehatan e-Dabu">
-                <img src="/images/partners/bpjs-kesehatan.svg" alt="Logo BPJS Kesehatan" className="h-4 sm:h-6 w-auto object-contain" />
-              </div>
-
-              {/* 7. BPJS Ketenagakerjaan */}
-              <div className="absolute right-[2%] sm:right-[3%] top-[6%] sm:top-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="BPJS Ketenagakerjaan SIPP">
-                <img src="/images/partners/bpjs-ketenagakerjaan.svg" alt="Logo BPJS Ketenagakerjaan" className="h-4 sm:h-6 w-auto object-contain" />
-              </div>
-
-              {/* 8. Ditjen Pajak RI */}
-              <div className="absolute right-[10%] sm:right-[12%] top-[40%] sm:top-[42%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="Ditjen Pajak RI e-Bupot & PP 58/2023">
-                <img src="/images/partners/ditjen-pajak.svg" alt="Logo Ditjen Pajak" className="h-4 sm:h-6 w-auto object-contain" />
-              </div>
-
-              {/* 9. Bank CIMB Niaga */}
-              <div className="absolute right-[20%] sm:right-[22%] bottom-[6%] sm:bottom-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center justify-center" title="Bank CIMB Niaga BizChannel">
-                <img src="/images/partners/cimb-niaga.svg" alt="Logo CIMB Niaga" className="h-4 sm:h-5.5 w-auto object-contain" />
-              </div>
-
-              {/* 10. Google Workspace */}
-              <div className="absolute right-[2%] sm:right-[3%] bottom-[6%] sm:bottom-[8%] h-9 sm:h-11 px-2.5 sm:px-3.5 rounded-xl sm:rounded-2xl bg-white border border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] transition-all flex items-center gap-1.5 sm:gap-2" title="Google Workspace Single Sign-On">
-                <svg className="size-3.5 sm:size-4 shrink-0" viewBox="0 0 24 24" fill="none">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05" />
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335" />
+                  {/* Right Agency & Ecosystem Stream (BPJS, Ditjen Pajak & Google -> Crave Hub) */}
+                  <path
+                    d="M 915 44 C 860 42, 800 46, 735 44 C 675 44, 640 140, 595 140"
+                    stroke="oklch(0.54 0.19 258)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeOpacity="0.85"
+                  />
+                  <path
+                    d="M 915 236 C 860 238, 800 234, 735 236 C 675 236, 640 140, 595 140"
+                    stroke="oklch(0.54 0.19 258)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeOpacity="0.85"
+                  />
+                  <path
+                    d="M 825 140 C 745 138, 655 142, 544 140"
+                    stroke="oklch(0.54 0.19 258)"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeOpacity="0.85"
+                  />
                 </svg>
-                <span className="font-extrabold text-[10.5px] sm:text-[12px] text-[#374151]">Workspace</span>
+
+                {/* Center Crave Hub Icon (Seamless Solid Blue) */}
+                <div className="relative z-10 size-[88px] rounded-[26px] bg-gradient-to-br from-[#3B66FF] to-[oklch(0.54_0.19_258)] shadow-[0_18px_40px_-8px_rgba(59,91,255,0.50)] flex items-center justify-center">
+                  <img
+                    src="/dark-mode-logo.png"
+                    alt="Crave HRM Hub"
+                    className="h-11 object-contain brightness-0 invert"
+                    decoding="async"
+                  />
+                </div>
+
+                {/* 10 Interactive Official Partner Nodes */}
+                {INTEGRATION_HUB_NODES.map((node) => {
+                  const isSelected = activeIntegrationNode?.id === node.id;
+                  return (
+                    <button
+                      key={node.id}
+                      type="button"
+                      onMouseEnter={() => setActiveIntegrationNode(node)}
+                      onFocus={() => setActiveIntegrationNode(node)}
+                      onClick={() => setActiveIntegrationNode(isSelected ? null : node)}
+                      aria-pressed={isSelected}
+                      title={`${node.name} — ${node.detail}`}
+                      className={cn(
+                        "absolute h-11 px-3.5 rounded-2xl bg-white border transition-all duration-200 flex items-center justify-center cursor-pointer",
+                        node.desktopPos,
+                        isSelected
+                          ? "border-[oklch(0.54_0.19_258)] ring-4 ring-[oklch(0.54_0.19_258)]/12 shadow-md scale-[1.04] z-20"
+                          : "border-[#E5E7EB] shadow-xs hover:shadow-md hover:border-[#CBD5E1] hover:scale-[1.03] z-10"
+                      )}
+                    >
+                      <img
+                        src={node.src}
+                        alt={`Logo ${node.name}`}
+                        loading="lazy"
+                        decoding="async"
+                        className={cn(node.logoClass, "w-auto max-w-[115px] object-contain select-none")}
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Interactive Integration Detail Strip (Reveals concrete integration specs on hover/tap) */}
+              <div className="mt-6 max-w-[680px] mx-auto min-h-[58px] px-4 py-3 rounded-2xl bg-[#F9FAFB] border border-[#ECEEF4] flex items-center justify-center transition-all">
+                {activeIntegrationNode ? (
+                  <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+                    <div className="h-8 px-2.5 rounded-xl bg-white border border-[#E5E7EB] flex items-center justify-center shrink-0">
+                      <img
+                        src={activeIntegrationNode.src}
+                        alt={activeIntegrationNode.name}
+                        className="h-4.5 w-auto max-w-[90px] object-contain"
+                      />
+                    </div>
+                    <div className="text-[12.5px] sm:text-[13px] leading-snug text-[#374151]">
+                      <span className="font-bold text-[#111827]">{activeIntegrationNode.name}</span>
+                      <span className="mx-1.5 text-[#CBD5E1]">•</span>
+                      <span>{activeIntegrationNode.detail}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-[12.5px] text-[#6B7280] font-medium">
+                    Arahkan kursor atau ketuk salah satu logo mitra di atas untuk melihat rincian integrasi Crave HRM.
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -2069,7 +2332,7 @@ export default function Landing({ auth, stats = {} }) {
           onClick={() => setShowIosGuide(false)}
         >
           <div
-            className="relative w-full max-w-[480px] bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E5E7EB] text-left animate-in zoom-in-95 duration-150"
+            className="relative w-full max-w-[480px] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E5E7EB] text-left animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -2082,12 +2345,16 @@ export default function Landing({ auth, stats = {} }) {
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="size-11 rounded-2xl bg-black text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <Apple className="size-6" />
+              <div className="size-11 rounded-2xl bg-[#111827] flex items-center justify-center shrink-0 shadow-2xs p-2.5">
+                <img
+                  src="/images/partners/Logo APPLE_Putih.png"
+                  alt="Apple"
+                  className="h-6 w-auto object-contain"
+                />
               </div>
               <div>
-                <h3 className="font-extrabold text-[18px] text-[#111827]">Install di iPhone / iPad</h3>
-                <p className="text-[12px] text-[#6B7280]">3 Langkah mudah pasang ke Layar Utama</p>
+                <h3 className="font-extrabold text-[18px] text-[#111827]">Install di Apple (iOS &amp; macOS)</h3>
+                <p className="text-[12px] text-[#6B7280]">3 Langkah mudah pasang ke Layar Utama atau Dock</p>
               </div>
             </div>
 
@@ -2154,7 +2421,7 @@ export default function Landing({ auth, stats = {} }) {
           onClick={() => setShowDesktopGuide(false)}
         >
           <div
-            className="relative w-full max-w-[480px] bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E5E7EB] text-left animate-in zoom-in-95 duration-150"
+            className="relative w-full max-w-[480px] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E5E7EB] text-left animate-in zoom-in-95 duration-150"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -2167,12 +2434,16 @@ export default function Landing({ auth, stats = {} }) {
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="size-11 rounded-2xl bg-[#161924] text-white flex items-center justify-center shrink-0 shadow-2xs">
-                <Monitor className="size-6" />
+              <div className="h-11 px-3 rounded-2xl bg-[#F8FAFC] border border-[#E5E7EB] flex items-center justify-center shrink-0 shadow-2xs">
+                <img
+                  src="/images/partners/Logo WINDOWS.png"
+                  alt="Windows"
+                  className="h-5.5 w-auto object-contain"
+                />
               </div>
               <div>
-                <h3 className="font-extrabold text-[18px] text-[#111827]">Pasang di Komputer Desktop</h3>
-                <p className="text-[12px] text-[#6B7280]">Aplikasi Desktop Mandiri untuk Windows & Mac</p>
+                <h3 className="font-extrabold text-[18px] text-[#111827]">Pasang di Windows &amp; Desktop</h3>
+                <p className="text-[12px] text-[#6B7280]">Aplikasi desktop mandiri tanpa address bar browser</p>
               </div>
             </div>
 
@@ -2211,9 +2482,98 @@ export default function Landing({ auth, stats = {} }) {
               <button
                 type="button"
                 onClick={() => setShowDesktopGuide(false)}
-                className="h-10 px-5 rounded-xl bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white text-[13px] font-bold transition-colors"
+                className="h-10 px-5 rounded-xl bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white text-[13px] font-bold transition-colors cursor-pointer"
               >
                 Siap, Mengerti
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL GUIDE: INSTALASI DI ANDROID */}
+      {showAndroidGuide && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+          onClick={() => setShowAndroidGuide(false)}
+        >
+          <div
+            className="relative w-full max-w-[480px] max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E5E7EB] text-left animate-in zoom-in-95 duration-150"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowAndroidGuide(false)}
+              className="absolute top-5 right-5 size-9 rounded-full bg-[#F3F4F6] hover:bg-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:text-[#111827] transition-colors cursor-pointer"
+              aria-label="Tutup jendela"
+            >
+              <X className="size-4.5" />
+            </button>
+
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-11 px-3 rounded-2xl bg-[#F0FDF4] border border-[#DCFCE7] flex items-center justify-center shrink-0 shadow-2xs">
+                <img
+                  src="/images/partners/Logo Android.png"
+                  alt="Android"
+                  className="h-7 w-auto object-contain"
+                />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-[18px] text-[#111827]">Install di Android</h3>
+                <p className="text-[12px] text-[#6B7280]">Langsung dari Chrome tanpa perlu Play Store</p>
+              </div>
+            </div>
+
+            <p className="text-[13px] text-[#4B5563] leading-relaxed mb-5">
+              Pasang Crave HRM di ponsel Android Anda untuk presensi GPS cepat, voucher QR kantin, dan notifikasi slip gaji real-time:
+            </p>
+
+            <div className="space-y-3 mb-6">
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#F9FAFB] border border-[#F1F2F6]">
+                <div className="size-7 rounded-lg bg-[oklch(0.54_0.19_258)] text-white text-[12px] font-bold flex items-center justify-center shrink-0">
+                  1
+                </div>
+                <div className="text-[13px] text-[#111827] leading-relaxed">
+                  Buka <strong>hrm.craveservices.my.id</strong> melalui browser <strong>Google Chrome</strong> di Android Anda.
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#F9FAFB] border border-[#F1F2F6]">
+                <div className="size-7 rounded-lg bg-[oklch(0.54_0.19_258)] text-white text-[12px] font-bold flex items-center justify-center shrink-0">
+                  2
+                </div>
+                <div className="text-[13px] text-[#111827] leading-relaxed">
+                  Ketuk ikon <strong>titik tiga (⋮)</strong> di pojok kanan atas Chrome.
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-[#F9FAFB] border border-[#F1F2F6]">
+                <div className="size-7 rounded-lg bg-[oklch(0.54_0.19_258)] text-white text-[12px] font-bold flex items-center justify-center shrink-0">
+                  3
+                </div>
+                <div className="text-[13px] text-[#111827] leading-relaxed">
+                  Pilih <strong>&quot;Install app&quot;</strong> atau <strong>&quot;Tambahkan ke layar utama&quot;</strong> lalu konfirmasi <strong>Install</strong>.
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-4 border-t border-[#F1F2F6] flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard?.writeText(window.location.origin);
+                  alert("Tautan Crave HRM telah disalin! Buka di Chrome Android Anda.");
+                }}
+                className="h-10 px-4 rounded-xl border border-[#D1D5DB] hover:bg-[#F9FAFB] text-[13px] font-semibold text-[#111827] transition-colors cursor-pointer"
+              >
+                Salin Tautan Chrome
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowAndroidGuide(false)}
+                className="h-10 px-5 rounded-xl bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white text-[13px] font-bold transition-colors cursor-pointer"
+              >
+                Mengerti
               </button>
             </div>
           </div>

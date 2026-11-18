@@ -26,6 +26,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { getEmployeeAvatar } from "@/lib/avatars";
 
 const ALL_MODULES = [
   { title: "Dashboard", subtitle: "Ringkasan metrik & KPI bisnis", href: "/dashboard", tag: "Operasional" },
@@ -228,10 +229,11 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
                 className="size-9 rounded-xl border border-border/70 bg-card p-0.5 shadow-soft hover:bg-accent hover:border-primary/40 outline-none transition-all flex items-center justify-center shrink-0 cursor-pointer"
                 aria-label="Menu Pengguna"
               >
-                <div className="size-full rounded-lg overflow-hidden shrink-0 border border-border/40 bg-muted">
+                <div className="size-full rounded-lg overflow-hidden shrink-0 border border-border/40 bg-white">
                   <img
-                    src="/profile-logo.jpeg"
-                    alt="Profile"
+                    src={getEmployeeAvatar(user)}
+                    alt={user?.name || "Profil"}
+                    decoding="async"
                     className="size-full object-cover"
                   />
                 </div>
@@ -245,10 +247,11 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
             >
               <DropdownMenuLabel className="font-normal p-2">
                 <div className="flex items-center gap-2.5">
-                  <div className="size-8 rounded-full overflow-hidden shrink-0 border border-border bg-muted shadow-2xs">
+                  <div className="size-8 rounded-full overflow-hidden shrink-0 border border-border bg-white shadow-2xs">
                     <img
-                      src="/profile-logo.jpeg"
-                      alt="Profile"
+                      src={getEmployeeAvatar(user)}
+                      alt={user?.name || "Profil"}
+                      decoding="async"
                       className="size-full object-cover"
                     />
                   </div>

@@ -36,65 +36,12 @@ function AlertDialogOverlay({
     <AlertDialogPrimitive.Overlay
       data-slot="alert-dialog-overlay"
       className={cn(
-        "fixed inset-0 z-[10000] bg-black/50 backdrop-blur-xs duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-[10000] bg-black/55 backdrop-blur-xs duration-200",
         className
       )}
       {...props}
     />
   )
-}
-
-function MobileDragHandle({ onClose }) {
-  const handleTouchStart = (e) => {
-    const startY = e.touches[0].clientY;
-    const content = e.currentTarget.closest('[data-slot="alert-dialog-content"]');
-    if (!content) return;
-
-    let currentDelta = 0;
-
-    const handleTouchMove = (ev) => {
-      const deltaY = ev.touches[0].clientY - startY;
-      if (deltaY > 0) {
-        currentDelta = deltaY;
-        content.style.transform = `translateY(${deltaY}px)`;
-        content.style.transition = "none";
-      }
-    };
-
-    const handleTouchEnd = () => {
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-      if (currentDelta > 80) {
-        content.style.transition = "transform 0.22s cubic-bezier(0.32, 0.72, 0, 1)";
-        content.style.transform = "translateY(100%)";
-        setTimeout(() => {
-          onClose?.();
-        }, 160);
-      } else {
-        content.style.transition = "transform 0.24s cubic-bezier(0.16, 1, 0.3, 1)";
-        content.style.transform = "translateY(0)";
-        setTimeout(() => {
-          if (content) {
-            content.style.transform = "";
-            content.style.transition = "";
-          }
-        }, 250);
-      }
-    };
-
-    document.addEventListener("touchmove", handleTouchMove, { passive: true });
-    document.addEventListener("touchend", handleTouchEnd);
-  };
-
-  return (
-    <div
-      onTouchStart={handleTouchStart}
-      className="mx-auto -mt-2 mb-2 h-6 w-24 flex items-center justify-center sm:hidden shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
-      aria-label="Tarik ke bawah untuk menutup"
-    >
-      <div className="h-1.5 w-12 rounded-full bg-muted-foreground/35" />
-    </div>
-  );
 }
 
 function AlertDialogContent({
@@ -108,26 +55,24 @@ function AlertDialogContent({
   return (
     <AlertDialogPortal>
       <AlertDialogOverlay />
-      <AlertDialogPrimitive.Content
-        data-slot="alert-dialog-content"
-        data-size={size}
-        onOpenAutoFocus={onOpenAutoFocus || ((e) => e.preventDefault())}
-        className={cn(
-          // Base & Desktop Centered Modal
-          "group/alert-dialog-content fixed top-1/2 left-1/2 z-[10001] grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none data-[size=sm]:max-w-xs data-[size=default]:sm:max-w-lg",
-          className,
-          // Mobile Bottom Sheet Mode (< 640px)
-          "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:w-full max-sm:max-w-none max-sm:rounded-t-[28px] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:border-t max-sm:max-h-[90vh] max-sm:overflow-y-auto max-sm:p-5 max-sm:pb-8"
-        )}
-        style={style}
-        {...props}
+      <div
+        data-slot="alert-dialog-positioner"
+        className="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-6 pointer-events-none"
       >
-        <MobileDragHandle onClose={() => {
-          const cancelBtn = document.querySelector('[data-slot="alert-dialog-cancel"]');
-          cancelBtn?.click();
-        }} />
-        {children}
-      </AlertDialogPrimitive.Content>
+        <AlertDialogPrimitive.Content
+          data-slot="alert-dialog-content"
+          data-size={size}
+          onOpenAutoFocus={onOpenAutoFocus || ((e) => e.preventDefault())}
+          className={cn(
+            "group/alert-dialog-content pointer-events-auto relative grid w-full max-w-lg max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-3rem)] overflow-y-auto overscroll-contain gap-4 rounded-2xl border border-border/80 bg-background p-5 sm:p-6 shadow-2xl outline-none data-[size=sm]:max-w-sm",
+            className
+          )}
+          style={style}
+          {...props}
+        >
+          {children}
+        </AlertDialogPrimitive.Content>
+      </div>
     </AlertDialogPortal>
   )
 }
@@ -140,7 +85,7 @@ function AlertDialogHeader({
     <div
       data-slot="alert-dialog-header"
       className={cn(
-        "grid grid-rows-[auto_1fr] place-items-center gap-1.5 text-center has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:place-items-start sm:group-data-[size=default]/alert-dialog-content:text-left sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]",
+        "grid grid-rows-[auto_1fr] place-items-start gap-1.5 text-left has-data-[slot=alert-dialog-media]:grid-rows-[auto_auto_1fr] has-data-[slot=alert-dialog-media]:gap-x-6 sm:group-data-[size=default]/alert-dialog-content:has-data-[slot=alert-dialog-media]:grid-rows-[auto_1fr]",
         className
       )}
       {...props}
@@ -172,7 +117,7 @@ function AlertDialogTitle({
     <AlertDialogPrimitive.Title
       data-slot="alert-dialog-title"
       className={cn(
-        "text-lg font-semibold sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2",
+        "text-lg font-bold tracking-tight sm:group-data-[size=default]/alert-dialog-content:group-has-data-[slot=alert-dialog-media]/alert-dialog-content:col-start-2",
         className
       )}
       {...props}
@@ -187,7 +132,10 @@ function AlertDialogDescription({
   return (
     <AlertDialogPrimitive.Description
       data-slot="alert-dialog-description"
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn(
+        "text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground",
+        className
+      )}
       {...props}
     />
   )

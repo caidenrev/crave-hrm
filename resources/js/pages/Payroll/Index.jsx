@@ -33,7 +33,7 @@ import {
   Building2,
   Filter,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -566,14 +566,11 @@ export default function Index({
                         <TableRow key={item.id} className="hover:bg-muted/30">
                           <TableCell>
                             <div className="flex items-center gap-2.5">
-                              <Avatar className="size-9 shrink-0 border border-border/60">
-                                {emp.avatar_url && (
-                                  <AvatarImage src={emp.avatar_url} alt={emp.nama_lengkap} />
-                                )}
-                                <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary uppercase">
-                                  {getInitials(emp.nama_lengkap)}
-                                </AvatarFallback>
-                              </Avatar>
+                              <EmployeeAvatar
+                                person={emp}
+                                name={emp.nama_lengkap}
+                                className="size-9 border border-border/60"
+                              />
                               <div>
                                 <div className="font-semibold text-xs text-foreground">
                                   {emp.nama_lengkap || "-"}
@@ -673,14 +670,11 @@ export default function Index({
                   >
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2.5">
-                        <Avatar className="size-10 shrink-0 border border-border/60">
-                          {emp.avatar_url && (
-                            <AvatarImage src={emp.avatar_url} alt={emp.nama_lengkap} />
-                          )}
-                          <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary uppercase">
-                            {getInitials(emp.nama_lengkap)}
-                          </AvatarFallback>
-                        </Avatar>
+                        <EmployeeAvatar
+                          person={emp}
+                          name={emp.nama_lengkap}
+                          className="size-10 border border-border/60"
+                        />
                         <div>
                           <div className="font-bold text-xs text-foreground">
                             {emp.nama_lengkap || "-"}
