@@ -10,6 +10,7 @@ import {
 } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { smoothScrollTo } from "@/lib/smoothScroll";
+import { Menu, X } from "lucide-react";
 
 export const Navbar = ({ children, className }) => {
   const ref = useRef(null);
@@ -130,27 +131,32 @@ export const NavItems = ({ items, className, onItemClick, isScrolled }) => {
 };
 
 export const MobileNav = ({ children, className, visible, isOpen }) => {
+  const isCard = visible || isOpen;
   return (
     <motion.div
       animate={{
-        backdropFilter: visible ? "blur(12px)" : "none",
-        boxShadow: visible
-          ? "0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.06)"
+        backdropFilter: isCard ? "blur(16px)" : "none",
+        boxShadow: isCard
+          ? "0 20px 45px -12px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.05)"
           : "none",
-        width: visible ? "92%" : "100%",
-        paddingRight: visible ? "14px" : "0px",
-        paddingLeft: visible ? "14px" : "0px",
-        borderRadius: visible ? (isOpen ? "24px" : "32px") : "0px",
-        y: visible ? 16 : 0,
+        width: isCard ? (isOpen ? "100%" : "92%") : "100%",
+        paddingRight: isCard ? (isOpen ? "20px" : "16px") : "0px",
+        paddingLeft: isCard ? (isOpen ? "20px" : "16px") : "0px",
+        paddingTop: isCard ? (isOpen ? "16px" : "12px") : "8px",
+        paddingBottom: isCard ? (isOpen ? "16px" : "12px") : "8px",
+        borderRadius: isCard ? (isOpen ? "28px" : "32px") : "0px",
+        y: isCard ? (isOpen ? 4 : 16) : 0,
       }}
       transition={{
         type: "spring",
-        stiffness: 200,
-        damping: 50,
+        stiffness: 280,
+        damping: 32,
       }}
       className={cn(
-        "pointer-events-auto relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-4 py-3.5 lg:hidden transition-colors overflow-hidden text-[#111827]",
-        visible && "bg-white/95 text-[#111827] shadow-md border border-slate-100",
+        "pointer-events-auto relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between transition-colors overflow-hidden text-[#111827] lg:hidden",
+        isCard
+          ? "bg-white text-[#111827] border border-slate-100 shadow-[0_20px_45px_-12px_rgba(0,0,0,0.14),0_0_0_1px_rgba(0,0,0,0.05)] rounded-[28px]"
+          : "bg-transparent text-[#111827]",
         className
       )}
     >
@@ -175,8 +181,9 @@ export const MobileNavMenu = ({ children, className, isOpen, onClose }) => {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
           className={cn(
-            "w-full flex flex-col items-start justify-start pt-6 pb-2 text-[#111827]",
+            "w-full flex flex-col items-start justify-start pt-5 pb-1 text-[#111827]",
             className
           )}
         >
@@ -189,32 +196,21 @@ export const MobileNavMenu = ({ children, className, isOpen, onClose }) => {
 
 export const MobileNavToggle = ({ isOpen, onClick, className }) => {
   return (
-    <div
-      className={cn("cursor-pointer relative flex items-center justify-center text-[#111827] p-1.5", className)}
+    <button
+      type="button"
+      className={cn(
+        "cursor-pointer size-9 rounded-full flex items-center justify-center text-[#111827] hover:bg-slate-100 active:bg-slate-200 transition-colors shrink-0",
+        className
+      )}
       onClick={onClick}
-      aria-label="Toggle navigation"
+      aria-label={isOpen ? "Tutup navigasi" : "Buka navigasi"}
     >
-      <svg
-        viewBox="0 0 32 32"
-        className={cn(
-          "h-6.5 w-6.5 transition-transform duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)]",
-          isOpen ? "-rotate-45" : ""
-        )}
-      >
-        <path
-          className="fill-none stroke-current stroke-[3] rounded-full [stroke-linecap:round] [stroke-linejoin:round] transition-all duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
-          style={{
-            strokeDasharray: isOpen ? "20 300" : "12 63",
-            strokeDashoffset: isOpen ? "-32.42" : "0",
-          }}
-          d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
-        />
-        <path
-          className="fill-none stroke-current stroke-[3] rounded-full [stroke-linecap:round] [stroke-linejoin:round]"
-          d="M7 16 27 16"
-        />
-      </svg>
-    </div>
+      {isOpen ? (
+        <X className="size-5.5 stroke-[2.3]" />
+      ) : (
+        <Menu className="size-5.5 stroke-[2.3]" />
+      )}
+    </button>
   );
 };
 

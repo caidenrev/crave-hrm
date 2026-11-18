@@ -19,6 +19,7 @@ import LandingNavbar from "@/components/LandingNavbar";
 import DashboardPreview from "@/components/DashboardPreview";
 import CraveServiceCards from "../../../../CraveCards/CraveServiceCards";
 import { FeatureGrid, FeatureBento } from "@/components/FeatureSections";
+import FeatureShowcase from "@/components/FeatureShowcase";
 
 const NAV_LINKS = [
   { href: "#fitur", label: "Fitur" },
@@ -1095,89 +1096,8 @@ export default function Landing({ auth, stats = {} }) {
               </div>
             </div>
 
-            {/* Content Grid: Left 3 Cards + Right Dashboard Preview */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-              {/* Left 3 Cards (5 cols) */}
-              <div className="lg:col-span-5 flex flex-col justify-between gap-4">
-                <div className="p-6 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] flex items-start gap-4">
-                  <span className="size-9 rounded-xl bg-[#EEF2FF] text-[oklch(0.54_0.19_258)] flex items-center justify-center shrink-0 mt-0.5">
-                    <DollarSign className="size-4" />
-                  </span>
-                  <div>
-                    <h3 className="font-bold text-[16.5px] text-[#111827] mb-1.5">Kalkulasi Otomatis Gaji & Pajak</h3>
-                    <p className="text-[13.5px] leading-[1.55] text-[#6B7280]">
-                      Hitung slip gaji ribuan karyawan dalam hitungan detik tanpa rumus Excel manual yang rawan keliru.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white border border-[#F1F2F6] flex items-start gap-4">
-                  <span className="size-9 rounded-xl bg-[#F3F4F6] text-[#374151] flex items-center justify-center shrink-0 mt-0.5">
-                    <Calendar className="size-4" />
-                  </span>
-                  <div>
-                    <h3 className="font-bold text-[16.5px] text-[#111827] mb-1.5">Approval Cuti & Izin Berjenjang</h3>
-                    <p className="text-[13.5px] leading-[1.55] text-[#6B7280]">
-                      Validasi berjenjang dari Supervisor hingga HRD dengan kalender cuti bersama SKB 3 Menteri resmi.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-6 rounded-2xl bg-white border border-[#F1F2F6] flex items-start gap-4">
-                  <span className="size-9 rounded-xl bg-[#161924] text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <Laptop className="size-4" />
-                  </span>
-                  <div>
-                    <h3 className="font-bold text-[16.5px] text-[#111827] mb-1.5">Employee Self-Service (ESS PWA)</h3>
-                    <p className="text-[13.5px] leading-[1.55] text-[#6B7280]">
-                      Akses mudah dari smartphone tanpa download aplikasi Play Store untuk absensi selfie dan unduh slip gaji.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Dashboard Preview (7 cols) */}
-              <div className="lg:col-span-7 rounded-2xl bg-[#F5F7FB] border border-[#ECEEF6] p-6 sm:p-8 flex flex-col justify-between">
-                <div className="bg-white rounded-xl border border-[#E5E7EB] p-5 shadow-xs">
-                  <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-[#F3F4F6]">
-                    <span className="font-bold text-[13px] text-[#111827]">Ringkasan Operasional Bulan Berjalan</span>
-                    <span className="px-2.5 py-0.5 rounded bg-[#161924] text-white text-[10.5px]">Masa Pajak Aktif</span>
-                  </div>
-
-                  {/* 3 Metric Pills */}
-                  <div className="grid grid-cols-3 gap-3 mb-4">
-                    <div className="rounded-xl bg-[oklch(0.54_0.19_258)] text-white p-3 text-center">
-                      <span className="text-[10px] text-white/80 block">Karyawan Aktif</span>
-                      <span className="text-[16px] font-bold">1.250</span>
-                    </div>
-                    <div className="rounded-xl bg-[#6982FF] text-white p-3 text-center">
-                      <span className="text-[10px] text-white/80 block">Slip Terbit</span>
-                      <span className="text-[16px] font-bold">1.250</span>
-                    </div>
-                    <div className="rounded-xl bg-[#10B981] text-white p-3 text-center">
-                      <span className="text-[10px] text-white/80 block">Akurasi Pajak</span>
-                      <span className="text-[16px] font-bold">100%</span>
-                    </div>
-                  </div>
-
-                  {/* Bottom Row Mini Charts */}
-                  <div className="grid grid-cols-3 gap-3 items-center">
-                    <div className="rounded-lg border border-[#F1F2F6] p-3 text-center">
-                      <span className="text-[10px] text-[#6B7280] block mb-1">Presensi Hari Ini</span>
-                      <span className="text-[14px] font-black text-[#111827]">98.6%</span>
-                    </div>
-                    <div className="rounded-lg border border-[#F1F2F6] p-3 text-center">
-                      <span className="text-[10px] text-[#6B7280] block mb-1">Kantin Terklaim</span>
-                      <span className="text-[14px] font-black text-[#111827]">948 Kupon</span>
-                    </div>
-                    <div className="rounded-lg border border-[#F1F2F6] p-3 text-center">
-                      <span className="text-[10px] text-[#6B7280] block mb-1">Lembur Tervalidasi</span>
-                      <span className="text-[14px] font-black text-[#111827]">42 Jam</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {/* Interactive Feature Showcase Tabs (Remake) */}
+            <FeatureShowcase embedded={true} />
           </div>
         </section>
 
