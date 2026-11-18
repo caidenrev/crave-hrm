@@ -138,7 +138,9 @@ class AuthController extends Controller
             return redirect()->intended('/dashboard');
         }
 
-        return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'turnstileSiteKey' => env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
+        ]);
     }
 
     public function register(Request $request)
@@ -148,7 +150,42 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'company_name' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Password::min(8)],
+            'cf_turnstile_response' => ['nullable', 'string'],
         ]);
+
+        // Verifikasi Cloudflare Turnstile
+        $turnstileSecret = env('TURNSTILE_SECRET_KEY', '0x4AAAAAAGE_bfNXRoOw_fB7_MW9wsyXlRs');
+        $turnstileToken = $request->input('cf_turnstile_response');
+
+        if ($turnstileSecret && !app()->environment('testing')) {
+            if (!$turnstileToken) {
+                return back()->withErrors([
+                    'cf_turnstile_response' => 'Silakan centang verifikasi Cloudflare Turnstile terlebih dahulu.',
+                ]);
+            }
+
+            try {
+                $response = \Illuminate\Support\Facades\Http::asForm()->timeout(5)->post(
+                    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+                    [
+                        'secret' => $turnstileSecret,
+                        'response' => $turnstileToken,
+                        'remoteip' => $request->ip(),
+                    ]
+                );
+
+                $result = $response->json();
+
+                if (!($result['success'] ?? false)) {
+                    \Illuminate\Support\Facades\Log::warning('[Turnstile] Bot verification failed on register', ['result' => $result]);
+                    return back()->withErrors([
+                        'cf_turnstile_response' => 'Verifikasi keamanan bot gagal. Silakan coba lagi.',
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('[Turnstile] Verification error on register: ' . $e->getMessage());
+            }
+        }
 
         $user = DB::transaction(function () use ($request) {
             $companySlug = Str::slug($request->company_name) . '-' . Str::lower(Str::random(4));

@@ -1,0 +1,181 @@
+@import url("https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Delius&display=swap");
+
+.crave-cards {
+  --crave-title: "Bagel Fat One", "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --crave-body: "Delius", "Comic Neue", "Trebuchet MS", system-ui, sans-serif;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+  width: 100%;
+  margin-inline: auto;
+}
+
+@media (min-width: 1024px) {
+  .crave-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ---------- 3 tingkat biru: terang -> sedang -> bold ---------- */
+.crave-card--light {
+  --bg: #5cc8ff;
+  --fg: #0b1b6e;
+  --title: #0b1b6e;
+  --blob: #b6e6ff;
+  --spike: #ffffff;
+  --ill: #0b1b6e;
+  --ill-soft: #ffffff;
+  --ill-pop: #1e56e8;
+  --btn-bg: #0b1b6e;
+  --btn-fg: #ffffff;
+}
+.crave-card--mid {
+  --bg: #1e56e8;
+  --fg: #ffffff;
+  --title: #f5ff3d;
+  --blob: #5b8dff;
+  --spike: #f5ff3d;
+  --ill: #ffffff;
+  --ill-soft: #1e56e8;
+  --ill-pop: #f5ff3d;
+  --btn-bg: #f5ff3d;
+  --btn-fg: #0b1b6e;
+}
+.crave-card--bold {
+  --bg: #0a1bb4;
+  --fg: #ffffff;
+  --title: #f5ff3d;
+  --blob: #3d52f2;
+  --spike: #f5ff3d;
+  --ill: #ffffff;
+  --ill-soft: #0a1bb4;
+  --ill-pop: #f5ff3d;
+  --btn-bg: #f5ff3d;
+  --btn-fg: #0a1bb4;
+}
+
+/* ---------- kartu ---------- */
+.crave-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  min-height: 340px;
+  padding: 32px 32px 30px;
+  border-radius: 32px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--crave-body);
+}
+
+.crave-card__blob {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 46%;
+  z-index: -1;
+  pointer-events: none;
+}
+.crave-card__blob svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.crave-card__art {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  width: min(34%, 190px);
+  translate: 0 -50%;
+  z-index: -1;
+  pointer-events: none;
+  transition: rotate 0.3s ease;
+}
+.crave-card:hover .crave-card__art {
+  rotate: -4deg;
+}
+
+/* logo: dipakai sebagai mask supaya warnanya ikut tema kartu */
+.crave-card__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  color: var(--title);
+}
+.crave-card__logo-mark {
+  display: block;
+  height: 100%;
+  background-color: currentColor;
+  -webkit-mask: var(--logo) left center / contain no-repeat;
+  mask: var(--logo) left center / contain no-repeat;
+}
+.crave-card__logo-text {
+  font-family: var(--crave-title);
+  font-size: 30px;
+  line-height: 1;
+}
+
+.crave-card__body {
+  max-width: 56%;
+}
+.crave-card__title {
+  margin: 0 0 8px;
+  font-family: var(--crave-title);
+  font-weight: 400;
+  font-size: 26px;
+  line-height: 1.1;
+  color: var(--title);
+}
+.crave-card__desc {
+  margin: 0 0 18px;
+  font-size: 17px;
+  line-height: 1.5;
+}
+.crave-card__cta {
+  display: inline-block;
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--crave-body);
+  font-size: 15px;
+  text-decoration: none;
+}
+.crave-card__cta:hover {
+  filter: brightness(1.06);
+}
+.crave-card__cta:focus-visible {
+  outline: 3px solid var(--fg);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .crave-card {
+    padding: 24px 22px;
+    min-height: 380px;
+  }
+  .crave-card__body {
+    max-width: 100%;
+  }
+  .crave-card__blob {
+    width: 62%;
+    inset: 0 0 auto auto;
+    height: 46%;
+  }
+  .crave-card__art {
+    top: 24%;
+    width: 30%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crave-card__art {
+    transition: none;
+  }
+  .crave-card:hover .crave-card__art {
+    rotate: 0deg;
+  }
+}
