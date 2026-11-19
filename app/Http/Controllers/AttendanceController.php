@@ -80,7 +80,17 @@ class AttendanceController extends Controller
     public function checkInView(Request $request): Response
     {
         [$companyId, $employee] = $this->getActiveContext($request);
-        $today = Carbon::today()->format('Y-m-d');
+
+        $assignedShift = $employee?->defaultShift
+            ?? Shift::where('company_id', $companyId)->where('is_active', true)->first();
+
+        $assignedBranch = $employee?->branch
+            ?? Branch::where('company_id', $companyId)->where('is_active', true)->first();
+
+        // Resolve branch timezone
+        $tz = $this->attendanceService->getBranchTimezone($assignedBranch);
+        $now = Carbon::now($tz);
+        $today = $now->format('Y-m-d');
 
         $todayAttendance = null;
         $recentAttendances = [];
@@ -100,14 +110,8 @@ class AttendanceController extends Controller
                 ->get();
         }
 
-        $assignedShift = $employee?->defaultShift
-            ?? Shift::where('company_id', $companyId)->where('is_active', true)->first();
-
-        $assignedBranch = $employee?->branch
-            ?? Branch::where('company_id', $companyId)->where('is_active', true)->first();
-
         // Calculate Monthly Summary Stats for Employee
-        $startOfMonth = Carbon::today()->startOfMonth()->format('Y-m-d');
+        $startOfMonth = $now->copy()->startOfMonth()->format('Y-m-d');
         $monthlyPresent = Attendance::where('company_id', $companyId)
             ->where('employee_id', $employee?->id)
             ->whereDate('date', '>=', $startOfMonth)
@@ -132,17 +136,26 @@ class AttendanceController extends Controller
             ? round(($totalMinutesWorked / $monthlyPresent) / 60, 1)
             : 0;
 
+        $tzAbbr = match ($tz) {
+            'Asia/Makassar' => 'WITA',
+            'Asia/Jayapura' => 'WIT',
+            default => 'WIB',
+        };
+
         return Inertia::render('Attendance/CheckIn', [
             'employee' => $employee ? $employee->load(['branch', 'department', 'designation']) : null,
             'todayAttendance' => $todayAttendance,
             'assignedShift' => $assignedShift,
             'assignedBranch' => $assignedBranch,
             'recentAttendances' => $recentAttendances,
+            'timezone' => $tz,
+            'timezone_abbr' => $tzAbbr,
+            'server_timestamp' => $now->timestamp * 1000,
             'stats' => [
                 'monthly_present' => $monthlyPresent,
                 'monthly_late' => $monthlyLate,
                 'avg_hours_worked' => $avgHoursWorked,
-                'today_date' => Carbon::today()->translatedFormat('l, d F Y'),
+                'today_date' => $now->locale('id')->isoFormat('dddd, D MMMM Y'),
             ],
         ]);
     }
@@ -457,19 +470,35 @@ class AttendanceController extends Controller
         $lateCount = (clone $statsBase)->where('attendances.status', 'late')->count();
         $geofenceValidCount = (clone $statsBase)->whereIn('attendances.geofence_status', ['valid_geofence', 'valid_ip'])->count();
 
-        // 2:1 Chart Data: Daily distribution for trend
-        $dailyTrend = (clone $statsBase)
+        // 2:1 Chart Data: Daily distribution for trend (Continuous Wave Series, min 7 days)
+        $trendEnd = $dateTo ? Carbon::parse($dateTo) : Carbon::today();
+        $trendStart = $dateFrom ? Carbon::parse($dateFrom) : Carbon::today()->subDays(6);
+        if ($trendStart->diffInDays($trendEnd) < 6) {
+            $trendStart = (clone $trendEnd)->subDays(6);
+        }
+
+        $trendRecords = (clone $statsBase)
+            ->whereDate('attendances.date', '>=', $trendStart->format('Y-m-d'))
+            ->whereDate('attendances.date', '<=', $trendEnd->format('Y-m-d'))
             ->selectRaw('date(attendances.date) as day_date, count(*) as total, sum(case when status = "present" then 1 else 0 end) as tepat_waktu, sum(case when status = "late" then 1 else 0 end) as terlambat')
             ->groupBy('day_date')
-            ->orderBy('day_date')
-            ->take(14)
             ->get()
-            ->map(fn ($row) => [
-                'date' => Carbon::parse($row->day_date)->format('d M'),
-                'tepat_waktu' => (int) $row->tepat_waktu,
-                'terlambat' => (int) $row->terlambat,
-                'total' => (int) $row->total,
-            ]);
+            ->keyBy(fn ($item) => Carbon::parse($item->day_date)->format('Y-m-d'));
+
+        $dailyTrend = [];
+        $curr = clone $trendStart;
+        while ($curr <= $trendEnd) {
+            $key = $curr->format('Y-m-d');
+            $row = $trendRecords->get($key);
+            $dailyTrend[] = [
+                'date' => $curr->format('d M'),
+                'raw_date' => $key,
+                'tepat_waktu' => $row ? (int) $row->tepat_waktu : 0,
+                'terlambat' => $row ? (int) $row->terlambat : 0,
+                'total' => $row ? (int) $row->total : 0,
+            ];
+            $curr->addDay();
+        }
 
         // Shift distribution donut
         $shiftCompositionQuery = Attendance::withoutGlobalScopes()
@@ -533,15 +562,50 @@ class AttendanceController extends Controller
             'correction_reason' => ['required', 'string', 'max:500'],
         ]);
 
+        $newClockIn = $validated['clock_in_time'] ?: $attendance->clock_in_time;
+        $newClockOut = $validated['clock_out_time'] ?: $attendance->clock_out_time;
+
+        $shift = $attendance->shift;
+        $branch = $attendance->branch;
+        $tz = $this->attendanceService->getBranchTimezone($branch);
+
+        $dateStr = Carbon::parse($attendance->date)->format('Y-m-d');
+        $lateMinutes = 0;
+        $earlyLeaveMinutes = 0;
+        $workDurationMinutes = $attendance->work_duration_minutes;
+
+        if ($newClockIn && $shift) {
+            $inCarbon = Carbon::parse("{$dateStr} {$newClockIn}", $tz);
+            $lateCheck = $this->attendanceService->calculateLateMinutes($shift, $inCarbon);
+            $lateMinutes = $lateCheck['late_minutes'];
+        }
+
+        if ($newClockOut && $shift) {
+            $outCarbon = Carbon::parse("{$dateStr} {$newClockOut}", $tz);
+            $earlyLeaveMinutes = $this->attendanceService->calculateEarlyLeaveMinutes($shift, $outCarbon);
+        }
+
+        if ($newClockIn && $newClockOut) {
+            $inCarbon = Carbon::parse("{$dateStr} {$newClockIn}", $tz);
+            $outCarbon = Carbon::parse("{$dateStr} {$newClockOut}", $tz);
+            if ($shift && $shift->end_time < $shift->start_time && $outCarbon->lessThan($inCarbon)) {
+                $outCarbon = $outCarbon->addDay();
+            }
+            $workDurationMinutes = max(0, (int) $inCarbon->diffInMinutes($outCarbon));
+        }
+
         $attendance->update([
             'status' => $validated['status'],
-            'clock_in_time' => $validated['clock_in_time'] ?: $attendance->clock_in_time,
-            'clock_out_time' => $validated['clock_out_time'] ?: $attendance->clock_out_time,
+            'clock_in_time' => $newClockIn,
+            'clock_out_time' => $newClockOut,
+            'late_minutes' => $lateMinutes,
+            'early_leave_minutes' => $earlyLeaveMinutes,
+            'work_duration_minutes' => $workDurationMinutes,
             'correction_reason' => $validated['correction_reason'],
             'is_corrected' => true,
             'corrected_by' => $request->user()?->id,
         ]);
 
-        return back()->with('success', 'Koreksi log absensi berhasil disimpan.');
+        return back()->with('success', 'Koreksi log absensi dan rekalkulasi durasi kerja berhasil disimpan.');
     }
 }

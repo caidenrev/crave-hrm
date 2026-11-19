@@ -12,28 +12,19 @@ import {
   Building2,
   Calendar,
   ShieldCheck,
-  ArrowRight,
   TrendingUp,
-  UserCheck,
   ArrowUpRight,
   ArrowDownRight,
+  Radio,
+  Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import { SlideButton } from "@/components/ui/SlideButton";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
-// Haversine formula on client for real-time live preview
+// Haversine formula on client for real-time distance preview
 function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
   if (!lat1 || !lon1 || !lat2 || !lon2) return null;
   const R = 6371000; // meters
@@ -55,14 +46,64 @@ export default function CheckIn({
   assignedShift,
   assignedBranch,
   recentAttendances = [],
+  timezone = "Asia/Jakarta",
+  timezone_abbr = "WIB",
+  server_timestamp,
   stats = {},
 }) {
   const { flash } = usePage().props;
+
+  // Real-time Live Clock State
+  const [timeString, setTimeString] = useState("");
+  const [dateString, setDateString] = useState("");
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      try {
+        const timeFmt = new Intl.DateTimeFormat("id-ID", {
+          timeZone: timezone,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }).format(now);
+        setTimeString(timeFmt.replace(/\./g, ":"));
+
+        const dateFmt = new Intl.DateTimeFormat("id-ID", {
+          timeZone: timezone,
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        }).format(now);
+        setDateString(dateFmt);
+      } catch {
+        setTimeString(now.toLocaleTimeString("id-ID").replace(/\./g, ":"));
+        setDateString(
+          now.toLocaleDateString("id-ID", {
+            weekday: "long",
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          })
+        );
+      }
+    };
+
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
+  }, [timezone]);
+
+  // Geolocation & GPS State
   const [coords, setCoords] = useState(null);
+  const [gpsAccuracy, setGpsAccuracy] = useState(null);
   const [geoError, setGeoError] = useState(null);
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [locationName, setLocationName] = useState(null);
   const [isResolvingAddress, setIsResolvingAddress] = useState(false);
+  const lastGeocodeRef = useRef({ lat: null, lng: null });
 
   // Camera state
   const [cameraActive, setCameraActive] = useState(false);
@@ -78,7 +119,7 @@ export default function CheckIn({
     force_outside: false,
   });
 
-  // Reverse Geocoding Helper: Converts GPS coordinates to specific human-readable address
+  // Reverse Geocoding Helper: Converts GPS coordinates to human-readable address
   const fetchReverseGeocode = async (lat, lng) => {
     setIsResolvingAddress(true);
     try {
@@ -130,7 +171,7 @@ export default function CheckIn({
           const road = json2.locality || "";
           const city = json2.city || json2.principalSubdivision || "";
           const country = json2.countryName || "";
-          
+
           let detailedParts = [];
           if (Array.isArray(json2.localityInfo?.administrative)) {
             const admins = json2.localityInfo.administrative
@@ -148,13 +189,86 @@ export default function CheckIn({
           }
         }
       } catch (err2) {
-        // Ignore fallback error
+        // Fallback error ignored
       }
     }
 
     setLocationName("Lokasi Terdeteksi (Sinyal GPS Aktif)");
     setIsResolvingAddress(false);
   };
+
+  // Location Handlers
+  const handlePositionSuccess = (position) => {
+    const { latitude, longitude, accuracy } = position.coords;
+    setCoords({ latitude, longitude });
+    setGpsAccuracy(Math.round(accuracy));
+    setData((prev) => ({
+      ...prev,
+      latitude: Number(latitude.toFixed(6)),
+      longitude: Number(longitude.toFixed(6)),
+    }));
+    setGeoError(null);
+    setIsDetectingLocation(false);
+
+    // Only reverse geocode if moved > 30 meters
+    const prev = lastGeocodeRef.current;
+    if (
+      !prev.lat ||
+      calculateHaversineDistance(prev.lat, prev.lng, latitude, longitude) > 30
+    ) {
+      lastGeocodeRef.current = { lat: latitude, lng: longitude };
+      fetchReverseGeocode(latitude, longitude);
+    }
+  };
+
+  const handlePositionError = (error) => {
+    let msg = "Gagal mendeteksi lokasi GPS.";
+    if (error.code === 1) msg = "Izin akses lokasi ditolak oleh browser/perangkat.";
+    if (error.code === 2) msg = "Posisi GPS tidak dapat ditemukan.";
+    if (error.code === 3) msg = "Waktu deteksi lokasi habis (timeout sinyal GPS).";
+    setGeoError(msg);
+    setIsDetectingLocation(false);
+  };
+
+  const refreshLocation = () => {
+    setIsDetectingLocation(true);
+    setGeoError(null);
+    if (!navigator.geolocation) {
+      setGeoError("Geolocation tidak didukung pada peramban Anda.");
+      setIsDetectingLocation(false);
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(handlePositionSuccess, handlePositionError, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    });
+  };
+
+  // Start watching location continuously
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setGeoError("Geolocation tidak didukung pada peramban Anda.");
+      return;
+    }
+
+    setIsDetectingLocation(true);
+    navigator.geolocation.getCurrentPosition(handlePositionSuccess, handlePositionError, {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    });
+
+    const watchId = navigator.geolocation.watchPosition(
+      handlePositionSuccess,
+      () => {},
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 5000 }
+    );
+
+    return () => {
+      if (watchId) navigator.geolocation.clearWatch(watchId);
+    };
+  }, []);
 
   // Calculate live distance to office branch
   const officeLat = assignedBranch?.latitude ? Number(assignedBranch.latitude) : null;
@@ -166,46 +280,13 @@ export default function CheckIn({
       ? calculateHaversineDistance(coords.latitude, coords.longitude, officeLat, officeLng)
       : null;
 
-  const isWithinGeofence = currentDistance !== null ? currentDistance <= officeRadius : true;
+  // Adaptive indoor grace margin (up to 25m if device accuracy margin is broad)
+  const indoorMargin = gpsAccuracy ? Math.min(Math.round(gpsAccuracy / 2), 25) : 0;
+  const effectiveRadius = officeRadius + indoorMargin;
 
-  // Detect location
-  const detectLocation = () => {
-    setIsDetectingLocation(true);
-    setGeoError(null);
-
-    if (!navigator.geolocation) {
-      setGeoError("Geolocation tidak didukung pada peramban Anda.");
-      setIsDetectingLocation(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setCoords({ latitude, longitude });
-        setData((prev) => ({
-          ...prev,
-          latitude: Number(latitude.toFixed(6)),
-          longitude: Number(longitude.toFixed(6)),
-        }));
-        fetchReverseGeocode(latitude, longitude);
-        setIsDetectingLocation(false);
-      },
-      (error) => {
-        let msg = "Gagal mendeteksi lokasi GPS.";
-        if (error.code === 1) msg = "Izin akses lokasi ditolak oleh pengguna.";
-        if (error.code === 2) msg = "Posisi GPS tidak dapat ditemukan.";
-        if (error.code === 3) msg = "Waktu deteksi lokasi habis (timeout).";
-        setGeoError(msg);
-        setIsDetectingLocation(false);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-    );
-  };
-
-  useEffect(() => {
-    detectLocation();
-  }, []);
+  // CRITICAL FIX: isWithinGeofence is strictly FALSE if coords are null
+  const isWithinGeofence = currentDistance !== null ? currentDistance <= effectiveRadius : false;
+  const isLocationReady = coords !== null && currentDistance !== null;
 
   // Camera Controls
   const startCamera = async () => {
@@ -241,7 +322,7 @@ export default function CheckIn({
     canvas.height = video.videoHeight || 480;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const photoDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+    const photoDataUrl = canvas.toDataURL("image/jpeg", 0.82);
     setSelfieSnapshot(photoDataUrl);
     setData("selfie_image", photoDataUrl);
     stopCamera();
@@ -293,36 +374,22 @@ export default function CheckIn({
   const isClockedIn = Boolean(todayAttendance?.clock_in_time);
   const isClockedOut = Boolean(todayAttendance?.clock_out_time);
 
-  let statusBadgeLabel = "Belum Presensi";
-  let statusBadgeVariant = "secondary";
-  if (isClockedIn && !isClockedOut) {
-    if (todayAttendance?.status === "late") {
-      statusBadgeLabel = "Terlambat Masuk";
-      statusBadgeVariant = "destructive";
-    } else {
-      statusBadgeLabel = "Bekerja (Tepat Waktu)";
-      statusBadgeVariant = "default";
-    }
-  } else if (isClockedIn && isClockedOut) {
-    statusBadgeLabel = "Selesai Kerja Hari Ini";
-    statusBadgeVariant = "secondary";
-  }
-
   return (
-    <AuthenticatedLayout title="Presensi Harian">
+    <AuthenticatedLayout
+      title="Presensi Harian"
+      subtitle={`Shift: ${assignedShift ? assignedShift.name : "Reguler"} (${assignedShift ? assignedShift.start_time.substring(0, 5) + " - " + assignedShift.end_time.substring(0, 5) : "08:00 - 17:00"} ${timezone_abbr}) · ${assignedBranch?.name || "Kantor Pusat"}`}
+      actions={
+        <div className="flex items-center gap-2">
+          <Badge variant="outline" className="border-primary/30 bg-primary/5 text-primary px-3 py-1 text-xs font-semibold">
+            <span className="size-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse inline-block" />
+            Sistem Aktif ({timezone_abbr})
+          </Badge>
+        </div>
+      }
+    >
       <Head title="Presensi Harian — Crave HRM" />
 
-      <div className="space-y-6">
-        {/* Header Title Section */}
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-            Presensi Harian
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Pencatatan kehadiran kerja resmi dengan verifikasi radius GPS geofence, IP kantor, dan kamera swafoto.
-          </p>
-        </div>
-
+      <div className="space-y-5">
         {/* Flash Notifications */}
         {flash?.success && (
           <div className="flex items-center gap-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 p-3.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
@@ -337,21 +404,58 @@ export default function CheckIn({
           </div>
         )}
 
-        {/* 4 KPI Cards (Crave POS Formula: Hero Blue + 3 White card-soft) */}
+        {/* 4 TOP KPI CARDS (Crave POS Formula: Hero Blue + 3 White card-soft) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
-          {/* Card 0: Hero Electric Blue */}
+          {/* Card 0: Hero Electric Blue - Waktu Real-Time Live Clock */}
           <div className="flex flex-col justify-between rounded-2xl border border-primary bg-primary p-3 shadow-lg shadow-primary/25 sm:rounded-3xl sm:p-4 text-primary-foreground">
-            <div className="flex items-start justify-between gap-2">
-              <span className="text-white">
-                <Clock className="size-5 sm:size-6" />
+            <div className="flex items-start justify-between gap-1.5">
+              <span className="flex items-center gap-1.5 text-white">
+                <Clock className="size-4.5 sm:size-5" />
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex size-2 rounded-full bg-emerald-400"></span>
+                </span>
               </span>
-              <span className="flex items-center gap-1 text-[12px] font-bold text-white">
-                <ArrowUpRight className="size-3.5" />
-                {todayAttendance ? (todayAttendance.status === "late" ? "Terlambat" : "Tepat Waktu") : "Hari Ini"}
+              <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] sm:text-xs font-bold text-white tracking-wider uppercase">
+                {timezone_abbr}
               </span>
             </div>
-            <div className="mt-3 sm:mt-4">
-              <div className="text-xl font-bold tracking-tight sm:text-2xl">
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-xl font-black tracking-tight sm:text-2xl lg:text-3xl tabular-nums text-white">
+                {timeString || "--:--:--"}
+              </div>
+              <div className="text-[11px] sm:text-xs text-white/80 font-medium truncate mt-0.5">
+                {dateString || stats.today_date || "Hari Ini"}
+              </div>
+            </div>
+          </div>
+
+          {/* Card 1: Status Kehadiran Hari Ini */}
+          <div className="flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-soft sm:rounded-3xl sm:p-4 text-card-foreground">
+            <div className="flex items-start justify-between gap-1.5">
+              <span className="text-foreground">
+                <CheckCircle2 className="size-4.5 sm:size-5" />
+              </span>
+              <span
+                className={cn(
+                  "flex items-center gap-1 text-[11px] sm:text-xs font-bold truncate",
+                  todayAttendance?.status === "late" ? "text-destructive" : "text-emerald-600 dark:text-emerald-400"
+                )}
+              >
+                {todayAttendance?.status === "late" ? (
+                  <ArrowDownRight className="size-3.5 shrink-0" />
+                ) : (
+                  <ArrowUpRight className="size-3.5 shrink-0" />
+                )}
+                {todayAttendance?.status === "late"
+                  ? `Telat ${todayAttendance.late_minutes}m`
+                  : isClockedIn
+                  ? "Tepat Waktu"
+                  : "Menunggu"}
+              </span>
+            </div>
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-lg font-black tracking-tight text-foreground sm:text-2xl truncate">
                 {isClockedOut
                   ? "Selesai"
                   : isClockedIn
@@ -360,81 +464,59 @@ export default function CheckIn({
                     : "Hadir Aktif"
                   : "Belum Masuk"}
               </div>
-              <div className="text-[12px] text-white/80">Status Kehadiran Hari Ini</div>
-            </div>
-          </div>
-
-          {/* Card 1: Jam Masuk */}
-          <div className="flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] sm:rounded-3xl sm:p-4">
-            <div className="flex items-start justify-between gap-2">
-              <span className="text-foreground">
-                <CheckCircle2 className="size-5 sm:size-6" />
-              </span>
-              <span
-                className={cn(
-                  "flex items-center gap-1 text-[12px] font-bold",
-                  todayAttendance?.status === "late" ? "text-destructive" : "text-success"
-                )}
-              >
-                {todayAttendance?.status === "late" ? (
-                  <ArrowDownRight className="size-3.5" />
-                ) : (
-                  <ArrowUpRight className="size-3.5" />
-                )}
-                {todayAttendance?.status === "late"
-                  ? `Telat ${todayAttendance.late_minutes}m`
-                  : todayAttendance?.clock_in_time
-                  ? "Tepat Waktu"
-                  : "Toleransi 15m"}
-              </span>
-            </div>
-            <div className="mt-3 sm:mt-4">
-              <div className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                {todayAttendance?.clock_in_time ? todayAttendance.clock_in_time.substring(0, 5) : "--:--"}
+              <div className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate mt-0.5">
+                Status Hari Ini
               </div>
-              <div className="text-[12px] text-muted-foreground">Jam Masuk (Clock-In)</div>
             </div>
           </div>
 
-          {/* Card 2: Jam Pulang */}
-          <div className="flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] sm:rounded-3xl sm:p-4">
-            <div className="flex items-start justify-between gap-2">
+          {/* Card 2: Jam Masuk & Pulang */}
+          <div className="flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-soft sm:rounded-3xl sm:p-4 text-card-foreground">
+            <div className="flex items-start justify-between gap-1.5">
               <span className="text-foreground">
-                <RotateCcw className="size-5 sm:size-6" />
+                <RotateCcw className="size-4.5 sm:size-5" />
               </span>
-              <span className="flex items-center gap-1 text-[12px] font-bold text-success">
-                <ArrowUpRight className="size-3.5" />
+              <span className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 truncate">
+                <ArrowUpRight className="size-3.5 shrink-0" />
                 {isClockedOut
                   ? `${Math.floor((todayAttendance.work_duration_minutes || 0) / 60)}j Kerja`
                   : isClockedIn
                   ? "Sedang Bekerja"
-                  : "Target 17:00"}
+                  : "Target 8 Jam"}
               </span>
             </div>
-            <div className="mt-3 sm:mt-4">
-              <div className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                {todayAttendance?.clock_out_time ? todayAttendance.clock_out_time.substring(0, 5) : "--:--"}
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-lg font-black tracking-tight text-foreground sm:text-2xl tabular-nums truncate">
+                {todayAttendance?.clock_in_time ? todayAttendance.clock_in_time.substring(0, 5) : "--:--"}
+                <span className="text-muted-foreground font-normal text-sm mx-1.5">•</span>
+                <span className="text-muted-foreground font-semibold text-base sm:text-lg">
+                  {todayAttendance?.clock_out_time ? todayAttendance.clock_out_time.substring(0, 5) : "--:--"}
+                </span>
               </div>
-              <div className="text-[12px] text-muted-foreground">Jam Pulang (Clock-Out)</div>
+              <div className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate mt-0.5">
+                Jam Masuk • Pulang
+              </div>
             </div>
           </div>
 
           {/* Card 3: Kehadiran Bulan Ini */}
-          <div className="flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)] sm:rounded-3xl sm:p-4">
-            <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-soft sm:rounded-3xl sm:p-4 text-card-foreground">
+            <div className="flex items-start justify-between gap-1.5">
               <span className="text-foreground">
-                <TrendingUp className="size-5 sm:size-6" />
+                <TrendingUp className="size-4.5 sm:size-5" />
               </span>
-              <span className="flex items-center gap-1 text-[12px] font-bold text-success">
-                <ArrowUpRight className="size-3.5" />
+              <span className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-emerald-600 dark:text-emerald-400 truncate">
+                <ArrowUpRight className="size-3.5 shrink-0" />
                 {stats.avg_hours_worked || 0} jam/hari
               </span>
             </div>
-            <div className="mt-3 sm:mt-4">
-              <div className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+            <div className="mt-2.5 sm:mt-3">
+              <div className="text-lg font-black tracking-tight text-foreground sm:text-2xl tabular-nums truncate">
                 {stats.monthly_present || 0} Hari
               </div>
-              <div className="text-[12px] text-muted-foreground">Kehadiran Bulan Ini</div>
+              <div className="text-[11px] sm:text-xs text-muted-foreground font-medium truncate mt-0.5">
+                Kehadiran Bulan Ini
+              </div>
             </div>
           </div>
         </div>
@@ -460,12 +542,12 @@ export default function CheckIn({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={detectLocation}
+                  onClick={refreshLocation}
                   disabled={isDetectingLocation}
                   className="rounded-xl text-xs"
                 >
                   <Navigation className={cn("mr-1.5 h-3.5 w-3.5", isDetectingLocation && "animate-spin")} />
-                  {isDetectingLocation ? "Mendeteksi..." : "Perbarui Lokasi"}
+                  {isDetectingLocation ? "Mencari GPS..." : "Perbarui Lokasi"}
                 </Button>
               </div>
 
@@ -473,16 +555,24 @@ export default function CheckIn({
               <div className="mt-4 rounded-xl bg-muted/40 p-4">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <div className="text-xs font-medium text-muted-foreground">Jarak dari Kantor:</div>
+                    <div className="text-xs font-medium text-muted-foreground">Jarak dari Pusat Kantor:</div>
                     <div className="text-lg font-black tracking-tight text-foreground">
-                      {currentDistance !== null ? `${currentDistance} meter` : "Mencari sinyal GPS..."}
+                      {currentDistance !== null ? `${currentDistance} meter` : "Mencari sinyal satelit GPS..."}
                     </div>
                   </div>
-                  <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {gpsAccuracy && (
+                      <Badge variant="outline" className={cn(
+                        "rounded-full text-[11px] font-semibold",
+                        gpsAccuracy <= 20 ? "border-emerald-500/40 text-emerald-600 bg-emerald-500/10" : "border-amber-500/40 text-amber-600 bg-amber-500/10"
+                      )}>
+                        Akurasi: ±{gpsAccuracy}m
+                      </Badge>
+                    )}
                     {currentDistance !== null ? (
                       isWithinGeofence ? (
                         <Badge variant="default" className="rounded-full bg-emerald-600 px-3 py-1 text-xs">
-                          <CheckCircle2 className="mr-1 h-3.5 w-3.5" /> Dalam Radius Aman Kantor
+                          <CheckCircle2 className="mr-1 h-3.5 w-3.5" /> Dalam Radius Kantor
                         </Badge>
                       ) : (
                         <Badge variant="destructive" className="rounded-full px-3 py-1 text-xs">
@@ -491,11 +581,17 @@ export default function CheckIn({
                       )
                     ) : (
                       <Badge variant="outline" className="rounded-full text-xs">
-                        Menunggu Sinyal GPS
+                        Menunggu Koordinat GPS
                       </Badge>
                     )}
                   </div>
                 </div>
+
+                {indoorMargin > 0 && isWithinGeofence && (
+                  <div className="mt-2 text-[11px] text-muted-foreground">
+                    *Toleransi indoor otomatis diterapkan (+{indoorMargin}m) untuk mengakomodasi sinyal pantul di dalam gedung.
+                  </div>
+                )}
 
                 {coords && (
                   <div className="mt-3.5 border-t border-border/40 pt-3">
@@ -505,7 +601,7 @@ export default function CheckIn({
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                          Lokasi Spesifik Anda:
+                          Wilayah Terdeteksi:
                         </div>
                         <div className="text-sm font-bold text-foreground leading-snug">
                           {isResolvingAddress ? (
@@ -519,10 +615,10 @@ export default function CheckIn({
                         </div>
                         <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
                           <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                            <CheckCircle2 className="size-3" /> GPS Terhubung
+                            <CheckCircle2 className="size-3" /> GPS Terkunci
                           </span>
                           <span>•</span>
-                          <span>Tujuan Penempatan: <strong className="font-semibold text-foreground">{assignedBranch?.name || "Kantor Pusat"}</strong></span>
+                          <span>Cabang Penugasan: <strong className="font-semibold text-foreground">{assignedBranch?.name || "Kantor Pusat"}</strong></span>
                         </div>
                       </div>
                     </div>
@@ -605,8 +701,8 @@ export default function CheckIn({
                       alt="Foto Masuk"
                       className="h-56 w-72 object-cover"
                     />
-                    <div className="bg-muted p-2 text-center text-xs text-muted-foreground">
-                      Foto Check-In Pukul {todayAttendance.clock_in_time}
+                    <div className="bg-muted p-2 text-center text-xs text-muted-foreground font-semibold">
+                      Foto Check-In Pukul {todayAttendance.clock_in_time} {timezone_abbr}
                     </div>
                   </div>
                 ) : (
@@ -631,7 +727,7 @@ export default function CheckIn({
               <div className="mt-6 border-t pt-4">
                 {!isClockedIn ? (
                   <div className="space-y-3">
-                    {!isWithinGeofence && (
+                    {!isWithinGeofence && isLocationReady && (
                       <div className="flex items-center justify-between rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
                         <div>
                           <div className="text-xs font-bold text-foreground">Lokasi di Luar Radius ({currentDistance}m)</div>
@@ -651,12 +747,13 @@ export default function CheckIn({
                     <div className="pt-1">
                       <SlideButton
                         onConfirm={handleClockIn}
-                        title="Presensi Masuk Sekarang"
-                        subtitle="Geser ke kanan untuk konfirmasi"
+                        title={isLocationReady ? "Presensi Masuk Sekarang" : "Mencari Sinyal GPS..."}
+                        subtitle={isLocationReady ? "Geser ke kanan untuk konfirmasi" : "Harap tunggu koordinat GPS terkunci"}
                         confirmedTitle="Presensi Berhasil Dicatat"
                         confirmedSubtitle="Kehadiran Anda terverifikasi"
                         isConfirmed={isClockedIn}
                         isLoading={processing}
+                        disabled={!isLocationReady && !data.force_outside}
                         variant="primary"
                       />
                     </div>
@@ -682,8 +779,8 @@ export default function CheckIn({
                     <div className="mt-2 font-bold text-foreground">
                       Presensi Hari Ini Telah Lengkap
                     </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Masuk: {todayAttendance.clock_in_time} • Pulang: {todayAttendance.clock_out_time}
+                    <p className="mt-1 text-xs text-muted-foreground font-semibold">
+                      Masuk: {todayAttendance.clock_in_time} {timezone_abbr} • Pulang: {todayAttendance.clock_out_time} {timezone_abbr}
                     </p>
                   </div>
                 )}
@@ -711,7 +808,7 @@ export default function CheckIn({
                 <div className="flex justify-between border-b pb-2">
                   <span className="text-muted-foreground">Jam Kerja:</span>
                   <span className="font-semibold text-foreground">
-                    {assignedShift ? `${assignedShift.start_time.substring(0, 5)} - ${assignedShift.end_time.substring(0, 5)} WIB` : "08:00 - 17:00 WIB"}
+                    {assignedShift ? `${assignedShift.start_time.substring(0, 5)} - ${assignedShift.end_time.substring(0, 5)} ${timezone_abbr}` : `08:00 - 17:00 ${timezone_abbr}`}
                   </span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
@@ -766,7 +863,7 @@ export default function CheckIn({
                           })}
                         </div>
                         <div className="text-[11px] text-muted-foreground">
-                          In: {item.clock_in_time ? item.clock_in_time.substring(0, 5) : "--:--"} • Out: {item.clock_out_time ? item.clock_out_time.substring(0, 5) : "--:--"}
+                          In: {item.clock_in_time ? `${item.clock_in_time.substring(0, 5)} ${timezone_abbr}` : "--:--"} • Out: {item.clock_out_time ? `${item.clock_out_time.substring(0, 5)} ${timezone_abbr}` : "--:--"}
                         </div>
                       </div>
                       <div className="text-right">

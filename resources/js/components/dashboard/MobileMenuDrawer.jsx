@@ -323,9 +323,11 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
             <DropdownMenuContent align="end" side="top" sideOffset={12} className="w-56 rounded-xl">
               <DropdownMenuLabel>Akun Saya</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                <UserIcon className="mr-2 size-4" />
-                <span>Pengaturan Profil</span>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/profile" className="flex items-center w-full">
+                  <UserIcon className="mr-2 size-4" />
+                  <span>Pengaturan Profil</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer text-destructive focus:bg-destructive/10 focus:text-destructive"

@@ -30,7 +30,10 @@ import {
   ShieldAlert,
   ArrowUpRight,
   ArrowDownRight,
+  Camera,
+  ShieldCheck,
 } from "lucide-react";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -146,20 +149,18 @@ export default function Report({
   };
 
   return (
-    <AuthenticatedLayout title="Rekap Kehadiran">
+    <AuthenticatedLayout
+      title="Rekap Kehadiran"
+      subtitle="Dashboard audit log presensi harian karyawan, validasi GPS & IP, serta penyesuaian koreksi absensi."
+      actions={
+        <Badge variant="outline" className="rounded-full px-3 py-1 text-xs font-semibold border-primary/30 bg-primary/5 text-primary">
+          {stats.total_records || 0} Log Kehadiran
+        </Badge>
+      }
+    >
       <Head title="Rekap Kehadiran — Crave HRM" />
 
-      <div className="space-y-6">
-        {/* Title Header */}
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-            Rekap &amp; Monitoring Kehadiran
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Dashboard monitoring log presensi harian karyawan, audit kepatuhan radius GPS, dan penyesuaian koreksi absensi.
-          </p>
-        </div>
-
+      <div className="space-y-5">
         {/* 4 KPI Cards (Crave POS Formula: Hero Blue + 3 White card-soft) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
           {/* Card 0: Hero Electric Blue */}
@@ -272,29 +273,69 @@ export default function Report({
             <div className="mt-4 h-64 w-full">
               {charts.dailyTrend && charts.dailyTrend.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={charts.dailyTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <AreaChart
+                    data={
+                      charts.dailyTrend.length >= 2
+                        ? charts.dailyTrend
+                        : [
+                            { date: "15 Nov", tepat_waktu: 0, terlambat: 0, total: 0 },
+                            { date: "16 Nov", tepat_waktu: 0, terlambat: 0, total: 0 },
+                            { date: "17 Nov", tepat_waktu: 0, terlambat: 0, total: 0 },
+                            { date: "18 Nov", tepat_waktu: 0, terlambat: 0, total: 0 },
+                            charts.dailyTrend[0],
+                          ]
+                    }
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+                  >
                     <defs>
                       <linearGradient id="colorOnTime" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#1B5CFE" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#1B5CFE" stopOpacity={0.0} />
+                        <stop offset="95%" stopColor="#1B5CFE" stopOpacity={0.02} />
                       </linearGradient>
                       <linearGradient id="colorLate" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.4} />
-                        <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.0} />
+                        <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.02} />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-                    <XAxis dataKey="date" tickLine={false} tick={{ fontSize: 11, fill: "#64748B" }} />
-                    <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "#64748B" }} />
+                    <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "#64748B" }} />
+                    <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 11, fill: "#64748B" }} allowDecimals={false} />
                     <Tooltip
+                      formatter={(val, name) => [
+                        `${val} Karyawan`,
+                        name === "tepat_waktu" ? "Tepat Waktu" : "Terlambat",
+                      ]}
+                      labelFormatter={(label) => `Tanggal: ${label}`}
                       contentStyle={{
-                        borderRadius: "12px",
+                        borderRadius: "14px",
                         border: "1px solid #E2E8F0",
-                        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                        boxShadow: "0 10px 25px -5px rgba(0,0,0,0.08)",
+                        fontSize: "12px",
+                        fontWeight: "600",
+                        padding: "10px 14px",
+                        backgroundColor: "#FFFFFF",
                       }}
                     />
-                    <Area type="monotone" dataKey="tepat_waktu" stroke="#1B5CFE" strokeWidth={2} fillOpacity={1} fill="url(#colorOnTime)" />
-                    <Area type="monotone" dataKey="terlambat" stroke="#F59E0B" strokeWidth={2} fillOpacity={1} fill="url(#colorLate)" />
+                    <Area
+                      type="monotone"
+                      dataKey="tepat_waktu"
+                      name="tepat_waktu"
+                      stroke="#1B5CFE"
+                      strokeWidth={2.5}
+                      fillOpacity={1}
+                      fill="url(#colorOnTime)"
+                      activeDot={{ r: 5, strokeWidth: 2, stroke: "#FFFFFF" }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="terlambat"
+                      name="terlambat"
+                      stroke="#F59E0B"
+                      strokeWidth={2.5}
+                      fillOpacity={1}
+                      fill="url(#colorLate)"
+                      activeDot={{ r: 5, strokeWidth: 2, stroke: "#FFFFFF" }}
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
@@ -418,146 +459,190 @@ export default function Report({
 
         {/* ATTENDANCE RECAP TABLE */}
         <div className="card-soft overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/40">
-                <TableHead className="font-bold text-foreground">Karyawan</TableHead>
-                <TableHead className="font-bold text-foreground">Cabang &amp; Shift</TableHead>
-                <TableHead className="font-bold text-foreground">Tanggal &amp; Waktu</TableHead>
-                <TableHead className="font-bold text-foreground">Status Kehadiran</TableHead>
-                <TableHead className="font-bold text-foreground">Verifikasi Lokasi</TableHead>
-                <TableHead className="text-center font-bold text-foreground">Swafoto</TableHead>
-                <TableHead className="text-right font-bold text-foreground">Aksi HR</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {attendances.data.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
-                    Tidak ada rekaman presensi pada periode ini.
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/40 hover:bg-muted/40 border-b border-border/60">
+                  <TableHead className="font-bold text-foreground py-3.5 pl-4">Karyawan</TableHead>
+                  <TableHead className="font-bold text-foreground py-3.5">Cabang &amp; Shift</TableHead>
+                  <TableHead className="font-bold text-foreground py-3.5">Tanggal &amp; Waktu</TableHead>
+                  <TableHead className="font-bold text-foreground py-3.5">Status Kehadiran</TableHead>
+                  <TableHead className="font-bold text-foreground py-3.5">Verifikasi Lokasi</TableHead>
+                  <TableHead className="text-center font-bold text-foreground py-3.5">Swafoto</TableHead>
+                  <TableHead className="text-right font-bold text-foreground py-3.5 pr-4">Aksi HR</TableHead>
                 </TableRow>
-              ) : (
-                attendances.data.map((att) => (
-                  <TableRow key={att.id} className="hover:bg-muted/20">
-                    {/* Stacked Employee Cell (Avatar + Name + Department/NIK) */}
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10 font-bold text-primary">
-                          {att.employee?.nama_lengkap?.charAt(0) || "E"}
-                        </div>
-                        <div>
-                          <div className="font-bold text-foreground">
-                            {att.employee?.nama_lengkap || "Karyawan"}
-                          </div>
-                          <div className="text-xs text-muted-foreground">
-                            {att.employee?.nik} • {att.employee?.department?.name || "-"}
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-
-                    {/* Cabang & Shift */}
-                    <TableCell>
-                      <div className="font-medium text-foreground">
-                        {att.branch?.name || "Pusat HQ"}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {att.shift?.name || "Shift Reguler"}
-                      </div>
-                    </TableCell>
-
-                    {/* Tanggal & Waktu In/Out */}
-                    <TableCell>
-                      <div className="font-semibold text-foreground">
-                        {formatDisplayDate(att.date)}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        In: <span className="font-bold text-foreground">{att.clock_in_time ? att.clock_in_time.substring(0, 5) : "--:--"}</span> • Out: <span className="font-bold text-foreground">{att.clock_out_time ? att.clock_out_time.substring(0, 5) : "--:--"}</span>
-                      </div>
-                    </TableCell>
-
-                    {/* Status Kehadiran */}
-                    <TableCell>
-                      <div className="space-y-1">
-                        <Badge
-                          variant={
-                            att.status === "present"
-                              ? "default"
-                              : att.status === "late"
-                              ? "destructive"
-                              : "secondary"
-                          }
-                          className="rounded-full text-xs"
-                        >
-                          {att.status === "present"
-                            ? "Tepat Waktu"
-                            : att.status === "late"
-                            ? `Terlambat ${att.late_minutes}m`
-                            : att.status}
-                        </Badge>
-                        {att.is_corrected && (
-                          <div className="text-[10px] text-amber-600 font-semibold">
-                            (Dikoreksi HR)
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-
-                    {/* Verifikasi Lokasi */}
-                    <TableCell>
-                      <div className="text-xs">
-                        <Badge
-                          variant={
-                            att.geofence_status === "valid_geofence"
-                              ? "outline"
-                              : att.geofence_status === "valid_ip"
-                              ? "secondary"
-                              : "destructive"
-                          }
-                          className="rounded-full text-[10px]"
-                        >
-                          {att.geofence_status === "valid_geofence"
-                            ? `GPS Valid (${att.clock_in_distance_meters || 0}m)`
-                            : att.geofence_status === "valid_ip"
-                            ? "IP Jaringan Kantor"
-                            : "Di Luar Radius"}
-                        </Badge>
-                      </div>
-                    </TableCell>
-
-                    {/* Swafoto */}
-                    <TableCell className="text-center">
-                      {att.clock_in_selfie_url ? (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => openSelfiePreview(att)}
-                          className="h-8 w-8 rounded-lg"
-                        >
-                          <Eye className="h-4 w-4 text-muted-foreground" />
-                        </Button>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">-</span>
-                      )}
-                    </TableCell>
-
-                    {/* Aksi HR (Koreksi) */}
-                    <TableCell className="text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => openCorrection(att)}
-                        className="rounded-xl text-xs font-semibold"
-                      >
-                        <Edit3 className="mr-1 h-3.5 w-3.5" /> Koreksi
-                      </Button>
+              </TableHeader>
+              <TableBody>
+                {attendances.data.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="py-12 text-center text-muted-foreground">
+                      Tidak ada rekaman presensi pada periode ini.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  attendances.data.map((att) => (
+                    <TableRow key={att.id} className="hover:bg-muted/30 transition-colors border-b border-border/40">
+                      {/* Stacked Employee Cell (EmployeeAvatar + Name + Department/NIK) */}
+                      <TableCell className="py-3 pl-4">
+                        <div className="flex items-center gap-3">
+                          <EmployeeAvatar
+                            employee={att.employee}
+                            className="size-10 rounded-xl shrink-0 border border-border/50 shadow-2xs"
+                          />
+                          <div className="min-w-0">
+                            <div className="font-bold text-foreground text-sm hover:text-primary transition-colors truncate">
+                              {att.employee?.nama_lengkap || "Karyawan"}
+                            </div>
+                            <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5 truncate">
+                              <span className="font-mono font-medium">{att.employee?.nik || "HLD-000"}</span>
+                              <span>•</span>
+                              <span className="truncate">{att.employee?.department?.name || "-"}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+
+                      {/* Cabang & Shift */}
+                      <TableCell className="py-3">
+                        <div className="font-semibold text-foreground text-xs flex items-center gap-1.5">
+                          <Building2 className="size-3.5 text-muted-foreground shrink-0" />
+                          <span className="truncate">{att.branch?.name || "Kantor Pusat"}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                          <Clock className="size-3 text-muted-foreground shrink-0" />
+                          <span className="truncate">{att.shift?.name || "Shift Reguler"}</span>
+                        </div>
+                      </TableCell>
+
+                      {/* Tanggal & Waktu In/Out */}
+                      <TableCell className="py-3">
+                        <div className="font-bold text-xs text-foreground flex items-center gap-1.5">
+                          <Calendar className="size-3.5 text-primary shrink-0" />
+                          <span>{formatDisplayDate(att.date)}</span>
+                        </div>
+                        <div className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1.5 font-mono">
+                          <span>In: <strong className="text-foreground">{att.clock_in_time ? att.clock_in_time.substring(0, 5) : "--:--"}</strong></span>
+                          <span>•</span>
+                          <span>Out: <strong className="text-foreground">{att.clock_out_time ? att.clock_out_time.substring(0, 5) : "--:--"}</strong></span>
+                        </div>
+                      </TableCell>
+
+                      {/* Status Kehadiran */}
+                      <TableCell className="py-3">
+                        <div className="space-y-1">
+                          <Badge
+                            className={cn(
+                              "rounded-full text-[11px] font-semibold px-2.5 py-0.5 inline-flex items-center gap-1 border",
+                              att.status === "present"
+                                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20"
+                                : att.status === "late"
+                                ? "bg-rose-500/10 text-rose-700 dark:text-rose-400 border-rose-500/20"
+                                : att.status === "early_leave"
+                                ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20"
+                                : "bg-muted text-muted-foreground border-border/60"
+                            )}
+                          >
+                            {att.status === "present" ? (
+                              <>
+                                <CheckCircle2 className="size-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                                <span>Tepat Waktu</span>
+                              </>
+                            ) : att.status === "late" ? (
+                              <>
+                                <AlertTriangle className="size-3 text-rose-600 dark:text-rose-400 shrink-0" />
+                                <span>Terlambat {att.late_minutes}m</span>
+                              </>
+                            ) : att.status === "early_leave" ? (
+                              <>
+                                <Clock className="size-3 text-amber-600 dark:text-amber-400 shrink-0" />
+                                <span>Pulang Cepat</span>
+                              </>
+                            ) : (
+                              <span>{att.status || "Absen"}</span>
+                            )}
+                          </Badge>
+                          {att.is_corrected && (
+                            <div className="text-[10px] text-amber-600 dark:text-amber-400 font-bold">
+                              (Dikoreksi HR)
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+
+                      {/* Verifikasi Lokasi */}
+                      <TableCell className="py-3">
+                        <div className="text-xs">
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "rounded-full text-[10px] font-semibold px-2.5 py-0.5 inline-flex items-center gap-1 border",
+                              att.geofence_status === "valid_geofence"
+                                ? "bg-emerald-500/5 text-emerald-700 dark:text-emerald-400 border-emerald-500/30"
+                                : att.geofence_status === "valid_ip"
+                                ? "bg-primary/5 text-primary border-primary/30"
+                                : "bg-destructive/5 text-destructive border-destructive/30"
+                            )}
+                          >
+                            {att.geofence_status === "valid_geofence" ? (
+                              <>
+                                <MapPin className="size-3 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                                <span>GPS Valid ({att.clock_in_distance_meters || 0}m)</span>
+                              </>
+                            ) : att.geofence_status === "valid_ip" ? (
+                              <>
+                                <ShieldCheck className="size-3 shrink-0 text-primary" />
+                                <span>IP Jaringan Kantor</span>
+                              </>
+                            ) : (
+                              <>
+                                <AlertTriangle className="size-3 shrink-0 text-destructive" />
+                                <span>Di Luar Radius</span>
+                              </>
+                            )}
+                          </Badge>
+                        </div>
+                      </TableCell>
+
+                      {/* Swafoto */}
+                      <TableCell className="py-3 text-center">
+                        {att.clock_in_selfie_url || att.clock_out_selfie_url ? (
+                          <button
+                            type="button"
+                            onClick={() => openSelfiePreview(att)}
+                            className="relative group size-10 rounded-xl overflow-hidden border border-border/70 shadow-xs hover:ring-2 hover:ring-primary transition-all mx-auto block cursor-pointer"
+                            title="Klik untuk melihat bukti swafoto"
+                          >
+                            <img
+                              src={att.clock_in_selfie_url || att.clock_out_selfie_url}
+                              alt="Swafoto"
+                              className="size-full object-cover group-hover:scale-110 transition-transform duration-200"
+                            />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                              <Camera className="size-3.5 text-white" />
+                            </div>
+                          </button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground font-mono">-</span>
+                        )}
+                      </TableCell>
+
+                      {/* Aksi HR (Koreksi) */}
+                      <TableCell className="py-3 text-right pr-4">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openCorrection(att)}
+                          className="rounded-xl text-xs font-semibold h-8 gap-1 hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
+                        >
+                          <Edit3 className="size-3.5" /> Koreksi
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </div>
 
         {/* DIALOG: SELFIE PREVIEW */}

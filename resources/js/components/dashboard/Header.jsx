@@ -266,17 +266,23 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="cursor-pointer">
-                <UserIcon className="mr-2 size-4" />
-                <span>Pengaturan Profil</span>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/profile" className="flex items-center w-full">
+                  <UserIcon className="mr-2 size-4" />
+                  <span>Pengaturan Profil</span>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <ShieldCheck className="mr-2 size-4" />
-                <span>Hak Akses Peran</span>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/rbac" className="flex items-center w-full">
+                  <ShieldCheck className="mr-2 size-4" />
+                  <span>Hak Akses Peran</span>
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                <Laptop2 className="mr-2 size-4" />
-                <span>Sesi Perangkat</span>
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/profile?tab=sessions" className="flex items-center w-full">
+                  <Laptop2 className="mr-2 size-4" />
+                  <span>Sesi Perangkat</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem

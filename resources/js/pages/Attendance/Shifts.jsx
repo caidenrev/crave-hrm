@@ -191,33 +191,36 @@ export default function Shifts({
   }, [shifts, searchQuery]);
 
   return (
-    <AuthenticatedLayout title="Jadwal & Shift">
+    <AuthenticatedLayout
+      title="Jadwal & Shift"
+      subtitle="Pengaturan shift operasional reguler, fleksibel, serta pengajuan & persetujuan tukar shift karyawan."
+      actions={
+        activeTab === "shifts" ? (
+          <Button
+            size="sm"
+            onClick={openCreateShift}
+            className="rounded-xl shadow-soft font-bold text-xs gap-1.5"
+          >
+            <Plus className="size-4" />
+            <span className="hidden sm:inline">Tambah Shift Baru</span>
+            <span className="sm:hidden">Tambah Shift</span>
+          </Button>
+        ) : (
+          <Button
+            size="sm"
+            onClick={() => setSwapModalOpen(true)}
+            className="rounded-xl shadow-soft font-bold text-xs gap-1.5"
+          >
+            <ArrowRightLeft className="size-4" />
+            <span className="hidden sm:inline">Ajukan Tukar Shift</span>
+            <span className="sm:hidden">Tukar Shift</span>
+          </Button>
+        )
+      }
+    >
       <Head title="Jadwal & Shift — Crave HRM" />
 
-      <div className="space-y-6">
-        {/* Title & Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              Jadwal &amp; Shift Kerja
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Pengaturan shift operasional reguler, fleksibel, serta pengajuan dan persetujuan tukar shift karyawan.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {activeTab === "shifts" ? (
-              <Button onClick={openCreateShift} className="rounded-xl shadow-soft">
-                <Plus className="mr-1.5 h-4 w-4" /> Tambah Shift Baru
-              </Button>
-            ) : (
-              <Button onClick={() => setSwapModalOpen(true)} className="rounded-xl shadow-soft">
-                <ArrowRightLeft className="mr-1.5 h-4 w-4" /> Ajukan Tukar Shift
-              </Button>
-            )}
-          </div>
-        </div>
-
+      <div className="space-y-5">
         {/* 4 KPI Cards (Crave POS Formula: Hero Blue + 3 White card-soft) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
           {/* Card 0: Hero Electric Blue */}
@@ -387,7 +390,7 @@ export default function Shifts({
                       </TableCell>
                       <TableCell>
                         <div className="font-semibold text-foreground">
-                          {shift.start_time.substring(0, 5)} - {shift.end_time.substring(0, 5)} WIB
+                          {shift.start_time.substring(0, 5)} - {shift.end_time.substring(0, 5)}
                         </div>
                       </TableCell>
                       <TableCell>

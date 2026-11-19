@@ -25,9 +25,11 @@ class AuthController extends Controller
             return redirect()->intended('/dashboard');
         }
 
+        $isLocal = app()->environment('local', 'testing') || in_array(request()->getHost(), ['localhost', '127.0.0.1']);
+
         return Inertia::render('Auth/Login', [
             'status' => session('status'),
-            'turnstileSiteKey' => env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
+            'turnstileSiteKey' => $isLocal ? 'disabled' : env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
             'demoAccounts' => [
                 [
                     'name' => 'Eka Revandi',
@@ -62,11 +64,12 @@ class AuthController extends Controller
             'cf_turnstile_response' => ['nullable', 'string'],
         ]);
 
-        // Verifikasi Cloudflare Turnstile
+        // Verifikasi Cloudflare Turnstile hanya di environment produksi publik
+        $isLocal = app()->environment('local', 'testing') || in_array($request->getHost(), ['localhost', '127.0.0.1']);
         $turnstileSecret = env('TURNSTILE_SECRET_KEY', '0x4AAAAAAGE_bfNXRoOw_fB7_MW9wsyXlRs');
         $turnstileToken = $request->input('cf_turnstile_response');
 
-        if ($turnstileSecret && !app()->environment('testing')) {
+        if (!$isLocal && $turnstileSecret) {
             if (!$turnstileToken) {
                 return back()->withErrors([
                     'cf_turnstile_response' => 'Silakan centang verifikasi Cloudflare Turnstile terlebih dahulu.',
@@ -138,8 +141,10 @@ class AuthController extends Controller
             return redirect()->intended('/dashboard');
         }
 
+        $isLocal = app()->environment('local', 'testing') || in_array(request()->getHost(), ['localhost', '127.0.0.1']);
+
         return Inertia::render('Auth/Register', [
-            'turnstileSiteKey' => env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
+            'turnstileSiteKey' => $isLocal ? 'disabled' : env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
         ]);
     }
 
@@ -153,11 +158,12 @@ class AuthController extends Controller
             'cf_turnstile_response' => ['nullable', 'string'],
         ]);
 
-        // Verifikasi Cloudflare Turnstile
+        // Verifikasi Cloudflare Turnstile hanya di environment produksi publik
+        $isLocal = app()->environment('local', 'testing') || in_array($request->getHost(), ['localhost', '127.0.0.1']);
         $turnstileSecret = env('TURNSTILE_SECRET_KEY', '0x4AAAAAAGE_bfNXRoOw_fB7_MW9wsyXlRs');
         $turnstileToken = $request->input('cf_turnstile_response');
 
-        if ($turnstileSecret && !app()->environment('testing')) {
+        if (!$isLocal && $turnstileSecret) {
             if (!$turnstileToken) {
                 return back()->withErrors([
                     'cf_turnstile_response' => 'Silakan centang verifikasi Cloudflare Turnstile terlebih dahulu.',

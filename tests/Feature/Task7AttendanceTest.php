@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Services\AttendanceService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class Task7AttendanceTest extends TestCase
@@ -30,6 +31,8 @@ class Task7AttendanceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Storage::fake('public');
 
         $this->user = User::factory()->create();
 
@@ -316,6 +319,115 @@ class Task7AttendanceTest extends TestCase
         $this->assertEquals('present', $attendance->status);
         $this->assertTrue($attendance->is_corrected);
         $this->assertEquals('Klarifikasi kendala jaringan GPS saat check-in.', $attendance->correction_reason);
+        $this->assertEquals(0, $attendance->late_minutes);
+        $this->assertGreaterThan(0, $attendance->work_duration_minutes);
+    }
+
+    public function test_selfie_image_is_stored_to_storage_disk_as_file(): void
+    {
+        $latWithin = -6.175300;
+        $lngWithin = 106.827153;
+
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->post('/attendance/clock-in', [
+                'latitude' => $latWithin,
+                'longitude' => $lngWithin,
+                'selfie_image' => 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAP//////////////////////////////////////////////////////////////////////////////////////wgALCAABAAEBAREA/8QAFBABAAAAAAAAAAAAAAAAAAAAAP/aAAgBAQABPxA=',
+                'notes' => 'Clock-in selfie optimization test.',
+            ]);
+
+        $response->assertSessionHas('success');
+        $attendance = Attendance::where('company_id', $this->companyA->id)
+            ->where('employee_id', $this->employeeA->id)
+            ->first();
+
+        $this->assertNotNull($attendance);
+        $this->assertStringStartsWith('/storage/attendances/selfies/', $attendance->clock_in_selfie_url);
+
+        $relativePath = str_replace('/storage/', '', $attendance->clock_in_selfie_url);
+        Storage::disk('public')->assertExists($relativePath);
+    }
+
+    public function test_branch_timezone_metadata_is_rendered_in_inertia(): void
+    {
+        // Update branch to WITA (Asia/Makassar)
+        $this->branchA->update(['timezone' => 'Asia/Makassar']);
+
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->get('/attendance');
+
+        $response->assertStatus(200);
+        $response->assertInertia(fn ($page) => 
+            $page->component('Attendance/CheckIn')
+                ->where('timezone', 'Asia/Makassar')
+                ->where('timezone_abbr', 'WITA')
+                ->has('server_timestamp')
+        );
+    }
+
+    public function test_multi_branch_visiting_allows_attendance_at_other_active_company_branch(): void
+    {
+        // Create another branch in Surabaya (-7.2575, 112.7521)
+        $branchSurabaya = Branch::create([
+            'company_id' => $this->companyA->id,
+            'name' => 'Kantor Cabang Surabaya',
+            'code' => 'SBY-01',
+            'latitude' => -7.257500,
+            'longitude' => 112.752100,
+            'radius_meters' => 150,
+            'is_active' => true,
+        ]);
+
+        // Employee A is assigned to Jakarta, but is visiting Surabaya
+        $latSurabaya = -7.257520;
+        $lngSurabaya = 112.752120;
+
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->post('/attendance/clock-in', [
+                'latitude' => $latSurabaya,
+                'longitude' => $lngSurabaya,
+                'notes' => 'Dinas kunjungan ke kantor cabang Surabaya.',
+            ]);
+
+        $response->assertSessionHas('success');
+        $attendance = Attendance::where('company_id', $this->companyA->id)
+            ->where('employee_id', $this->employeeA->id)
+            ->first();
+
+        $this->assertNotNull($attendance);
+        $this->assertEquals('valid_geofence', $attendance->geofence_status);
+        $this->assertEquals($branchSurabaya->id, $attendance->branch_id);
+    }
+
+    public function test_cross_midnight_shift_early_leave_calculation(): void
+    {
+        $service = app(\App\Services\AttendanceService::class);
+
+        // Night shift 22:00 to 06:00
+        $shiftMalam = Shift::create([
+            'company_id' => $this->companyA->id,
+            'name' => 'Shift Malam Security',
+            'start_time' => '22:00:00',
+            'end_time' => '06:00:00',
+            'late_tolerance_minutes' => 15,
+            'is_flexible' => false,
+            'is_active' => true,
+        ]);
+
+        // Clocked out at 05:30 (30 minutes early)
+        $clockOutTime = Carbon::parse('2026-11-20 05:30:00', 'Asia/Jakarta');
+        $earlyMinutes = $service->calculateEarlyLeaveMinutes($shiftMalam, $clockOutTime);
+
+        $this->assertEquals(30, $earlyMinutes);
+
+        // Clocked out at 06:05 (on time / past end_time)
+        $clockOutOnTime = Carbon::parse('2026-11-20 06:05:00', 'Asia/Jakarta');
+        $earlyMinutesZero = $service->calculateEarlyLeaveMinutes($shiftMalam, $clockOutOnTime);
+
+        $this->assertEquals(0, $earlyMinutesZero);
     }
 
     public function test_multi_tenant_isolation_for_attendances(): void
