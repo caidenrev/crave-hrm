@@ -28,7 +28,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -392,11 +392,12 @@ export default function KanbanBoard({
                             <div>
                               <div className="flex items-start justify-between gap-2">
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <Avatar className="size-7 shrink-0 border border-border/50">
-                                    <AvatarFallback className="bg-primary/10 text-[10px] font-black text-primary uppercase">
-                                      {getInitials(candidate.full_name)}
-                                    </AvatarFallback>
-                                  </Avatar>
+                                  <EmployeeAvatar
+                                    person={candidate}
+                                    name={candidate.full_name}
+                                    className="size-7 border border-border/50"
+                                    fallbackClassName="text-[10px] font-black"
+                                  />
                                   <div className="min-w-0">
                                     <h4 className="text-xs font-bold text-foreground truncate group-hover:text-primary transition-colors">
                                       {candidate.full_name}

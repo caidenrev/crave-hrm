@@ -288,22 +288,22 @@
 
 @keyframes modalScaleIn {
   0% {
-    transform: translate(-50%, -48%) scale(0.96);
+    transform: translateY(8px) scale(0.97);
     opacity: 0;
   }
   100% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
 
 @keyframes modalScaleOut {
   0% {
-    transform: translate(-50%, -50%) scale(1);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
   100% {
-    transform: translate(-50%, -48%) scale(0.96);
+    transform: translateY(6px) scale(0.97);
     opacity: 0;
   }
 }
@@ -329,80 +329,31 @@
 /* Overlay Animation */
 [data-slot="dialog-overlay"][data-state="open"],
 [data-slot="alert-dialog-overlay"][data-state="open"] {
-  animation: overlayFadeIn 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: overlayFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 [data-slot="dialog-overlay"][data-state="closed"],
 [data-slot="alert-dialog-overlay"][data-state="closed"] {
-  animation: overlayFadeOut 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: overlayFadeOut 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Mobile Bottom Sheet Mode (< 640px) */
-@media (max-width: 639.98px) {
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"] {
-    position: fixed !important;
-    inset: auto 0 0 0 !important;
-    top: auto !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 100% !important;
-    margin: 0 !important;
-    border-top-left-radius: 28px !important;
-    border-top-right-radius: 28px !important;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-    border-left: 0 !important;
-    border-right: 0 !important;
-    border-bottom: 0 !important;
-    border-top: 1px solid var(--color-border) !important;
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-    padding: 1.25rem !important;
-    padding-bottom: 2.25rem !important;
-    box-sizing: border-box !important;
-  }
-
-  [data-slot="dialog-content"][data-state="open"],
-  [data-slot="alert-dialog-content"][data-state="open"] {
-    animation: sheetSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    will-change: transform, opacity;
-  }
-
-  [data-slot="dialog-content"][data-state="closed"],
-  [data-slot="alert-dialog-content"][data-state="closed"] {
-    animation: sheetSlideDown 0.22s cubic-bezier(0.32, 0.72, 0, 1) forwards;
-    will-change: transform, opacity;
-  }
+/* Universal Centered Modal Mode (Desktop, Tablet & Mobile) — Zero Double-Translate */
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"] {
+  translate: none !important;
+  box-sizing: border-box;
 }
 
-/* Desktop Centered Modal Mode (>= 640px) */
-@media (min-width: 640px) {
-  [data-slot="dialog-content"],
-  [data-slot="alert-dialog-content"] {
-    position: fixed !important;
-    top: 50% !important;
-    left: 50% !important;
-    bottom: auto !important;
-    right: auto !important;
-    transform: translate(-50%, -50%);
-    margin: 0 !important;
-  }
+[data-slot="dialog-content"][data-state="open"],
+[data-slot="alert-dialog-content"][data-state="open"] {
+  animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+}
 
-  [data-slot="dialog-content"][data-state="open"],
-  [data-slot="alert-dialog-content"][data-state="open"] {
-    animation: modalScaleIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    will-change: transform, opacity;
-  }
-
-  [data-slot="dialog-content"][data-state="closed"],
-  [data-slot="alert-dialog-content"][data-state="closed"] {
-    animation: modalScaleOut 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    will-change: transform, opacity;
-  }
+[data-slot="dialog-content"][data-state="closed"],
+[data-slot="alert-dialog-content"][data-state="closed"] {
+  animation: modalScaleOut 0.14s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* Custom Handwriting & SaaS Landing Animation Utilities (Draw-In Pen Stroke Effect, No Floating) */

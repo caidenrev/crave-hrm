@@ -4,7 +4,7 @@ import {
   Sheet,
   SheetContent,
 } from "@/components/ui/sheet";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -211,11 +211,12 @@ export function CandidateSheet({
           {/* Header Profil Pelamar */}
           <div className="flex items-start justify-between gap-3 pb-4 border-b">
             <div className="flex items-center gap-3 min-w-0">
-              <Avatar className="size-12 shrink-0 border border-border/60">
-                <AvatarFallback className="bg-primary/10 text-sm font-extrabold text-primary uppercase">
-                  {getInitials(candidate.full_name)}
-                </AvatarFallback>
-              </Avatar>
+              <EmployeeAvatar
+                person={candidate}
+                name={candidate.full_name}
+                className="size-12 border border-border/60"
+                fallbackClassName="text-sm font-extrabold"
+              />
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
                   <h2 className="text-base font-extrabold truncate text-foreground">

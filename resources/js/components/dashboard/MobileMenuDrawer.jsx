@@ -28,6 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CompanySwitcher } from "./CompanySwitcher";
+import { getEmployeeAvatar } from "@/lib/avatars";
 import {
   MENU_OPERASIONAL,
   MENU_TALENTA,
@@ -300,10 +301,11 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex w-full items-center gap-2.5 rounded-2xl border bg-card p-2.5 shadow-soft outline-none hover:bg-accent cursor-pointer transition-colors">
-                <div className="size-8.5 rounded-full overflow-hidden shrink-0 border border-border bg-muted shadow-2xs">
+                <div className="size-8.5 rounded-full overflow-hidden shrink-0 border border-border bg-white shadow-2xs">
                   <img
-                    src="/profile-logo.jpeg"
-                    alt="Profile"
+                    src={getEmployeeAvatar(user)}
+                    alt={user?.name || "Profil"}
+                    decoding="async"
                     className="size-full object-cover"
                   />
                 </div>

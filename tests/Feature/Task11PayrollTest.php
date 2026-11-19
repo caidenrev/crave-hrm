@@ -285,15 +285,64 @@ class Task11PayrollTest extends TestCase
             ->get('/payroll/export');
         $exportPage->assertStatus(200);
 
-        // Download BCA batch CSV
-        $bcaExport = $this->actingAs($this->user)
+        // Download all 9 Indonesian bank batch formats
+        foreach (['BCA', 'MANDIRI', 'BRI', 'BNI', 'BSI', 'CIMB', 'PERMATA', 'DANAMON', 'BTN'] as $bankCode) {
+            $bankExport = $this->actingAs($this->user)
+                ->withSession(['active_company_id' => $this->companyA->id])
+                ->post('/payroll/export/bank', [
+                    'payroll_period_id' => $period->id,
+                    'bank_format' => $bankCode,
+                ]);
+            $bankExport->assertStatus(200);
+            $this->assertStringContainsString('1234567890', $bankExport->streamedContent());
+        }
+
+        // Unsupported bank format rejected by strict allowlist
+        $invalidBank = $this->actingAs($this->user)
             ->withSession(['active_company_id' => $this->companyA->id])
             ->post('/payroll/export/bank', [
                 'payroll_period_id' => $period->id,
-                'bank_format' => 'BCA',
+                'bank_format' => 'UNKNOWN_BANK',
             ]);
-        $bcaExport->assertStatus(200);
-        $bcaExport->assertHeader('content-type', 'text/csv; charset=UTF-8');
-        $this->assertStringContainsString('1234567890', $bcaExport->streamedContent());
+        $invalidBank->assertSessionHasErrors('bank_format');
+    }
+
+    public function test_bank_export_neutralizes_csv_formula_injection(): void
+    {
+        $this->employeeA->update([
+            'nama_lengkap' => '=CMD|\' /C calc\'!A0',
+        ]);
+
+        $period = PayrollPeriod::create([
+            'company_id' => $this->companyA->id,
+            'name' => 'Payroll Nov 2026',
+            'month' => 11,
+            'year' => 2026,
+            'start_date' => '2026-11-01',
+            'end_date' => '2026-11-30',
+            'payment_date' => '2026-11-25',
+            'status' => 'finalized',
+        ]);
+
+        PayrollItem::create([
+            'company_id' => $this->companyA->id,
+            'payroll_period_id' => $period->id,
+            'employee_id' => $this->employeeA->id,
+            'gaji_pokok' => 10000000,
+            'penghasilan_bruto' => 10000000,
+            'take_home_pay' => 9300000,
+            'payment_status' => 'unpaid',
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->post('/payroll/export/bank', [
+                'payroll_period_id' => $period->id,
+                'bank_format' => 'BSI',
+            ]);
+
+        $response->assertStatus(200);
+        $content = $response->streamedContent();
+        $this->assertStringContainsString("\"'=CMD", $content);
     }
 }

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Head, router } from "@inertiajs/react";
 import AuthenticatedLayout from "@/layouts/AuthenticatedLayout";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -198,14 +198,12 @@ export default function EmployeesIndex({
                   <div>
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
-                        <Avatar className="size-11 shrink-0 border border-border/60">
-                          {emp.avatar_url && (
-                            <AvatarImage src={emp.avatar_url} alt={emp.nama_lengkap} />
-                          )}
-                          <AvatarFallback className="bg-primary/10 text-xs font-black text-primary uppercase">
-                            {getInitials(emp.nama_lengkap)}
-                          </AvatarFallback>
-                        </Avatar>
+                        <EmployeeAvatar
+                          person={emp}
+                          name={emp.nama_lengkap}
+                          className="size-11 border border-border/60"
+                          fallbackClassName="text-xs font-black"
+                        />
                         <div className="min-w-0 flex-1">
                           <button
                             type="button"
@@ -305,14 +303,11 @@ export default function EmployeesIndex({
                   className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-xl bg-card border border-border/50 p-3 hover:bg-muted/40 transition-colors shadow-xs"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <Avatar className="size-9 shrink-0 border border-border/60">
-                      {emp.avatar_url && (
-                        <AvatarImage src={emp.avatar_url} alt={emp.nama_lengkap} />
-                      )}
-                      <AvatarFallback className="bg-primary/10 text-xs font-bold text-primary uppercase">
-                        {getInitials(emp.nama_lengkap)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <EmployeeAvatar
+                      person={emp}
+                      name={emp.nama_lengkap}
+                      className="size-9 border border-border/60"
+                    />
                     <div className="min-w-0">
                       <button
                         onClick={() => {

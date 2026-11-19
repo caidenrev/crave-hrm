@@ -37,65 +37,12 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        "fixed inset-0 z-[10000] bg-black/50 backdrop-blur-xs duration-200 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+        "fixed inset-0 z-[10000] bg-black/55 backdrop-blur-xs duration-200",
         className
       )}
       {...props}
     />
   )
-}
-
-function MobileDragHandle({ onClose }) {
-  const handleTouchStart = (e) => {
-    const startY = e.touches[0].clientY;
-    const content = e.currentTarget.closest('[data-slot="dialog-content"]');
-    if (!content) return;
-
-    let currentDelta = 0;
-
-    const handleTouchMove = (ev) => {
-      const deltaY = ev.touches[0].clientY - startY;
-      if (deltaY > 0) {
-        currentDelta = deltaY;
-        content.style.transform = `translateY(${deltaY}px)`;
-        content.style.transition = "none";
-      }
-    };
-
-    const handleTouchEnd = () => {
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", handleTouchEnd);
-      if (currentDelta > 80) {
-        content.style.transition = "transform 0.22s cubic-bezier(0.32, 0.72, 0, 1)";
-        content.style.transform = "translateY(100%)";
-        setTimeout(() => {
-          onClose?.();
-        }, 160);
-      } else {
-        content.style.transition = "transform 0.24s cubic-bezier(0.16, 1, 0.3, 1)";
-        content.style.transform = "translateY(0)";
-        setTimeout(() => {
-          if (content) {
-            content.style.transform = "";
-            content.style.transition = "";
-          }
-        }, 250);
-      }
-    };
-
-    document.addEventListener("touchmove", handleTouchMove, { passive: true });
-    document.addEventListener("touchend", handleTouchEnd);
-  };
-
-  return (
-    <div
-      onTouchStart={handleTouchStart}
-      className="mx-auto -mt-2 mb-2 h-6 w-24 flex items-center justify-center sm:hidden shrink-0 cursor-grab active:cursor-grabbing touch-none select-none"
-      aria-label="Tarik ke bawah untuk menutup"
-    >
-      <div className="h-1.5 w-12 rounded-full bg-muted-foreground/35" />
-    </div>
-  );
 }
 
 function DialogContent({
@@ -106,40 +53,37 @@ function DialogContent({
   onOpenAutoFocus,
   ...props
 }) {
-  const closeRef = React.useRef(null);
-
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
-      <DialogPrimitive.Content
-        data-slot="dialog-content"
-        onOpenAutoFocus={onOpenAutoFocus || ((e) => e.preventDefault())}
-        className={cn(
-          // Base & Desktop Centered Modal
-          "fixed top-1/2 left-1/2 z-[10001] grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-2xl border bg-background p-6 shadow-2xl duration-200 outline-none sm:max-w-lg",
-          className,
-          // Mobile Bottom Sheet Mode (< 640px)
-          "max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:top-auto max-sm:translate-x-0 max-sm:translate-y-0 max-sm:w-full max-sm:max-w-none max-sm:rounded-t-[28px] max-sm:rounded-b-none max-sm:border-x-0 max-sm:border-b-0 max-sm:border-t max-sm:max-h-[90vh] max-sm:overflow-y-auto max-sm:p-5 max-sm:pb-8"
-        )}
-        style={style}
-        {...props}
+      <div
+        data-slot="dialog-positioner"
+        className="fixed inset-0 z-[10001] flex items-center justify-center p-3 sm:p-6 pointer-events-none"
       >
-        <MobileDragHandle onClose={() => closeRef.current?.click()} />
-        {children}
-        <DialogPrimitive.Close
-          ref={closeRef}
-          data-slot="dialog-close"
+        <DialogPrimitive.Content
+          data-slot="dialog-content"
+          onOpenAutoFocus={onOpenAutoFocus || ((e) => e.preventDefault())}
           className={cn(
-            "absolute top-3.5 right-3.5 rounded-xl opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none cursor-pointer data-[state=open]:bg-accent data-[state=open]:text-muted-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 z-10",
-            !showCloseButton && "sr-only"
+            "pointer-events-auto relative grid w-full max-w-lg max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-3rem)] overflow-y-auto overscroll-contain gap-4 rounded-2xl border border-border/80 bg-background p-5 sm:p-6 shadow-2xl outline-none",
+            className
           )}
+          style={style}
+          {...props}
         >
-          <XIcon />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
-      </DialogPrimitive.Content>
+          {children}
+          {showCloseButton && (
+            <DialogPrimitive.Close
+              data-slot="dialog-close"
+              className="absolute top-3.5 right-3.5 inline-flex size-8 items-center justify-center rounded-xl text-muted-foreground opacity-80 ring-offset-background transition-all hover:bg-muted hover:text-foreground hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none cursor-pointer z-10 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
+            >
+              <XIcon />
+              <span className="sr-only">Tutup</span>
+            </DialogPrimitive.Close>
+          )}
+        </DialogPrimitive.Content>
+      </div>
     </DialogPortal>
-  );
+  )
 }
 
 function DialogHeader({
@@ -149,7 +93,7 @@ function DialogHeader({
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-2 text-center sm:text-left", className)}
+      className={cn("flex flex-col gap-1.5 pr-8 text-left", className)}
       {...props}
     />
   )
@@ -173,7 +117,7 @@ function DialogFooter({
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
-          <Button variant="outline">Close</Button>
+          <Button variant="outline">Tutup</Button>
         </DialogPrimitive.Close>
       )}
     </div>
@@ -187,7 +131,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn("text-lg leading-none font-semibold", className)}
+      className={cn("text-lg leading-tight font-bold tracking-tight", className)}
       {...props}
     />
   )

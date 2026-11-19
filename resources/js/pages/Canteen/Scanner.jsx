@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EmployeeAvatar } from "@/components/ui/EmployeeAvatar";
 import { formatRupiah, formatTanggalId } from "@/lib/formatters";
 
 // Crisp Pos Audio Beep via Web Audio API (Zero external assets needed)
@@ -474,17 +474,12 @@ export default function Scanner({
                 </div>
 
                 <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-card border border-border/50">
-                  <Avatar className="size-14 rounded-2xl border border-border/50">
-                    <AvatarImage
-                      src={lastRedeemed.employee?.avatar}
-                      alt={lastRedeemed.employee?.name}
-                    />
-                    <AvatarFallback className="rounded-2xl bg-success/10 text-success font-black text-sm">
-                      {lastRedeemed.employee?.name
-                        ? lastRedeemed.employee.name.slice(0, 2).toUpperCase()
-                        : "CR"}
-                    </AvatarFallback>
-                  </Avatar>
+                  <EmployeeAvatar
+                    person={lastRedeemed.employee}
+                    name={lastRedeemed.employee?.name}
+                    className="size-14 rounded-2xl border border-border/50"
+                    fallbackClassName="rounded-2xl bg-success/10 text-success font-black text-sm"
+                  />
 
                   <div className="min-w-0 flex-1">
                     <h4 className="text-base font-extrabold text-foreground truncate">
@@ -571,17 +566,12 @@ export default function Scanner({
                       key={scan.id}
                       className="p-3.5 hover:bg-muted/20 transition-colors flex items-center gap-3"
                     >
-                      <Avatar className="size-10 rounded-2xl border border-border/50 shrink-0">
-                        <AvatarImage
-                          src={scan.employee?.avatar}
-                          alt={scan.employee?.name}
-                        />
-                        <AvatarFallback className="rounded-2xl bg-primary/10 text-primary font-bold text-xs">
-                          {scan.employee?.name
-                            ? scan.employee.name.slice(0, 2).toUpperCase()
-                            : "CR"}
-                        </AvatarFallback>
-                      </Avatar>
+                      <EmployeeAvatar
+                        person={scan.employee}
+                        name={scan.employee?.name}
+                        className="size-10 rounded-2xl border border-border/50"
+                        fallbackClassName="rounded-2xl text-xs"
+                      />
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">

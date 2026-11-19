@@ -32,6 +32,7 @@ import {
   AlertTriangle,
   ArrowUpRight,
 } from "lucide-react";
+import { getEmployeeAvatar } from "@/lib/avatars";
 
 export default function DashboardPreview() {
   const [activeMenu, setActiveMenu] = useState("dashboard");
@@ -368,9 +369,12 @@ export default function DashboardPreview() {
 
           <div className="p-1 rounded-xl bg-[#F8FAFC] border border-[#EBF0F5] flex items-center justify-between">
             <div className="flex items-center gap-1.5 min-w-0">
-              <div className="size-6 rounded-full bg-[oklch(0.54_0.19_258)] text-white text-[9.5px] font-black flex items-center justify-center shrink-0">
-                ER
-              </div>
+              <img
+                src={getEmployeeAvatar({ email: "founder@craveservices.my.id", name: "Eka Revandi" })}
+                alt="Eka Revandi"
+                decoding="async"
+                className="size-6 rounded-full object-cover bg-white border border-[#E2E8F0] shrink-0"
+              />
               {!sidebarCollapsed && (
                 <div className="min-w-0">
                   <div className="text-[10.5px] font-bold text-[#111827] truncate leading-tight">Eka Revandi</div>
@@ -432,9 +436,12 @@ export default function DashboardPreview() {
             </div>
 
             {/* User Avatar */}
-            <div className="size-7 rounded-full bg-[oklch(0.54_0.19_258)] text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white shadow-2xs">
-              ER
-            </div>
+            <img
+              src={getEmployeeAvatar({ email: "founder@craveservices.my.id", name: "Eka Revandi" })}
+              alt="Eka Revandi"
+              decoding="async"
+              className="size-7 rounded-full object-cover bg-white ring-2 ring-white border border-[#E2E8F0] shadow-2xs shrink-0"
+            />
           </div>
         </div>
 
@@ -645,9 +652,12 @@ export default function DashboardPreview() {
               {recentPresensi.map((row, idx) => (
                 <div key={idx} className="py-2 flex items-center justify-between gap-2 first:pt-0 last:pb-0">
                   <div className="flex items-center gap-2 min-w-0">
-                    <div className="size-7 rounded-full bg-[#EEF2FF] text-[oklch(0.54_0.19_258)] font-bold text-[10.5px] flex items-center justify-center shrink-0">
-                      {row.name.split(" ").map((n) => n[0]).join("")}
-                    </div>
+                    <img
+                      src={getEmployeeAvatar({ id: idx + 1, name: row.name })}
+                      alt={row.name}
+                      decoding="async"
+                      className="size-7 rounded-full object-cover bg-white border border-[#E2E8F0] shrink-0"
+                    />
                     <div className="min-w-0">
                       <div className="text-[11px] font-bold text-[#0F172A] leading-tight truncate">
                         {row.name} <span className="text-[9.5px] font-normal text-[#64748B]">• {row.role}</span>
