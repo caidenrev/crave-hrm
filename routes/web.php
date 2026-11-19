@@ -15,6 +15,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PayrollController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecruitmentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,6 +39,14 @@ Route::get('/landing', [LandingController::class, 'index'])->name('landing');
 
 // SaaS Core Dashboard (Path /dashboard)
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// User Account & Profile Settings (Pengaturan Profil)
+Route::middleware('auth')->prefix('profile')->name('profile.')->group(function () {
+    Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+    Route::put('/', [ProfileController::class, 'update'])->name('update');
+    Route::put('/password', [ProfileController::class, 'updatePassword'])->name('password');
+    Route::post('/sessions/logout-others', [ProfileController::class, 'destroyOtherSessions'])->name('sessions.destroy_others');
+});
 
 Route::post('/company/switch', [CompanyController::class, 'switchCompany'])->name('company.switch');
 

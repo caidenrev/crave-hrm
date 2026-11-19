@@ -149,10 +149,18 @@ export default function LeaveApprovals({
   };
 
   return (
-    <AuthenticatedLayout title="Persetujuan Cuti">
+    <AuthenticatedLayout
+      title="Persetujuan Cuti"
+      subtitle="Antrean verifikasi permohonan cuti berjenjang dari Atasan Langsung hingga pengesahan final HR Admin."
+      actions={
+        <Badge variant="outline" className="rounded-full px-3 py-1 text-xs font-semibold border-primary/30 bg-primary/5 text-primary">
+          {stats.total_pending ?? 0} Antrean Pending
+        </Badge>
+      }
+    >
       <Head title="Persetujuan Cuti — Crave HRM" />
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         {/* Flash Notifications */}
         {flash?.success && (
           <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
@@ -166,16 +174,6 @@ export default function LeaveApprovals({
             <span>{flash.error}</span>
           </div>
         )}
-
-        {/* Title Header */}
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-            Persetujuan Cuti &amp; Izin
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Antrean verifikasi permohonan cuti berjenjang dari Atasan Langsung hingga pengesahan final HR Admin.
-          </p>
-        </div>
 
         {/* 4 Top KPI Cards (Crave POS Formula: Hero Blue + 3 White card-soft) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">

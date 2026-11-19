@@ -144,42 +144,37 @@ export default function ReimbursementIndex({
   };
 
   return (
-    <AuthenticatedLayout title="Reimbursement">
+    <AuthenticatedLayout
+      title="Reimbursement"
+      subtitle="Pengajuan penggantian biaya operasional medis, transport, tol/parkir, dan pratinjau bukti nota transaksi."
+      actions={
+        <Button
+          size="sm"
+          onClick={() => setModalOpen(true)}
+          className="rounded-xl font-bold shadow-soft text-xs gap-1.5"
+        >
+          <Plus className="size-4" />
+          <span className="hidden sm:inline">Ajukan Reimbursement</span>
+          <span className="sm:hidden">Ajukan</span>
+        </Button>
+      }
+    >
       <Head title="Reimbursement Biaya & Klaim — Crave HRM" />
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         {/* Flash Notifications */}
         {flash?.success && (
-          <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
-            <CheckCircle2 className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 text-xs font-semibold text-emerald-800 dark:text-emerald-300">
+            <CheckCircle2 className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <span>{flash.success}</span>
           </div>
         )}
         {flash?.error && (
-          <div className="flex items-center gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-sm font-semibold text-destructive">
-            <AlertCircle className="size-5 shrink-0" />
+          <div className="flex items-center gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3.5 text-xs font-semibold text-destructive">
+            <AlertCircle className="size-4 shrink-0" />
             <span>{flash.error}</span>
           </div>
         )}
-
-        {/* Title Header with Action Button */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              Reimbursement Biaya &amp; Klaim
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Pengajuan penggantian biaya operasional medis, transport, tol/parkir, dan pratinjau bukti nota transaksi.
-            </p>
-          </div>
-
-          <Button
-            onClick={() => setModalOpen(true)}
-            className="rounded-xl font-bold shadow-md shadow-primary/20"
-          >
-            <Plus className="mr-1.5 size-4" /> Ajukan Reimbursement
-          </Button>
-        </div>
 
         {/* 4 Top KPI Cards (Crave POS Formula: Hero Blue + 3 White card-soft) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">

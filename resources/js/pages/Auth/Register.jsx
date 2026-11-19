@@ -20,7 +20,11 @@ export default function Register({ turnstileSiteKey = "0x4AAAAAAGE_beCSvLpqhbkp"
     cf_turnstile_response: "",
   });
 
+  const isTurnstileEnabled = turnstileSiteKey && turnstileSiteKey !== "disabled";
+
   useEffect(() => {
+    if (!isTurnstileEnabled) return;
+
     const siteKey = turnstileSiteKey || "0x4AAAAAAGE_beCSvLpqhbkp";
     const scriptId = "cf-turnstile-script";
 
@@ -226,14 +230,22 @@ export default function Register({ turnstileSiteKey = "0x4AAAAAAGE_beCSvLpqhbkp"
         </div>
 
         {/* Cloudflare Turnstile Bot Verification (Full-Width Flexible) */}
-        <div className="pt-2 pb-1 w-full min-h-[70px] flex flex-col items-center justify-center [&>div]:w-full [&_iframe]:w-full [&_iframe]:max-w-full">
-          <div ref={turnstileRef} className="w-full flex justify-center [&>div]:w-full [&_iframe]:w-full" />
-          {errors.cf_turnstile_response && (
-            <p className="text-xs text-rose-600 font-semibold mt-1.5 text-center">
-              {errors.cf_turnstile_response}
-            </p>
-          )}
-        </div>
+        {isTurnstileEnabled ? (
+          <div className="pt-2 pb-1 w-full min-h-[70px] flex flex-col items-center justify-center [&>div]:w-full [&_iframe]:w-full [&_iframe]:max-w-full">
+            <div ref={turnstileRef} className="w-full flex justify-center [&>div]:w-full [&_iframe]:w-full" />
+            {errors.cf_turnstile_response && (
+              <p className="text-xs text-rose-600 font-semibold mt-1.5 text-center">
+                {errors.cf_turnstile_response}
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="py-2.5 w-full flex items-center justify-center">
+            <div className="text-[11px] font-semibold text-slate-500 bg-slate-100 dark:bg-slate-900 rounded-xl px-3 py-1.5 border border-slate-200/80 dark:border-slate-800">
+              Mode Pengujian Lokal • Verifikasi Bot Dinonaktifkan
+            </div>
+          </div>
+        )}
 
         {/* Submit Button (Crave POS Royal Electric Blue) */}
         <div className="pt-1">

@@ -21,6 +21,7 @@ class Branch extends Model
         'longitude',
         'radius_meters',
         'office_ips',
+        'timezone',
         'is_active',
     ];
 
@@ -31,6 +32,19 @@ class Branch extends Model
         'office_ips' => 'array',
         'is_active' => 'boolean',
     ];
+
+    protected $appends = [
+        'timezone_abbreviation',
+    ];
+
+    public function getTimezoneAbbreviationAttribute(): string
+    {
+        return match ($this->timezone) {
+            'Asia/Makassar' => 'WITA',
+            'Asia/Jayapura' => 'WIT',
+            default => 'WIB',
+        };
+    }
 
     public function company(): BelongsTo
     {

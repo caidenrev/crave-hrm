@@ -167,10 +167,24 @@ export default function OvertimeIndex({
   };
 
   return (
-    <AuthenticatedLayout title="Lembur (SPKL)">
+    <AuthenticatedLayout
+      title="Lembur (SPKL)"
+      subtitle="Pengajuan SPKL dan perhitungan upah resmi Depnaker (formula 1/173 & multiplier bertingkat)."
+      actions={
+        <Button
+          size="sm"
+          onClick={() => setModalOpen(true)}
+          className="rounded-xl font-bold shadow-soft text-xs gap-1.5"
+        >
+          <Plus className="size-4" />
+          <span className="hidden sm:inline">Buat Pengajuan SPKL</span>
+          <span className="sm:hidden">Buat SPKL</span>
+        </Button>
+      }
+    >
       <Head title="Lembur (SPKL) PP 35/2021 — Crave HRM" />
 
-      <div className="space-y-6">
+      <div className="space-y-5">
         {/* Flash Notifications */}
         {flash?.success && (
           <div className="flex items-center gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
@@ -184,25 +198,6 @@ export default function OvertimeIndex({
             <span>{flash.error}</span>
           </div>
         )}
-
-        {/* Title Header with Action Button */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              Lembur (SPKL) PP 35/2021
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Pengajuan Surat Perintah Kerja Lembur dan perhitungan upah resmi Depnaker (formula 1/173 &amp; multiplier bertingkat).
-            </p>
-          </div>
-
-          <Button
-            onClick={() => setModalOpen(true)}
-            className="rounded-xl font-bold shadow-md shadow-primary/20"
-          >
-            <Plus className="mr-1.5 size-4" /> Buat Pengajuan SPKL
-          </Button>
-        </div>
 
         {/* 4 Top KPI Cards (Crave POS Formula: Hero Blue + 3 White card-soft) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">

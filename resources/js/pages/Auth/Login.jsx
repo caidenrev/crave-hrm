@@ -6,7 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-export default function Login({ status, turnstileSiteKey = "0x4AAAAAAGE_beCSvLpqhbkp" }) {
+export default function Login({
+  status,
+  turnstileSiteKey = "0x4AAAAAAGE_beCSvLpqhbkp",
+  demoAccounts = [],
+  isLocal = false,
+}) {
   const [showPassword, setShowPassword] = useState(false);
   const turnstileRef = useRef(null);
   const widgetIdRef = useRef(null);
@@ -18,7 +23,11 @@ export default function Login({ status, turnstileSiteKey = "0x4AAAAAAGE_beCSvLpq
     cf_turnstile_response: "",
   });
 
+  const isTurnstileEnabled = turnstileSiteKey && turnstileSiteKey !== "disabled";
+
   useEffect(() => {
+    if (!isTurnstileEnabled) return;
+
     const siteKey = turnstileSiteKey || "0x4AAAAAAGE_beCSvLpqhbkp";
     const scriptId = "cf-turnstile-script";
 
@@ -161,14 +170,22 @@ export default function Login({ status, turnstileSiteKey = "0x4AAAAAAGE_beCSvLpq
         </div>
 
         {/* Cloudflare Turnstile Bot Verification (Full-Width Flexible) */}
-        <div className="pt-2 pb-1 w-full min-h-[70px] flex flex-col items-center justify-center [&>div]:w-full [&_iframe]:w-full [&_iframe]:max-w-full">
-          <div ref={turnstileRef} className="w-full flex justify-center [&>div]:w-full [&_iframe]:w-full" />
-          {errors.cf_turnstile_response && (
-            <p className="text-xs text-rose-600 font-semibold mt-1.5 text-center">
-              {errors.cf_turnstile_response}
-            </p>
-          )}
-        </div>
+        {isTurnstileEnabled ? (
+          <div className="pt-2 pb-1 w-full min-h-[70px] flex flex-col items-center justify-center [&>div]:w-full [&_iframe]:w-full [&_iframe]:max-w-full">
+            <div ref={turnstileRef} className="w-full flex justify-center [&>div]:w-full [&_iframe]:w-full" />
+            {errors.cf_turnstile_response && (
+              <p className="text-xs text-rose-600 font-semibold mt-1.5 text-center">
+                {errors.cf_turnstile_response}
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="py-2.5 w-full flex items-center justify-center">
+            <div className="text-[11px] font-semibold text-slate-500 bg-slate-100 rounded-xl px-3 py-1.5 border border-slate-200/80">
+              Mode Pengujian Lokal • Verifikasi Bot Dinonaktifkan
+            </div>
+          </div>
+        )}
 
         {/* Submit Button (Crave POS Royal Electric Blue) */}
         <div className="pt-1">
@@ -187,6 +204,33 @@ export default function Login({ status, turnstileSiteKey = "0x4AAAAAAGE_beCSvLpq
             )}
           </Button>
         </div>
+
+        {/* Quick Dev Switcher for Local Testing (Hanya Muncul di localhost) */}
+        {isLocal && demoAccounts?.length > 0 && (
+          <div className="pt-4 border-t border-slate-100">
+            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 text-center">
+              Pilih Akun Demo (Local Testing 1-Click)
+            </div>
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              {demoAccounts.map((acc) => (
+                <button
+                  key={acc.email}
+                  type="button"
+                  onClick={() => {
+                    setData((prev) => ({
+                      ...prev,
+                      email: acc.email,
+                      password: acc.password,
+                    }));
+                  }}
+                  className="rounded-xl border border-slate-200 bg-slate-50 hover:bg-primary/5 hover:border-primary/40 px-3 py-1.5 text-xs font-semibold text-slate-700 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-2xs"
+                >
+                  {acc.name.split(" ")[0]} ({acc.badge})
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </form>
     </GuestLayout>
   );
