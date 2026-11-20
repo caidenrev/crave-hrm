@@ -66,7 +66,10 @@ export function LandingNavbar({ auth }) {
     if (item.link?.startsWith("#")) {
       e.preventDefault();
       setIsMobileMenuOpen(false);
-      smoothScrollTo(item.link);
+      document.body.style.overflow = "";
+      setTimeout(() => {
+        smoothScrollTo(item.link);
+      }, 50);
     } else {
       setIsMobileMenuOpen(false);
     }

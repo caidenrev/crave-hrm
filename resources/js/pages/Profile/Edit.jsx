@@ -192,10 +192,11 @@ export default function ProfileEdit({ user, employee, sessions = [] }) {
       actions={
         <Badge
           variant="outline"
-          className="border-primary/30 bg-primary/5 text-primary px-3 py-1 text-xs font-semibold"
+          className="border-primary/30 bg-primary/5 text-primary px-2 sm:px-3 py-1 text-[11px] sm:text-xs font-semibold whitespace-nowrap"
         >
-          <span className="size-2 rounded-full bg-emerald-500 mr-1.5 inline-block" />
-          {user.role_label}
+          <span className="size-2 rounded-full bg-emerald-500 mr-1 sm:mr-1.5 inline-block shrink-0" />
+          <span className="hidden sm:inline">{user.role_label}</span>
+          <span className="sm:hidden">Admin</span>
         </Badge>
       }
     >
@@ -304,20 +305,22 @@ export default function ProfileEdit({ user, employee, sessions = [] }) {
 
         {/* Tabbed Profile Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <TabsList className="rounded-xl h-10 p-1 bg-muted/60 border border-border/50">
-            <TabsTrigger value="info" className="rounded-lg text-xs font-bold px-3 sm:px-4 gap-1.5 cursor-pointer">
-              <UserIcon className="size-3.5" />
-              <span>Informasi Profil</span>
-            </TabsTrigger>
-            <TabsTrigger value="security" className="rounded-lg text-xs font-bold px-3 sm:px-4 gap-1.5 cursor-pointer">
-              <Lock className="size-3.5" />
-              <span>Keamanan Sandi</span>
-            </TabsTrigger>
-            <TabsTrigger value="sessions" className="rounded-lg text-xs font-bold px-3 sm:px-4 gap-1.5 cursor-pointer">
-              <Laptop2 className="size-3.5" />
-              <span>Sesi Perangkat</span>
-            </TabsTrigger>
-          </TabsList>
+          <div className="w-full overflow-x-auto no-scrollbar">
+            <TabsList className="rounded-xl h-10 p-1 bg-muted/60 border border-border/50 inline-flex w-max min-w-full sm:min-w-0">
+              <TabsTrigger value="info" className="rounded-lg text-xs font-bold px-3 sm:px-4 gap-1.5 cursor-pointer whitespace-nowrap">
+                <UserIcon className="size-3.5 shrink-0" />
+                <span>Informasi Profil</span>
+              </TabsTrigger>
+              <TabsTrigger value="security" className="rounded-lg text-xs font-bold px-3 sm:px-4 gap-1.5 cursor-pointer whitespace-nowrap">
+                <Lock className="size-3.5 shrink-0" />
+                <span>Keamanan Sandi</span>
+              </TabsTrigger>
+              <TabsTrigger value="sessions" className="rounded-lg text-xs font-bold px-3 sm:px-4 gap-1.5 cursor-pointer whitespace-nowrap">
+                <Laptop2 className="size-3.5 shrink-0" />
+                <span>Sesi Perangkat</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* TAB 1: INFORMASI PROFIL & KEPEGAWAIAN */}
           <TabsContent value="info" className="space-y-5">

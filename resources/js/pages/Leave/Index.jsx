@@ -258,194 +258,53 @@ export default function LeaveIndex({
           </div>
         </div>
 
-        {/* 2-Column Content: Left = Requests Table (8fr) | Right = Balances & Rules (4fr) */}
-        <div className="grid gap-6 lg:grid-cols-12">
-          {/* Main Column: Requests History Table */}
-          <div className="space-y-6 lg:col-span-8">
-            <div className="card-soft overflow-hidden">
-              <div className="flex items-center justify-between border-b p-5">
-                <div>
-                  <h3 className="font-bold text-foreground">Riwayat Pengajuan Cuti &amp; Izin</h3>
-                  <p className="text-xs text-muted-foreground">
-                    Daftar seluruh permohonan cuti dan status verifikasi persetujuan bertingkat
-                  </p>
-                </div>
+        {/* 2-Card Info Grid: Saldo Kuota Cuti & Ketentuan Regulasi */}
+        <div className="grid gap-4 sm:gap-5 md:grid-cols-2">
+          {/* Saldo Kuota Cuti Card */}
+          <div className="card-soft p-4 sm:p-5">
+            <div className="flex items-center gap-3 border-b pb-3">
+              <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary shrink-0">
+                <CalendarDays className="size-4.5" />
               </div>
+              <div>
+                <h3 className="font-bold text-foreground text-sm sm:text-base">Saldo Kuota Cuti 2026</h3>
+                <p className="text-[11px] text-muted-foreground">Status alokasi hak izin kerja</p>
+              </div>
+            </div>
 
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-muted/40">
-                    <TableHead className="font-bold text-foreground">Tipe Cuti</TableHead>
-                    <TableHead className="font-bold text-foreground">Rentang Tanggal</TableHead>
-                    <TableHead className="font-bold text-foreground">Durasi</TableHead>
-                    <TableHead className="font-bold text-foreground">Alur Persetujuan</TableHead>
-                    <TableHead className="text-center font-bold text-foreground">Bukti</TableHead>
-                    <TableHead className="text-right font-bold text-foreground">Aksi</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {!requests.data || requests.data.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
-                        Belum ada riwayat permohonan cuti yang diajukan.
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    requests.data.map((req) => (
-                      <TableRow key={req.id} className="hover:bg-muted/20">
-                        {/* Tipe Cuti */}
-                        <TableCell>
-                          <div className="font-bold text-foreground">
-                            {req.leave_type?.name || "Cuti"}
-                          </div>
-                          <div className="line-clamp-1 max-w-[200px] text-xs text-muted-foreground">
-                            {req.reason}
-                          </div>
-                        </TableCell>
-
-                        {/* Rentang Tanggal */}
-                        <TableCell>
-                          <div className="font-semibold text-foreground">
-                            {formatDisplayDate(req.start_date)}
-                          </div>
-                          <div className="text-[11px] text-muted-foreground">
-                            s.d. {formatDisplayDate(req.end_date)}
-                          </div>
-                        </TableCell>
-
-                        {/* Durasi Hari Kerja */}
-                        <TableCell>
-                          <Badge variant="outline" className="rounded-full font-bold text-xs">
-                            {req.total_days} Hari Kerja
-                          </Badge>
-                        </TableCell>
-
-                        {/* Alur Persetujuan Bertingkat */}
-                        <TableCell>
-                          <div className="space-y-1">
-                            {req.status === "pending_supervisor" && (
-                              <Badge variant="secondary" className="rounded-full text-[10px]">
-                                <Clock className="mr-1 size-3" /> Review Atasan Langsung
-                              </Badge>
-                            )}
-                            {req.status === "pending_hr" && (
-                              <Badge variant="outline" className="border-primary/50 text-primary font-semibold rounded-full text-[10px]">
-                                <ShieldCheck className="mr-1 size-3" /> Menunggu Finalisasi HR
-                              </Badge>
-                            )}
-                            {req.status === "approved" && (
-                              <Badge variant="default" className="bg-emerald-600 rounded-full text-[10px]">
-                                <Check className="mr-1 size-3" /> Disetujui Final
-                              </Badge>
-                            )}
-                            {req.status === "rejected" && (
-                              <Badge variant="destructive" className="rounded-full text-[10px]">
-                                <XCircle className="mr-1 size-3" /> Ditolak
-                              </Badge>
-                            )}
-                            {req.status === "cancelled" && (
-                              <Badge variant="secondary" className="rounded-full text-[10px]">
-                                Dibatalkan
-                              </Badge>
-                            )}
-
-                            {/* Catatan Penolakan/Koreksi */}
-                            {(req.supervisor_notes || req.hr_notes) && (
-                              <div className="text-[10px] text-muted-foreground">
-                                Catatan: {req.hr_notes || req.supervisor_notes}
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        {/* Bukti Lampiran */}
-                        <TableCell className="text-center">
-                          {req.attachment_url ? (
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                setPreviewAttachment(req.attachment_url);
-                                setAttachmentModalOpen(true);
-                              }}
-                              className="size-8 rounded-lg"
-                            >
-                              <Eye className="size-4 text-muted-foreground" />
-                            </Button>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-
-                        {/* Aksi Pembatalan */}
-                        <TableCell className="text-right">
-                          {["pending_supervisor", "pending_hr"].includes(req.status) ? (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleCancel(req.id)}
-                              className="h-8 rounded-xl text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
-                            >
-                              <Trash2 className="mr-1 size-3.5" /> Batal
-                            </Button>
-                          ) : (
-                            <span className="text-xs text-muted-foreground font-medium">Selesai</span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
-              </Table>
+            <div className="mt-4 space-y-2.5">
+              {balances.map((b) => (
+                <div
+                  key={b.id}
+                  className="flex items-center justify-between rounded-xl bg-muted/40 p-3 text-xs"
+                >
+                  <div className="min-w-0 pr-2">
+                    <div className="font-semibold text-foreground truncate">
+                      {b.leave_type?.name}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">
+                      Alokasi: {b.total_allocated} hari • Terpakai: {b.used_days} hari
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="text-sm font-bold text-foreground">
+                      {Math.max(0, b.remaining_days - b.pending_days)} Hari
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">Tersisa</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Right Column: Saldo Kuota Cuti & Ketentuan Regulasi */}
-          <div className="space-y-6 lg:col-span-4">
-            {/* Saldo Kuota Cuti Card */}
-            <div className="card-soft p-5">
-              <div className="flex items-center gap-3 border-b pb-3">
-                <div className="flex size-9 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                  <CalendarDays className="size-4.5" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground">Saldo Kuota Cuti 2026</h3>
-                  <p className="text-[11px] text-muted-foreground">Status alokasi hak izin kerja</p>
-                </div>
-              </div>
-
-              <div className="mt-4 space-y-3">
-                {balances.map((b) => (
-                  <div
-                    key={b.id}
-                    className="flex items-center justify-between rounded-xl bg-muted/40 p-3 text-xs"
-                  >
-                    <div>
-                      <div className="font-semibold text-foreground">
-                        {b.leave_type?.name}
-                      </div>
-                      <div className="text-[10px] text-muted-foreground">
-                        Alokasi: {b.total_allocated} hari • Terpakai: {b.used_days} hari
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-foreground">
-                        {Math.max(0, b.remaining_days - b.pending_days)} Hari
-                      </div>
-                      <div className="text-[10px] text-muted-foreground">Tersisa</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Regulasi & Ketentuan Cuti Card */}
-            <div className="card-soft p-5 text-xs text-muted-foreground">
-              <div className="flex items-center gap-2 border-b pb-3 font-bold text-foreground">
-                <Info className="size-4 text-primary" />
+          {/* Regulasi & Ketentuan Cuti Card */}
+          <div className="card-soft p-4 sm:p-5 text-xs text-muted-foreground flex flex-col justify-between">
+            <div>
+              <div className="flex items-center gap-2 border-b pb-3 font-bold text-foreground text-sm sm:text-base">
+                <Info className="size-4 text-primary shrink-0" />
                 <span>Ketentuan Cuti Ketenagakerjaan</span>
               </div>
-              <ul className="mt-3 space-y-2 list-disc pl-4 leading-relaxed">
+              <ul className="mt-3.5 space-y-2.5 list-disc pl-4 leading-relaxed text-[11px] sm:text-xs">
                 <li>
                   <strong className="text-foreground">Cuti Tahunan:</strong> Kuota resmi 12 hari kerja per tahun kalender.
                 </li>
@@ -460,6 +319,162 @@ export default function LeaveIndex({
                 </li>
               </ul>
             </div>
+            <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between text-[11px] text-muted-foreground">
+              <span>Dasar Hukum: PP No. 35/2021 &amp; UU Cipta Kerja</span>
+              <span className="font-semibold text-primary">Sesuai Regulasi</span>
+            </div>
+          </div>
+        </div>
+
+        {/* FULL-WIDTH REQUESTS HISTORY TABLE (Exact Persetujuan Cuti Style with Smooth Horizontal Scroll) */}
+        <div className="card-soft overflow-hidden w-full min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b p-4 sm:p-5 gap-2">
+            <div>
+              <h3 className="font-bold text-foreground text-sm sm:text-base">Riwayat Pengajuan Cuti &amp; Izin</h3>
+              <p className="text-xs text-muted-foreground">
+                Daftar seluruh permohonan cuti dan status verifikasi persetujuan bertingkat
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="rounded-full text-xs font-semibold">
+                {requests.data?.length || 0} Pengajuan
+              </Badge>
+              <span className="text-[11px] text-muted-foreground sm:hidden">
+                (Geser horizontal »)
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full overflow-x-auto">
+            <Table className="min-w-[720px]">
+              <TableHeader>
+                <TableRow className="bg-muted/40 hover:bg-muted/40 border-b border-border/60">
+                  <TableHead className="font-bold text-foreground py-3.5 pl-4 min-w-[170px]">Tipe Cuti</TableHead>
+                  <TableHead className="font-bold text-foreground py-3.5 min-w-[150px]">Rentang Tanggal</TableHead>
+                  <TableHead className="font-bold text-foreground py-3.5 min-w-[110px]">Durasi</TableHead>
+                  <TableHead className="font-bold text-foreground py-3.5 min-w-[180px]">Alur Persetujuan</TableHead>
+                  <TableHead className="text-center font-bold text-foreground py-3.5 min-w-[80px]">Bukti</TableHead>
+                  <TableHead className="text-right font-bold text-foreground py-3.5 pr-4 min-w-[90px]">Aksi</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {!requests.data || requests.data.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="py-12 text-center text-muted-foreground">
+                      <div className="flex flex-col items-center justify-center gap-2">
+                        <FileCheck className="size-8 text-muted-foreground/40" />
+                        <p className="font-medium text-xs">Belum ada riwayat permohonan cuti yang diajukan.</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  requests.data.map((req) => (
+                    <TableRow key={req.id} className="hover:bg-muted/20 border-b border-border/40">
+                      {/* Tipe Cuti */}
+                      <TableCell className="py-3 pl-4">
+                        <div className="font-bold text-foreground text-xs sm:text-sm">
+                          {req.leave_type?.name || "Cuti"}
+                        </div>
+                        <div className="line-clamp-1 max-w-[200px] text-xs text-muted-foreground">
+                          {req.reason}
+                        </div>
+                      </TableCell>
+
+                      {/* Rentang Tanggal */}
+                      <TableCell className="py-3">
+                        <div className="font-semibold text-foreground text-xs">
+                          {formatDisplayDate(req.start_date)}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground">
+                          s.d. {formatDisplayDate(req.end_date)}
+                        </div>
+                      </TableCell>
+
+                      {/* Durasi Hari Kerja */}
+                      <TableCell className="py-3">
+                        <Badge variant="outline" className="rounded-full font-bold text-xs">
+                          {req.total_days} Hari Kerja
+                        </Badge>
+                      </TableCell>
+
+                      {/* Alur Persetujuan Bertingkat */}
+                      <TableCell className="py-3">
+                        <div className="space-y-1">
+                          {req.status === "pending_supervisor" && (
+                            <Badge variant="secondary" className="rounded-full text-[10px]">
+                              <Clock className="mr-1 size-3" /> Review Atasan Langsung
+                            </Badge>
+                          )}
+                          {req.status === "pending_hr" && (
+                            <Badge variant="outline" className="border-primary/50 text-primary font-semibold rounded-full text-[10px]">
+                              <ShieldCheck className="mr-1 size-3" /> Menunggu Finalisasi HR
+                            </Badge>
+                          )}
+                          {req.status === "approved" && (
+                            <Badge variant="default" className="bg-emerald-600 text-white rounded-full text-[10px]">
+                              <Check className="mr-1 size-3" /> Disetujui Final
+                            </Badge>
+                          )}
+                          {req.status === "rejected" && (
+                            <Badge variant="destructive" className="rounded-full text-[10px]">
+                              <XCircle className="mr-1 size-3" /> Ditolak
+                            </Badge>
+                          )}
+                          {req.status === "cancelled" && (
+                            <Badge variant="secondary" className="rounded-full text-[10px]">
+                              Dibatalkan
+                            </Badge>
+                          )}
+
+                          {/* Catatan Penolakan/Koreksi */}
+                          {(req.supervisor_notes || req.hr_notes) && (
+                            <div className="text-[10px] text-muted-foreground">
+                              Catatan: {req.hr_notes || req.supervisor_notes}
+                            </div>
+                          )}
+                        </div>
+                      </TableCell>
+
+                      {/* Bukti Lampiran */}
+                      <TableCell className="py-3 text-center">
+                        {req.attachment_url ? (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              setPreviewAttachment(req.attachment_url);
+                              setAttachmentModalOpen(true);
+                            }}
+                            className="size-8 rounded-lg"
+                            title="Lihat lampiran dokumen"
+                          >
+                            <Eye className="size-4 text-muted-foreground" />
+                          </Button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+
+                      {/* Aksi Pembatalan */}
+                      <TableCell className="py-3 text-right pr-4">
+                        {["pending_supervisor", "pending_hr"].includes(req.status) ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCancel(req.id)}
+                            className="h-8 rounded-xl text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash2 className="mr-1 size-3.5" /> Batal
+                          </Button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground font-medium">Selesai</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </div>

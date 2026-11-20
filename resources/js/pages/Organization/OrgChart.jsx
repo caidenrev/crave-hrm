@@ -189,28 +189,31 @@ export default function OrgChart({
       title="Struktur Organisasi"
       subtitle={`Bagan hierarki departemen, divisi, dan susunan talenta di ${selectedBranchName}`}
       actions={
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={expandAll}
-            className="rounded-xl text-xs font-semibold"
-          >
-            Buka Semua
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={collapseAll}
-            className="rounded-xl text-xs font-semibold"
-          >
-            Tutup Semua
-          </Button>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="hidden sm:flex items-center gap-1.5">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={expandAll}
+              className="rounded-xl text-xs font-semibold h-8"
+            >
+              Buka Semua
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={collapseAll}
+              className="rounded-xl text-xs font-semibold h-8"
+            >
+              Tutup Semua
+            </Button>
+          </div>
           <Button
             onClick={() => setCreateDeptModalOpen(true)}
-            className="rounded-xl font-semibold shadow-xs text-xs sm:text-sm"
+            size="sm"
+            className="rounded-xl font-semibold shadow-xs text-xs h-8 px-2.5 sm:px-3 gap-1"
           >
-            <Plus className="size-4" />
+            <Plus className="size-4 shrink-0" />
             <span className="hidden sm:inline">Tambah Departemen</span>
             <span className="sm:hidden">Tambah</span>
           </Button>
@@ -220,14 +223,13 @@ export default function OrgChart({
       <Head title={`Struktur Organisasi — ${selectedBranchName}`} />
 
       <div className="space-y-4">
-        {/* 1. TOP METRICS CARDS (Crave POS Dashboard Signature Look) */}
+        {/* 1. TOP METRICS CARDS (Crave POS Dashboard 2x2 Grid Look) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
           {topStats.map((s, i) => (
             <div
               key={s.label}
               className={
                 "p-3 flex flex-col justify-between rounded-2xl sm:rounded-3xl sm:p-4 " +
-                (i === 0 || i === 3 ? "col-span-2 md:col-span-1 " : "") +
                 (i === 0
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 border border-primary"
                   : "bg-card border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]")
@@ -305,15 +307,35 @@ export default function OrgChart({
             </div>
           </div>
 
-          {/* Quick Search inside Hierarchy */}
-          <div className="relative sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari talenta dalam struktur..."
-              className="pl-8 rounded-xl border-border/50 bg-background/50 text-xs h-8"
-            />
+          {/* Quick Search inside Hierarchy & Mobile Expand/Collapse */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Cari talenta dalam struktur..."
+                className="pl-8 rounded-xl border-border/50 bg-background/50 text-xs h-8"
+              />
+            </div>
+            <div className="flex sm:hidden items-center gap-1 shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={expandAll}
+                className="rounded-xl text-[11px] font-semibold h-8 px-2"
+              >
+                Buka
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={collapseAll}
+                className="rounded-xl text-[11px] font-semibold h-8 px-2"
+              >
+                Tutup
+              </Button>
+            </div>
           </div>
         </div>
 

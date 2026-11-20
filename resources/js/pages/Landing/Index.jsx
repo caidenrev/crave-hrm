@@ -20,6 +20,7 @@ import DashboardPreview from "@/components/DashboardPreview";
 import CraveServiceCards from "../../../../CraveCards/CraveServiceCards";
 import { FeatureGrid, FeatureBento } from "@/components/FeatureSections";
 import FeatureShowcase from "@/components/FeatureShowcase";
+import TestimonialSlider from "@/components/landing/TestimonialSlider";
 
 const NAV_LINKS = [
   { href: "#fitur", label: "Fitur" },
@@ -295,6 +296,17 @@ const TESTIMONIALS = [
     stat1Label: "Anak Perusahaan Terkelola",
     stat2: "100%",
     stat2Label: "Kepatuhan UU PDP & Pajak",
+  },
+  {
+    name: "Dian Anggraini",
+    role: "VP of People Operations",
+    company: "PT Cipta Integrasi Digital",
+    avatar: "/images/support-agent.png",
+    quote: "Fitur presensi GPS dengan validasi radius geofence kantor dan voucher kantin digital QR dinamis 60 detik berhasil mengeliminasi titip absen secara total. Seluruh klaim reimbursement kini terselesaikan secara transparan dan 100% paperless.",
+    stat1: "99.8%",
+    stat1Label: "Akurasi Presensi & Geofence",
+    stat2: "100%",
+    stat2Label: "Paperless Operasional",
   },
 ];
 
@@ -1455,39 +1467,7 @@ export default function Landing({ auth, stats = {} }) {
               </h2>
             </div>
 
-            <div className="space-y-6">
-              {TESTIMONIALS.map((t) => (
-                <article key={t.name} className="rounded-2xl bg-white border border-[#F1F2F6] p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-xs">
-                  <div className="md:col-span-3">
-                    <div className="rounded-2xl overflow-hidden aspect-[23/26] bg-[#E0E7FF] shadow-sm border border-[#E5E7EB]">
-                      <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" />
-                    </div>
-                  </div>
-                  <div className="md:col-span-6 flex flex-col justify-between h-full py-1">
-                    <blockquote className="font-medium text-[17px] sm:text-[19px] leading-[1.5] text-[#111827] mb-6">
-                      &ldquo;{t.quote}&rdquo;
-                    </blockquote>
-                    <div className="flex items-center justify-between pt-4 border-t border-[#F3F4F6]">
-                      <div>
-                        <div className="font-bold text-[14.5px] text-[#111827]">{t.name}</div>
-                        <div className="text-[12px] text-[#6B7280]">{t.role}</div>
-                      </div>
-                      <span className="font-black text-[14px] text-[#374151]">{t.company}</span>
-                    </div>
-                  </div>
-                  <div className="md:col-span-3 md:border-l md:border-[#F1F2F6] md:pl-8 flex flex-col justify-between gap-6 text-right">
-                    <div>
-                      <div className="font-black text-[28px] sm:text-[32px] text-[#111827] leading-none mb-1">{t.stat1}</div>
-                      <div className="text-[11.5px] text-[#6B7280]">{t.stat1Label}</div>
-                    </div>
-                    <div>
-                      <div className="font-black text-[28px] sm:text-[32px] text-[#111827] leading-none mb-1">{t.stat2}</div>
-                      <div className="text-[11.5px] text-[#6B7280]">{t.stat2Label}</div>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <TestimonialSlider testimonials={TESTIMONIALS} />
           </div>
         </section>
 

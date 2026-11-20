@@ -254,46 +254,27 @@ export default function HolidayCalendar({ holidays = [], teamLeaves = [], select
       title="Kalender & Hari Libur"
       subtitle="Jadwal hari libur nasional resmi SKB 3 Menteri dan cuti bersama operasional perusahaan"
       actions={
-        <div className="flex items-center gap-2">
-          {/* Year Switcher */}
-          <div className="inline-flex items-center rounded-xl bg-muted p-1 border border-border/50 text-xs">
-            {[2025, 2026, 2027].map((yr) => (
-              <button
-                key={yr}
-                onClick={() => handleYearChange(yr)}
-                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
-                  selectedYear === yr
-                    ? "bg-card text-foreground font-bold shadow-soft"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {yr}
-              </button>
-            ))}
-          </div>
-
-          <Button
-            onClick={() => setModalOpen(true)}
-            className="rounded-xl font-semibold shadow-xs text-xs sm:text-sm"
-          >
-            <Plus className="size-4" />
-            <span className="hidden sm:inline">Tambah Libur Khusus</span>
-            <span className="sm:hidden">Tambah</span>
-          </Button>
-        </div>
+        <Button
+          size="sm"
+          onClick={() => setModalOpen(true)}
+          className="rounded-xl font-semibold shadow-soft text-xs gap-1.5"
+        >
+          <Plus className="size-4" />
+          <span className="hidden sm:inline">Tambah Libur Khusus</span>
+          <span className="sm:hidden">Tambah</span>
+        </Button>
       }
     >
       <Head title={`Kalender Hari Libur ${selectedYear}`} />
 
       <div className="space-y-4">
-        {/* 1. TOP METRICS CARDS (Exact Crave POS / Dashboard Style) */}
+        {/* 1. TOP METRICS CARDS (Exact Crave POS / Dashboard Style - Standardized 2x2 Grid) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
           {topStats.map((s, i) => (
             <div
               key={s.label}
               className={
                 "p-3 flex flex-col justify-between rounded-2xl sm:rounded-3xl sm:p-4 " +
-                (i === 0 || i === 3 ? "col-span-2 md:col-span-1 " : "") +
                 (i === 0
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 border border-primary"
                   : "bg-card border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]")
@@ -337,24 +318,44 @@ export default function HolidayCalendar({ holidays = [], teamLeaves = [], select
           ))}
         </div>
 
-        {/* View Mode Bar */}
-        <div className="flex items-center justify-between gap-3">
-          <Tabs
-            value={viewMode}
-            onValueChange={setViewMode}
-            className="relative"
-          >
-            <TabsList className="rounded-xl">
-              <TabsTrigger value="dashboard" className="text-xs gap-1.5">
-                <LayoutList className="size-3.5" />
-                Widget Dasbor
-              </TabsTrigger>
-              <TabsTrigger value="grid" className="text-xs gap-1.5">
-                <LayoutGrid className="size-3.5" />
-                Grid 12 Bulan
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        {/* View Mode Bar with Year Switcher on the Right */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <Tabs
+              value={viewMode}
+              onValueChange={setViewMode}
+              className="relative"
+            >
+              <TabsList className="rounded-xl">
+                <TabsTrigger value="dashboard" className="text-xs gap-1.5">
+                  <LayoutList className="size-3.5" />
+                  Widget Dasbor
+                </TabsTrigger>
+                <TabsTrigger value="grid" className="text-xs gap-1.5">
+                  <LayoutGrid className="size-3.5" />
+                  Grid 12 Bulan
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {/* Year Switcher (Relocated right next to View Mode) */}
+            <div className="inline-flex items-center rounded-xl bg-muted p-1 border border-border/50 text-xs shadow-2xs">
+              {[2025, 2026, 2027].map((yr) => (
+                <button
+                  key={yr}
+                  type="button"
+                  onClick={() => handleYearChange(yr)}
+                  className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition-all ${
+                    selectedYear === yr
+                      ? "bg-card text-foreground font-bold shadow-soft"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {yr}
+                </button>
+              ))}
+            </div>
+          </div>
 
           <span className="text-xs text-muted-foreground hidden sm:inline">
             Tahun Kerja: <strong className="text-foreground">{selectedYear}</strong> · Total {holidays.length} Hari Libur

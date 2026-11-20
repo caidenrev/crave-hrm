@@ -320,7 +320,8 @@ export default function LeaveApprovals({
 
         {/* APPROVALS TABLE CARD */}
         <div className="card-soft overflow-hidden">
-          <Table>
+          <div className="w-full overflow-x-auto">
+            <Table className="min-w-[700px]">
             <TableHeader>
               <TableRow className="bg-muted/40">
                 <TableHead className="font-bold text-foreground">Karyawan</TableHead>
@@ -492,6 +493,7 @@ export default function LeaveApprovals({
               )}
             </TableBody>
           </Table>
+        </div>
 
           {/* Pagination Controls */}
           {requests.links && requests.links.length > 3 && (
