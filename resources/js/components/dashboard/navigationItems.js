@@ -24,6 +24,7 @@ import {
   SlidersHorizontal,
   Building2,
   Network,
+  CreditCard,
 } from "lucide-react";
 
 export const MENU_OPERASIONAL = [
@@ -35,7 +36,12 @@ export const MENU_OPERASIONAL = [
     children: [
       { label: "Presensi Harian", href: "/attendance", icon: Camera },
       { label: "Jadwal & Shift", href: "/attendance/shifts", icon: CalendarClock },
-      { label: "Rekap Kehadiran", href: "/attendance/recap", icon: ClipboardList },
+      {
+        label: "Rekap Kehadiran",
+        href: "/attendance/recap",
+        icon: ClipboardList,
+        roles: ["super_admin", "holding_admin", "company_admin", "hr_admin", "branch_manager"],
+      },
     ],
   },
   {
@@ -44,7 +50,12 @@ export const MENU_OPERASIONAL = [
     icon: CalendarDays,
     children: [
       { label: "Cuti & Izin Saya", href: "/leave", icon: CalendarDays },
-      { label: "Persetujuan Cuti", href: "/leave/approvals", icon: CheckSquare },
+      {
+        label: "Persetujuan Cuti",
+        href: "/leave/approvals",
+        icon: CheckSquare,
+        roles: ["super_admin", "holding_admin", "company_admin", "hr_admin", "branch_manager", "supervisor"],
+      },
       { label: "Kalender & Libur", href: "/calendar", icon: Calendar },
     ],
   },
@@ -68,13 +79,13 @@ export const MENU_OPERASIONAL = [
         label: "Scanner Merchant",
         href: "/canteen/scanner",
         icon: ScanBarcode,
-        roles: ["super_admin", "company_admin", "hr_admin", "supervisor", "merchant"],
+        roles: ["super_admin", "holding_admin", "company_admin", "hr_admin", "supervisor", "merchant"],
       },
       {
         label: "Rekonsiliasi Vendor",
         href: "/canteen/settlement",
         icon: FileSpreadsheet,
-        roles: ["super_admin", "company_admin", "hr_admin"],
+        roles: ["super_admin", "holding_admin", "company_admin", "hr_admin", "finance"],
       },
     ],
   },
@@ -83,29 +94,65 @@ export const MENU_OPERASIONAL = [
     href: "/payroll",
     icon: FileSpreadsheet,
     children: [
-      { label: "Proses Payroll", href: "/payroll", icon: Calculator },
+      {
+        label: "Proses Payroll",
+        href: "/payroll",
+        icon: Calculator,
+        roles: ["super_admin", "holding_admin", "company_admin", "finance"],
+      },
       { label: "Slip Gaji", href: "/payroll/slips", icon: FileText },
-      { label: "Ekspor Bank & Rekap", href: "/payroll/export", icon: Landmark },
+      {
+        label: "Ekspor Bank & Rekap",
+        href: "/payroll/export",
+        icon: Landmark,
+        roles: ["super_admin", "holding_admin", "company_admin", "finance"],
+      },
     ],
   },
 ];
 
 export const MENU_TALENTA = [
-  { label: "Data Karyawan", href: "/employees", icon: Users },
-  { label: "Crave E-Recruitment", href: "/recruitment", icon: UserCheck },
+  {
+    label: "Data Karyawan",
+    href: "/employees",
+    icon: Users,
+    roles: ["super_admin", "holding_admin", "company_admin", "hr_admin"],
+  },
+  {
+    label: "Crave E-Recruitment",
+    href: "/recruitment",
+    icon: UserCheck,
+    roles: ["super_admin", "holding_admin", "company_admin", "hr_admin"],
+  },
   { label: "360 Performance", href: "/performance", icon: Compass },
 ];
 
 export const MENU_PENGATURAN = [
   { label: "Pengumuman", href: "/announcements", icon: Megaphone },
   {
+    label: "Langganan & Paket",
+    href: "/subscription",
+    icon: CreditCard,
+    roles: ["super_admin", "holding_admin", "company_admin", "hr_admin"],
+  },
+  {
     label: "Organisasi & Akses",
     href: "/organization",
     icon: SlidersHorizontal,
     children: [
-      { label: "Cabang & Geofence", href: "/organization/branches", icon: Building2 },
+      {
+        label: "Cabang & Geofence",
+        href: "/organization/branches",
+        icon: Building2,
+        roles: ["super_admin", "holding_admin", "company_admin", "hr_admin"],
+      },
       { label: "Struktur Organisasi", href: "/organization/chart", icon: Network },
-      { label: "Matriks Izin RBAC", href: "/organization/rbac-matrix", icon: SlidersHorizontal },
+      {
+        label: "Matriks Izin RBAC",
+        href: "/organization/rbac-matrix",
+        icon: SlidersHorizontal,
+        roles: ["super_admin", "holding_admin", "company_admin"],
+      },
     ],
   },
 ];

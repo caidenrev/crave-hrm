@@ -285,7 +285,7 @@ class Task11PayrollTest extends TestCase
             ->get('/payroll/export');
         $exportPage->assertStatus(200);
 
-        // Download all 9 Indonesian bank batch formats
+        // Download all 9 Indonesian bank batch formats as styled Excel (.xlsx)
         foreach (['BCA', 'MANDIRI', 'BRI', 'BNI', 'BSI', 'CIMB', 'PERMATA', 'DANAMON', 'BTN'] as $bankCode) {
             $bankExport = $this->actingAs($this->user)
                 ->withSession(['active_company_id' => $this->companyA->id])
@@ -294,7 +294,8 @@ class Task11PayrollTest extends TestCase
                     'bank_format' => $bankCode,
                 ]);
             $bankExport->assertStatus(200);
-            $this->assertStringContainsString('1234567890', $bankExport->streamedContent());
+            $bankExport->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            $this->assertStringContainsString(".xlsx", (string) $bankExport->headers->get('content-disposition'));
         }
 
         // Unsupported bank format rejected by strict allowlist
@@ -342,7 +343,42 @@ class Task11PayrollTest extends TestCase
             ]);
 
         $response->assertStatus(200);
-        $content = $response->streamedContent();
-        $this->assertStringContainsString("\"'=CMD", $content);
+        $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->assertStringContainsString('.xlsx', (string) $response->headers->get('content-disposition'));
+    }
+
+    public function test_master_payroll_excel_export_returns_styled_xlsx(): void
+    {
+        $period = PayrollPeriod::create([
+            'company_id' => $this->companyA->id,
+            'name' => 'Payroll Nov 2026',
+            'month' => 11,
+            'year' => 2026,
+            'start_date' => '2026-11-01',
+            'end_date' => '2026-11-30',
+            'payment_date' => '2026-11-25',
+            'status' => 'finalized',
+        ]);
+
+        PayrollItem::create([
+            'company_id' => $this->companyA->id,
+            'payroll_period_id' => $period->id,
+            'employee_id' => $this->employeeA->id,
+            'gaji_pokok' => 10000000,
+            'tunjangan_tetap' => 1000000,
+            'penghasilan_bruto' => 11000000,
+            'take_home_pay' => 10200000,
+            'payment_status' => 'paid',
+        ]);
+
+        $response = $this->actingAs($this->user)
+            ->withSession(['active_company_id' => $this->companyA->id])
+            ->post('/payroll/export/excel', [
+                'payroll_period_id' => $period->id,
+            ]);
+
+        $response->assertStatus(200);
+        $response->assertHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $this->assertStringContainsString('.xlsx', (string) $response->headers->get('content-disposition'));
     }
 }

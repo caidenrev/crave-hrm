@@ -96,4 +96,10 @@ class User extends Authenticatable
 
         return $currentRole === $roles;
     }
+
+    public function isFounder(): bool
+    {
+        return $this->email === 'founder@craveservices.my.id' 
+            || $this->companies()->wherePivot('role', 'super_admin')->exists();
+    }
 }

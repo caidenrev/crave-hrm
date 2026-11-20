@@ -70,6 +70,15 @@ class HandleInertiaRequests extends Middleware
                     'role' => $c->pivot->role,
                 ]) : [],
                 'role' => $user?->currentRole(),
+                'is_founder' => $user?->isFounder() ?? false,
+                'subscription' => $activeCompany ? [
+                    'state' => $activeCompany->subscriptionState(),
+                    'days_left' => $activeCompany->daysLeft(),
+                    'trial_ends_at' => $activeCompany->trial_ends_at?->toIso8601String(),
+                    'current_period_end' => $activeCompany->current_period_end?->toIso8601String(),
+                    'plan_name' => $activeCompany->plan_name ?? 'Pro HR',
+                    'can_access' => $activeCompany->canAccessHrm(),
+                ] : null,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),

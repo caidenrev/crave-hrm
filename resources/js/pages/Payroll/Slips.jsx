@@ -37,6 +37,7 @@ export default function Slips({
   selectedPeriodId = null,
   items = { data: [], links: [] },
   stats = {},
+  isStaff = false,
 }) {
   const [search, setSearch] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState(selectedPeriodId || "");
@@ -70,44 +71,52 @@ export default function Slips({
 
   return (
     <AuthenticatedLayout
-      title="Slip Gaji Karyawan"
-      subtitle={`${stats.total_slips || 0} lembar slip gaji · Periode ${activePeriodObj ? activePeriodObj.name : "Aktif"}`}
+      title={isStaff ? "Slip Gaji Saya" : "Slip Gaji Karyawan"}
+      subtitle={
+        isStaff
+          ? `Riwayat slip gaji resmi Anda · Periode ${activePeriodObj ? activePeriodObj.name : "Aktif"}`
+          : `${stats.total_slips || 0} lembar slip gaji · Periode ${activePeriodObj ? activePeriodObj.name : "Aktif"}`
+      }
       actions={
-        <Link href="/payroll">
-          <Button variant="outline" size="sm" className="rounded-xl gap-1.5 text-xs font-semibold">
-            <Calculator className="size-3.5" />
-            <span className="hidden sm:inline">Proses Payroll</span>
-            <span className="sm:hidden">Payroll</span>
-          </Button>
-        </Link>
+        !isStaff && (
+          <Link href="/payroll">
+            <Button variant="outline" size="sm" className="rounded-xl gap-1.5 text-xs font-semibold">
+              <Calculator className="size-3.5" />
+              <span className="hidden sm:inline">Proses Payroll</span>
+              <span className="sm:hidden">Payroll</span>
+            </Button>
+          </Link>
+        )
       }
     >
-      <Head title="Slip Gaji Karyawan — Crave HRM" />
+      <Head title={isStaff ? "Slip Gaji Saya — Crave HRM" : "Slip Gaji Karyawan — Crave HRM"} />
 
       <div className="space-y-5">
         {/* Sub-Route Navigation Pill Tabs */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1 border border-border/40 w-fit">
-            <Link
-              href="/payroll"
-              className="rounded-full px-3.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-all"
-            >
-              Proses Payroll
-            </Link>
-            <Link
-              href="/payroll/slips"
-              className="rounded-full px-3.5 py-1 text-xs font-bold bg-card text-foreground shadow-soft transition-all"
-            >
-              Slip Gaji
-            </Link>
-            <Link
-              href="/payroll/export"
-              className="rounded-full px-3.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-all"
-            >
-              Ekspor Bank &amp; Rekap
-            </Link>
+        {!isStaff && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="inline-flex items-center gap-1 rounded-full bg-muted p-1 border border-border/40 w-fit">
+              <Link
+                href="/payroll"
+                className="rounded-full px-3.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-all"
+              >
+                Proses Payroll
+              </Link>
+              <Link
+                href="/payroll/slips"
+                className="rounded-full px-3.5 py-1 text-xs font-bold bg-card text-foreground shadow-soft transition-all"
+              >
+                Slip Gaji
+              </Link>
+              <Link
+                href="/payroll/export"
+                className="rounded-full px-3.5 py-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-all"
+              >
+                Ekspor Bank &amp; Rekap
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* 4 KPI Cards (Crave POS Formula) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">

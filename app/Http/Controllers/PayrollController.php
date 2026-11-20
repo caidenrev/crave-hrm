@@ -11,12 +11,14 @@ use App\Models\PayrollPeriod;
 use App\Models\Reimbursement;
 use App\Services\BankExportService;
 use App\Services\BpjsCalculator;
+use App\Services\PayrollExcelService;
 use App\Services\Pph21TerCalculator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PayrollController extends Controller
@@ -280,6 +282,9 @@ class PayrollController extends Controller
     public function slips(Request $request): Response
     {
         $companyId = $this->getActiveCompanyId();
+        $user = $request->user();
+        $currentRole = $user?->currentRole();
+        $isStaff = $currentRole === 'employee';
 
         $periods = PayrollPeriod::where('company_id', $companyId)
             ->orderByDesc('year')
@@ -290,6 +295,12 @@ class PayrollController extends Controller
 
         $query = PayrollItem::where('company_id', $companyId)
             ->with(['employee.department', 'employee.designation', 'period']);
+
+        // Scope to employee's own record if role is staff/employee
+        if ($isStaff) {
+            $employee = $user?->currentEmployee();
+            $query->where('employee_id', $employee?->id ?? 0);
+        }
 
         if ($selectedPeriodId) {
             $query->where('payroll_period_id', $selectedPeriodId);
@@ -315,6 +326,7 @@ class PayrollController extends Controller
             'selectedPeriodId' => $selectedPeriodId,
             'items' => $items,
             'stats' => $stats,
+            'isStaff' => $isStaff,
         ]);
     }
 
@@ -326,6 +338,14 @@ class PayrollController extends Controller
         $companyId = $this->getActiveCompanyId();
         if ($item->company_id !== $companyId) {
             abort(403);
+        }
+
+        $user = request()->user();
+        if ($user && $user->currentRole() === 'employee') {
+            $employee = $user->currentEmployee();
+            if (!$employee || $item->employee_id !== $employee->id) {
+                abort(403, 'Akses Ditolak. Anda hanya dapat mencetak slip gaji milik Anda sendiri.');
+            }
         }
 
         $item->load(['employee.department', 'employee.designation', 'period.processor', 'company']);
@@ -372,9 +392,9 @@ class PayrollController extends Controller
     }
 
     /**
-     * Download Bank Corporate Batch Transfer File (BCA, Mandiri, BRI, BNI).
+     * Download Styled Excel (.xlsx) Bank Corporate Batch Transfer File (BCA, Mandiri, BRI, BNI, BSI, etc).
      */
-    public function exportBank(Request $request): StreamedResponse
+    public function exportBank(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
     {
         $companyId = $this->getActiveCompanyId();
 
@@ -384,25 +404,31 @@ class PayrollController extends Controller
         ]);
 
         $period = PayrollPeriod::where('company_id', $companyId)
+            ->with(['items.employee.department', 'items.employee.designation'])
             ->findOrFail($validated['payroll_period_id']);
 
-        $export = $this->bankExportService->generateExport($period, $validated['bank_format']);
+        $company = Company::find($companyId);
+        $bankCode = strtoupper($validated['bank_format']);
 
-        return response()->streamDownload(
-            function () use ($export) {
-                echo $export['content'];
-            },
-            $export['filename'],
-            [
-                'Content-Type' => $export['mime_type'] . '; charset=UTF-8',
-            ]
-        );
+        $xlsxPath = PayrollExcelService::generateBankBatch($period, $bankCode, $company);
+        $filename = "Batch_Payroll_{$bankCode}_{$period->year}_{$period->month}.xlsx";
+
+        return response()->streamDownload(function () use ($xlsxPath) {
+            $stream = fopen($xlsxPath, 'rb');
+            if ($stream) {
+                fpassthru($stream);
+                fclose($stream);
+            }
+            @unlink($xlsxPath);
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     /**
-     * Download Excel / CSV Payroll Master Recap.
+     * Download Styled Excel (.xlsx) Payroll Master Recap.
      */
-    public function exportExcel(Request $request): StreamedResponse
+    public function exportExcel(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
     {
         $companyId = $this->getActiveCompanyId();
 
@@ -414,73 +440,21 @@ class PayrollController extends Controller
             ->with(['items.employee.department', 'items.employee.designation'])
             ->findOrFail($validated['payroll_period_id']);
 
-        $filename = "Rekap_Payroll_{$period->year}_{$period->month}.csv";
+        $company = Company::find($companyId);
 
-        return response()->streamDownload(
-            function () use ($period) {
-                $output = fopen('php://output', 'w');
-                // UTF-8 BOM for Excel
-                fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        $xlsxPath = PayrollExcelService::generate($period, $company);
+        $filename = "Rekap_Payroll_{$period->year}_{$period->month}.xlsx";
 
-                fputcsv($output, [
-                    'NIK',
-                    'Nama Karyawan',
-                    'Departemen',
-                    'Jabatan',
-                    'PTKP',
-                    'Kategori TER',
-                    'Tarif TER (%)',
-                    'Gaji Pokok',
-                    'Tunjangan Tetap',
-                    'Tunjangan Variabel',
-                    'Uang Lembur',
-                    'Reimbursement',
-                    'Penghasilan Bruto',
-                    'PPh 21 TER',
-                    'BPJS Kes Karyawan (1%)',
-                    'BPJS JHT Karyawan (2%)',
-                    'BPJS JP Karyawan (1%)',
-                    'Total Potongan',
-                    'Take Home Pay',
-                    'Bank',
-                    'Nomor Rekening',
-                    'Status Pembayaran',
-                ]);
-
-                foreach ($period->items as $item) {
-                    fputcsv($output, [
-                        BankExportService::sanitizeCell($item->employee->nik ?? '', ''),
-                        BankExportService::sanitizeCell($item->employee->nama_lengkap ?? '', ''),
-                        BankExportService::sanitizeCell($item->employee->department->name ?? '', ''),
-                        BankExportService::sanitizeCell($item->employee->designation->name ?? '', ''),
-                        $item->ptkp_status,
-                        $item->ter_category,
-                        number_format($item->ter_rate, 2),
-                        $item->gaji_pokok,
-                        $item->tunjangan_tetap,
-                        $item->tunjangan_tidak_tetap,
-                        $item->uang_lembur,
-                        $item->reimbursement_total,
-                        $item->penghasilan_bruto,
-                        $item->pph21,
-                        $item->bpjs_kes_employee,
-                        $item->bpjs_jht_employee,
-                        $item->bpjs_jp_employee,
-                        $item->total_potongan,
-                        $item->take_home_pay,
-                        BankExportService::sanitizeCell($item->employee->bank_name ?? '', ''),
-                        BankExportService::sanitizeCell($item->employee->bank_account_number ?? '', ''),
-                        $item->payment_status,
-                    ]);
-                }
-
-                fclose($output);
-            },
-            $filename,
-            [
-                'Content-Type' => 'text/csv; charset=UTF-8',
-            ]
-        );
+        return response()->streamDownload(function () use ($xlsxPath) {
+            $stream = fopen($xlsxPath, 'rb');
+            if ($stream) {
+                fpassthru($stream);
+                fclose($stream);
+            }
+            @unlink($xlsxPath);
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 }
 

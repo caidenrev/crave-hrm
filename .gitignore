@@ -27,6 +27,7 @@
 /storage/*.key
 /storage/pail
 /vendor
+/crave-monorepo-system
 _ide_helper.php
 Homestead.json
 Homestead.yaml

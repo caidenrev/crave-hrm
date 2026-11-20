@@ -34,14 +34,14 @@ class AuthTest extends TestCase
         $user = User::create([
             'name' => 'Eka Revandi',
             'email' => 'founder@craveservices.my.id',
-            'password' => Hash::make('@Mukbsca22'),
+            'password' => Hash::make('password123'),
         ]);
 
         $user->companies()->attach($company->id, ['role' => 'super_admin', 'is_primary' => true]);
 
         $response = $this->post('/login', [
             'email' => 'founder@craveservices.my.id',
-            'password' => '@Mukbsca22',
+            'password' => 'password123',
         ]);
 
         $this->assertAuthenticated();
@@ -53,7 +53,7 @@ class AuthTest extends TestCase
         $user = User::create([
             'name' => 'Eka Revandi',
             'email' => 'founder@craveservices.my.id',
-            'password' => Hash::make('@Mukbsca22'),
+            'password' => Hash::make('password123'),
         ]);
 
         $this->post('/login', [
@@ -69,7 +69,7 @@ class AuthTest extends TestCase
         $user = User::create([
             'name' => 'Eka Revandi',
             'email' => 'founder@craveservices.my.id',
-            'password' => Hash::make('@Mukbsca22'),
+            'password' => Hash::make('password123'),
         ]);
 
         for ($i = 0; $i < 5; $i++) {
@@ -125,7 +125,7 @@ class AuthTest extends TestCase
         $user = User::create([
             'name' => 'Eka Revandi',
             'email' => 'founder@craveservices.my.id',
-            'password' => Hash::make('@Mukbsca22'),
+            'password' => Hash::make('password123'),
         ]);
 
         $response = $this->actingAs($user)->post('/logout');

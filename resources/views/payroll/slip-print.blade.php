@@ -1,28 +1,30 @@
 @php
-function terbilangRupiah($nilai) {
-    $nilai = abs((int) round($nilai));
-    $huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
-    $temp = "";
-    if ($nilai < 12) {
-        $temp = " ". $huruf[$nilai];
-    } else if ($nilai < 20) {
-        $temp = terbilangRupiah($nilai - 10). " Belas";
-    } else if ($nilai < 100) {
-        $temp = terbilangRupiah((int)($nilai / 10))." Puluh". terbilangRupiah($nilai % 10);
-    } else if ($nilai < 200) {
-        $temp = " Seratus" . terbilangRupiah($nilai - 100);
-    } else if ($nilai < 1000) {
-        $temp = terbilangRupiah((int)($nilai / 100)) . " Ratus" . terbilangRupiah($nilai % 100);
-    } else if ($nilai < 2000) {
-        $temp = " Seribu" . terbilangRupiah($nilai - 1000);
-    } else if ($nilai < 1000000) {
-        $temp = terbilangRupiah((int)($nilai / 1000)) . " Ribu" . terbilangRupiah($nilai % 1000);
-    } else if ($nilai < 1000000000) {
-        $temp = terbilangRupiah((int)($nilai / 1000000)) . " Juta" . terbilangRupiah($nilai % 1000000);
-    } else if ($nilai < 1000000000000) {
-        $temp = terbilangRupiah((int)($nilai / 1000000000)) . " Milyar" . terbilangRupiah(fmod($nilai,1000000000));
+if (!function_exists('terbilangRupiah')) {
+    function terbilangRupiah($nilai) {
+        $nilai = abs((int) round($nilai));
+        $huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+        $temp = "";
+        if ($nilai < 12) {
+            $temp = " ". $huruf[$nilai];
+        } else if ($nilai < 20) {
+            $temp = terbilangRupiah($nilai - 10). " Belas";
+        } else if ($nilai < 100) {
+            $temp = terbilangRupiah((int)($nilai / 10))." Puluh". terbilangRupiah($nilai % 10);
+        } else if ($nilai < 200) {
+            $temp = " Seratus" . terbilangRupiah($nilai - 100);
+        } else if ($nilai < 1000) {
+            $temp = terbilangRupiah((int)($nilai / 100)) . " Ratus" . terbilangRupiah($nilai % 100);
+        } else if ($nilai < 2000) {
+            $temp = " Seribu" . terbilangRupiah($nilai - 1000);
+        } else if ($nilai < 1000000) {
+            $temp = terbilangRupiah((int)($nilai / 1000)) . " Ribu" . terbilangRupiah($nilai % 1000);
+        } else if ($nilai < 1000000000) {
+            $temp = terbilangRupiah((int)($nilai / 1000000)) . " Juta" . terbilangRupiah($nilai % 1000000);
+        } else if ($nilai < 1000000000000) {
+            $temp = terbilangRupiah((int)($nilai / 1000000000)) . " Milyar" . terbilangRupiah(fmod($nilai,1000000000));
+        }
+        return trim($temp);
     }
-    return trim($temp);
 }
 
 $thp = (int) round($item->take_home_pay);

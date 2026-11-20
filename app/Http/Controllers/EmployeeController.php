@@ -125,9 +125,32 @@ class EmployeeController extends Controller
             $validated['is_active'] = true;
         }
 
+        // Auto-create or link User login account for employee with role 'employee'
+        if (!empty($validated['email'])) {
+            $user = \App\Models\User::where('email', $validated['email'])->first();
+            if (!$user) {
+                $user = \App\Models\User::create([
+                    'name' => $validated['nama_lengkap'],
+                    'email' => $validated['email'],
+                    'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                    'email_verified_at' => now(),
+                ]);
+            }
+
+            if ($activeCompanyId && !$user->companies()->where('companies.id', $activeCompanyId)->exists()) {
+                $user->companies()->attach($activeCompanyId, [
+                    'role' => 'employee',
+                    'branch_id' => $validated['branch_id'] ?? null,
+                    'is_primary' => true,
+                ]);
+            }
+
+            $validated['user_id'] = $user->id;
+        }
+
         Employee::create($validated);
 
-        return back()->with('success', 'Data karyawan baru berhasil ditambahkan.');
+        return back()->with('success', 'Data karyawan baru berhasil ditambahkan dan akun portal login siap digunakan.');
     }
 
     public function update(Request $request, Employee $employee)

@@ -80,19 +80,39 @@ export function MobileMenuDrawer({ open, onOpenChange }) {
     );
 
   const query = searchQuery.trim().toLowerCase();
+  const userRole = props.auth?.role || "super_admin";
+
+  const hasAccess = (item) => {
+    if (!item.roles) return true;
+    if (userRole === "super_admin") return true;
+    return item.roles.includes(userRole);
+  };
 
   const filterItems = (items) => {
-    if (!query) return items;
     return items
+      .filter(hasAccess)
       .map((item) => {
         if (item.children) {
-          const matchedChildren = item.children.filter((c) =>
+          const accessibleChildren = item.children.filter(hasAccess);
+          if (accessibleChildren.length === 0) return null;
+
+          if (!query) {
+            return { ...item, children: accessibleChildren };
+          }
+
+          const matchedChildren = accessibleChildren.filter((c) =>
             c.label.toLowerCase().includes(query)
           );
           if (matchedChildren.length > 0) {
             return { ...item, children: matchedChildren };
           }
+          if (item.label.toLowerCase().includes(query)) {
+            return { ...item, children: accessibleChildren };
+          }
+          return null;
         }
+
+        if (!query) return item;
         if (item.label.toLowerCase().includes(query)) {
           return item;
         }

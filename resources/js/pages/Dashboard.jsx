@@ -51,6 +51,7 @@ export default function Dashboard({
   isManagerial = true,
   metrics = {},
   attendanceWeekly = [],
+  attendanceMonthlyWeeks = [],
   departmentShare = [],
   recentAttendances = [],
   payrollCostMonthly = [],
@@ -61,6 +62,11 @@ export default function Dashboard({
 }) {
   const [chartPeriod, setChartPeriod] = useState("hari");
   const [costViewMode, setCostViewMode] = useState("bulanan");
+
+  const activeAttendanceData =
+    chartPeriod === "minggu" && attendanceMonthlyWeeks?.length > 0
+      ? attendanceMonthlyWeeks
+      : (attendanceWeekly || []);
 
   // Format payroll value safely
   const formattedPayroll = metrics.estimated_payroll
@@ -240,10 +246,14 @@ export default function Dashboard({
                 <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-extrabold text-foreground">
-                      Tren Kehadiran Staf Mingguan
+                      {chartPeriod === "minggu"
+                        ? "Tren Kehadiran Staf Bulanan (Per Minggu)"
+                        : "Tren Kehadiran Staf Harian (7 Hari Terakhir)"}
                     </p>
                     <p className="text-[11px] text-muted-foreground">
-                      Agregasi kehadiran GPS & selfie hari kerja
+                      {chartPeriod === "minggu"
+                        ? "Rekap akumulasi kehadiran 4 minggu terakhir"
+                        : "Agregasi kehadiran GPS & selfie hari kerja"}
                     </p>
                   </div>
                   <Tabs value={chartPeriod} onValueChange={setChartPeriod}>
@@ -259,7 +269,7 @@ export default function Dashboard({
                 </div>
                 <div className="mt-4 h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={attendanceWeekly}>
+                    <AreaChart data={activeAttendanceData}>
                       <defs>
                         <linearGradient id="fillAttendance" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="0%" stopColor="var(--color-primary)" stopOpacity={0.35} />

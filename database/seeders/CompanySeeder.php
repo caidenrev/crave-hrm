@@ -83,7 +83,7 @@ class CompanySeeder extends Seeder
         $eka = User::create([
             'name' => 'Eka Revandi',
             'email' => 'founder@craveservices.my.id',
-            'password' => Hash::make('@Mukbsca22'),
+            'password' => Hash::make(env('FOUNDER_DEFAULT_PASSWORD', 'password123')),
             'email_verified_at' => now(),
         ]);
 

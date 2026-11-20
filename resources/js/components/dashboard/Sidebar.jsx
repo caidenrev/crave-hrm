@@ -117,19 +117,38 @@ export function Sidebar({ collapsed, setCollapsed }) {
     );
 
   const query = searchQuery.trim().toLowerCase();
+  const userRole = props.auth?.role || "super_admin";
+
+  const hasAccess = (item) => {
+    if (!item.roles) return true;
+    if (userRole === "super_admin") return true;
+    return item.roles.includes(userRole);
+  };
 
   const filterItems = (items) => {
-    if (!query) return items;
     return items
+      .filter(hasAccess)
       .map((item) => {
         if (!item.children) {
+          if (!query) return item;
           return item.label.toLowerCase().includes(query) ? item : null;
         }
+
+        const accessibleChildren = item.children.filter(hasAccess);
+        if (accessibleChildren.length === 0) return null;
+
+        if (!query) {
+          return { ...item, children: accessibleChildren };
+        }
+
         const parentMatch = item.label.toLowerCase().includes(query);
-        const matchingChildren = item.children.filter((c) =>
+        const matchingChildren = accessibleChildren.filter((c) =>
           c.label.toLowerCase().includes(query)
         );
-        if (parentMatch) return item;
+
+        if (parentMatch) {
+          return { ...item, children: accessibleChildren };
+        }
         if (matchingChildren.length > 0) {
           return { ...item, children: matchingChildren };
         }

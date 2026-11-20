@@ -9,6 +9,8 @@ import {
   LogOut,
   AlertTriangle,
   Receipt,
+  Crown,
+  CreditCard,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,12 +23,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { getEmployeeAvatar } from "@/lib/avatars";
+import { cn } from "@/lib/utils";
 
 const ALL_MODULES = [
   { title: "Dashboard", subtitle: "Ringkasan metrik & KPI bisnis", href: "/dashboard", tag: "Operasional" },
@@ -52,6 +51,55 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef(null);
+
+  const [notifications, setNotifications] = useState([
+    {
+      id: 1,
+      title: "Pengajuan Cuti Tahunan",
+      description: "Budi Santoso mengajukan cuti 3 hari (14-16 Nov 2026).",
+      time: "10 menit yang lalu",
+      read: false,
+      href: "/leave/approvals",
+      icon: Receipt,
+      color: "bg-primary text-white shadow-xs",
+    },
+    {
+      id: 2,
+      title: "Lembur SPKL Menunggu Review",
+      description: "2 staf logistik mengajukan lembur 4 jam.",
+      time: "1 jam yang lalu",
+      read: false,
+      href: "/claims/overtime",
+      icon: AlertTriangle,
+      color: "bg-amber-500 text-white shadow-xs",
+    },
+    {
+      id: 3,
+      title: "Klaim Reimbursement Masuk",
+      description: "Siti Rahma mengajukan klaim medis Rp 350.000.",
+      time: "2 jam yang lalu",
+      read: false,
+      href: "/claims/reimbursement",
+      icon: Receipt,
+      color: "bg-emerald-600 text-white shadow-xs",
+    },
+  ]);
+
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  const handleMarkAllAsRead = (e) => {
+    e?.stopPropagation();
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+  };
+
+  const handleNotificationClick = (item) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === item.id ? { ...n, read: true } : n))
+    );
+    if (item.href) {
+      router.visit(item.href);
+    }
+  };
 
   const filteredModules = searchQuery.trim()
     ? ALL_MODULES.filter(
@@ -151,72 +199,111 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
 
           {actions}
 
+          {/* Founder Console Quick Switch Pill */}
+          {auth?.is_founder && (
+            <Link
+              href="/founder"
+              className="hidden md:inline-flex items-center gap-1.5 rounded-xl bg-primary/10 border border-primary/25 px-3 py-1.5 text-xs font-black text-primary hover:bg-primary hover:text-primary-foreground shadow-xs transition-all"
+            >
+              <Crown className="size-3.5 text-amber-500 fill-amber-500" />
+              <span>Founder Console</span>
+            </Link>
+          )}
+
           {/* Notifikasi */}
           <Popover>
             <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="relative rounded-xl size-9"
+              <button
+                type="button"
+                className="relative size-9 rounded-xl border border-border/70 bg-card p-0 shadow-soft hover:bg-accent hover:border-primary/40 outline-none transition-all flex items-center justify-center shrink-0 cursor-pointer text-foreground"
+                aria-label="Notifikasi"
               >
                 <Bell className="size-4" />
-                <Badge className="absolute -right-1 -top-1 size-4 justify-center rounded-full p-0 text-[10px] bg-primary text-primary-foreground">
-                  3
-                </Badge>
-              </Button>
+                {unreadCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground shadow-xs animate-in zoom-in-50">
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
             </PopoverTrigger>
             <PopoverContent
               align="end"
+              side="bottom"
+              sideOffset={8}
               collisionPadding={16}
-              className="w-80 p-0 rounded-2xl shadow-soft"
+              className="w-80 p-0 rounded-2xl shadow-soft border border-border/70 bg-card overflow-hidden"
             >
-              <div className="flex items-center justify-between px-4 py-3 border-b">
-                <h3 className="font-bold text-sm">Notifikasi</h3>
-                <Badge variant="secondary" className="rounded-full text-[10px]">
-                  3 Baru
-                </Badge>
-              </div>
-              <div className="max-h-[300px] overflow-y-auto p-2 space-y-1">
-                <div className="flex items-start gap-3 rounded-xl p-2 hover:bg-muted/50 cursor-pointer">
-                  <div className="mt-0.5 rounded-full p-1.5 bg-primary/10 text-primary">
-                    <Receipt className="size-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground">
-                      Pengajuan Cuti Tahunan
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                      Budi Santoso mengajukan cuti 3 hari (14-16 Nov 2026).
-                    </p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      10 menit yang lalu
-                    </p>
-                  </div>
+              <div className="flex items-center justify-between px-4 py-3 border-b border-border/60 bg-muted/20">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-extrabold text-sm text-foreground">Notifikasi</h3>
+                  {unreadCount > 0 ? (
+                    <Badge className="rounded-full text-[10px] px-2 py-0 bg-primary/15 text-primary border border-primary/20 hover:bg-primary/20">
+                      {unreadCount} Baru
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="rounded-full text-[10px] px-2 py-0 text-muted-foreground border-border/60">
+                      Semua Terbaca
+                    </Badge>
+                  )}
                 </div>
+                {unreadCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleMarkAllAsRead}
+                    className="text-[11px] font-semibold text-primary hover:underline cursor-pointer"
+                  >
+                    Tandai dibaca
+                  </button>
+                )}
+              </div>
 
-                <div className="flex items-start gap-3 rounded-xl p-2 hover:bg-muted/50 cursor-pointer">
-                  <div className="mt-0.5 rounded-full p-1.5 bg-warning/10 text-warning">
-                    <AlertTriangle className="size-4" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-semibold text-foreground">
-                      Lembur SPKL Menunggu Review
-                    </p>
-                    <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">
-                      2 staf logistik mengajukan lembur 4 jam.
-                    </p>
-                    <p className="text-[10px] text-muted-foreground mt-1">
-                      1 jam yang lalu
-                    </p>
-                  </div>
-                </div>
+              <div className="max-h-[320px] overflow-y-auto p-1.5 space-y-1">
+                {notifications.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => handleNotificationClick(item)}
+                      className={cn(
+                        "flex items-start gap-3 rounded-xl p-2.5 transition-colors cursor-pointer group text-left",
+                        item.read
+                          ? "hover:bg-muted/40 opacity-75"
+                          : "bg-primary/5 hover:bg-primary/10 border border-primary/15 shadow-2xs"
+                      )}
+                    >
+                      <div className={cn("mt-0.5 rounded-full p-2 shrink-0", item.color)}>
+                        <Icon className="size-4" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-1">
+                          <p className={cn("text-xs font-bold truncate", item.read ? "text-foreground" : "text-primary")}>
+                            {item.title}
+                          </p>
+                          {!item.read && (
+                            <span className="size-2 rounded-full bg-primary shrink-0" />
+                          )}
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
+                          {item.description}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground/80 mt-1 font-medium">
+                          {item.time}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="p-2 border-t">
+
+              <div className="p-2 border-t border-border/60 bg-muted/10">
                 <Button
                   variant="ghost"
-                  className="w-full text-xs h-8 text-primary"
+                  size="sm"
+                  onClick={handleMarkAllAsRead}
+                  disabled={unreadCount === 0}
+                  className="w-full text-xs h-8 text-primary font-semibold hover:text-primary hover:bg-primary/10 cursor-pointer disabled:opacity-40"
                 >
-                  Tandai semua dibaca
+                  {unreadCount > 0 ? "Tandai semua dibaca" : "Semua notifikasi telah dibaca"}
                 </Button>
               </div>
             </PopoverContent>
@@ -266,6 +353,23 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
+              {auth?.is_founder && (
+                <>
+                  <DropdownMenuItem asChild className="cursor-pointer font-bold text-primary">
+                    <Link href="/founder" className="flex items-center w-full">
+                      <Crown className="mr-2 size-4 text-amber-500 fill-amber-500" />
+                      <span>Founder Console</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
+              <DropdownMenuItem asChild className="cursor-pointer">
+                <Link href="/subscription" className="flex items-center w-full">
+                  <CreditCard className="mr-2 size-4" />
+                  <span>Langganan & Tagihan</span>
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href="/profile" className="flex items-center w-full">
                   <UserIcon className="mr-2 size-4" />

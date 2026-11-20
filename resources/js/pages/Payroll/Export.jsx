@@ -14,6 +14,7 @@ import {
   List,
   CheckCircle2,
   X,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,82 +35,82 @@ const BANK_PREVIEWS = [
     code: "BCA",
     matchKeys: ["BCA"],
     name: "KlikBCA Bisnis",
-    ext: ".csv",
-    formatType: "csv",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "BCA Corporate",
-    desc: "Format CSV batch transfer payroll multi-account KlikBCA Bisnis resmi.",
+    desc: "Tabel Excel batch transfer gaji terformat dengan pewarnaan Crave Blue & validasi rekening.",
   },
   {
     code: "MANDIRI",
     matchKeys: ["MANDIRI"],
     name: "Mandiri Cash Management",
-    ext: ".csv",
-    formatType: "csv",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "MCM 2.0",
-    desc: "Format CSV payroll transfer terstruktur standar MCM corporate banking.",
+    desc: "Tabel Excel payroll terstruktur standar MCM corporate banking siap disbursement.",
   },
   {
     code: "BRI",
     matchKeys: ["BRI"],
     name: "BRI Cash Management",
-    ext: ".txt",
-    formatType: "txt",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "BRI CMS",
-    desc: "Format teks delimit pipe '|' standar transfer massal CMS Bank BRI.",
+    desc: "Tabel Excel batch transfer massal CMS Bank BRI dengan format nominal terenkapsulasi.",
   },
   {
     code: "BNI",
     matchKeys: ["BNI"],
     name: "BNI Direct Corporate",
-    ext: ".txt",
-    formatType: "txt",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "BNI Direct",
-    desc: "Format TXT transfer upah massal standar corporate internet banking BNI.",
+    desc: "Tabel Excel transfer upah massal standar corporate internet banking BNI berwarna.",
   },
   {
     code: "BSI",
     matchKeys: ["BSI", "SYARIAH"],
     name: "BSI Net Banking",
-    ext: ".csv",
-    formatType: "csv",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "BSI CMS",
-    desc: "Format CSV payroll korporat Bank Syariah Indonesia siap unggah.",
+    desc: "Tabel Excel payroll korporat Bank Syariah Indonesia berwarna & terformat rapi.",
   },
   {
     code: "CIMB",
     matchKeys: ["CIMB"],
     name: "BizChannel@CIMB",
-    ext: ".csv",
-    formatType: "csv",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "CIMB Niaga",
-    desc: "Format CSV batch transfer BizChannel@CIMB untuk disbursement gaji & klaim.",
+    desc: "Tabel Excel batch transfer BizChannel@CIMB untuk disbursement gaji & tunjangan.",
   },
   {
     code: "PERMATA",
     matchKeys: ["PERMATA"],
     name: "Permata e-Business",
-    ext: ".csv",
-    formatType: "csv",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "PermataBank",
-    desc: "Format CSV payroll korporat tervalidasi untuk portal Permata e-Business.",
+    desc: "Tabel Excel payroll korporat tervalidasi untuk portal Permata e-Business.",
   },
   {
     code: "DANAMON",
     matchKeys: ["DANAMON"],
     name: "Danamon Cash Connect",
-    ext: ".csv",
-    formatType: "csv",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "Cash Connect",
-    desc: "Format CSV transfer gaji massal standar Danamon Cash Connect.",
+    desc: "Tabel Excel transfer gaji massal standar Danamon Cash Connect siap import.",
   },
   {
     code: "BTN",
     matchKeys: ["BTN"],
     name: "BTN Cash Management",
-    ext: ".csv",
-    formatType: "csv",
+    ext: ".xlsx",
+    formatType: "xlsx",
     badge: "BTN CMS",
-    desc: "Format CSV batch payroll terintegrasi untuk Bank Tabungan Negara.",
+    desc: "Tabel Excel batch payroll terintegrasi untuk Bank Tabungan Negara.",
   },
 ];
 
@@ -166,12 +167,17 @@ export default function Export({
     [enrichedBanks]
   );
 
+  const avgAmount = useMemo(() => {
+    return totalEmployees > 0 ? Math.round(totalAmount / totalEmployees) : 0;
+  }, [totalEmployees, totalAmount]);
+
   const filteredBanks = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
+    const himbaraCodes = ["BRI", "BNI", "MANDIRI", "BTN"];
     return enrichedBanks.filter((bank) => {
       if (bankFilter === "active" && !bank.hasRecipients) return false;
-      if (bankFilter === "csv" && bank.formatType !== "csv") return false;
-      if (bankFilter === "txt" && bank.formatType !== "txt") return false;
+      if (bankFilter === "himbara" && !himbaraCodes.includes(bank.code)) return false;
+      if (bankFilter === "swasta" && himbaraCodes.includes(bank.code)) return false;
       if (!q) return true;
       return (
         bank.code.toLowerCase().includes(q) ||
@@ -364,9 +370,8 @@ export default function Export({
           onClick={downloadExcelRecap}
           disabled={!selectedPeriod}
         >
-          <FileSpreadsheet className="size-3.5 text-emerald-300" />
-          <span className="hidden sm:inline">Download Master Excel</span>
-          <span className="sm:hidden">Excel</span>
+          <FileSpreadsheet className="size-3.5 text-white" />
+          <span>Export Excel</span>
         </Button>
       }
     >
@@ -458,21 +463,24 @@ export default function Export({
             </div>
           </div>
 
-          {/* Card 3: Keamanan */}
+          {/* Card 3: Rerata Transfer */}
           <div className="flex flex-col justify-between rounded-2xl border border-border/50 bg-card p-3 shadow-sm sm:rounded-3xl sm:p-4 text-card-foreground">
             <div className="flex items-start justify-between gap-2">
               <span className="text-foreground">
-                <ShieldCheck className="size-5 sm:size-6" />
+                <Wallet className="size-5 sm:size-6" />
               </span>
-              <span className="flex items-center gap-1 text-[12px] font-semibold text-primary">
-                ISO 20022
+              <span className="flex items-center gap-1 text-[12px] font-semibold text-emerald-600 dark:text-emerald-400">
+                <CheckCircle2 className="size-3.5" />
+                Rerata Upah
               </span>
             </div>
             <div className="mt-3 sm:mt-4">
-              <div className="text-xl font-black tracking-tight sm:text-2xl text-foreground">
-                Batch Transfer
+              <div className="text-xl font-black tracking-tight tabular-nums sm:text-2xl text-foreground">
+                {formatRupiah(avgAmount)}
               </div>
-              <div className="text-[12px] text-muted-foreground">Validasi &amp; Anti-Injeksi CSV</div>
+              <div className="text-[12px] text-muted-foreground truncate">
+                Rata-rata take home pay per staf
+              </div>
             </div>
           </div>
         </div>
@@ -511,7 +519,7 @@ export default function Export({
               disabled={!selectedPeriod}
             >
               <FileSpreadsheet className="size-4 text-emerald-600" />
-              Download Rekap Master Excel (.csv)
+              Export Excel (.xlsx)
             </Button>
           </div>
 
@@ -543,8 +551,8 @@ export default function Export({
                 {[
                   { key: "all", label: `Semua (${enrichedBanks.length})` },
                   { key: "active", label: `Penerima Aktif (${activeBankCount})` },
-                  { key: "csv", label: "Format .CSV" },
-                  { key: "txt", label: "Format .TXT" },
+                  { key: "himbara", label: "Bank BUMN / Himbara" },
+                  { key: "swasta", label: "Swasta & Syariah" },
                 ].map((tab) => (
                   <button
                     key={tab.key}
@@ -647,12 +655,6 @@ export default function Export({
                             {bank.recipientCount} staf
                           </span>
                         )}
-                        <Badge
-                          variant="secondary"
-                          className="rounded-full text-[10px] font-mono font-bold uppercase tracking-wide px-2.5"
-                        >
-                          {bank.ext}
-                        </Badge>
                       </div>
                     </div>
 
@@ -690,7 +692,7 @@ export default function Export({
                             {selectedPeriod ? selectedPeriod.name : "Pilih periode"}
                           </div>
                           <div className="text-[11px] text-muted-foreground/80 truncate">
-                            Format batch standar {bank.code}
+                            Tabel {bank.code}
                           </div>
                         </>
                       )}
@@ -707,8 +709,8 @@ export default function Export({
                       disabled={!selectedPeriod || isDownloading}
                       onClick={() => downloadBankFile(bank.code)}
                     >
-                      <Download className="size-3.5 shrink-0" />
-                      <span>{isDownloading ? "Mengunduh..." : `Unduh ${bank.code}`}</span>
+                      <FileSpreadsheet className={cn("size-3.5 shrink-0", bank.hasRecipients ? "text-white" : "text-current")} />
+                      <span>{isDownloading ? "Mengunduh..." : `Unduh Excel ${bank.code}`}</span>
                     </Button>
                   </div>
                 </div>
@@ -734,12 +736,6 @@ export default function Export({
                         <h3 className="text-sm font-extrabold text-foreground truncate">
                           {bank.name}
                         </h3>
-                        <Badge
-                          variant="secondary"
-                          className="rounded-full text-[10px] font-mono font-bold uppercase"
-                        >
-                          {bank.ext}
-                        </Badge>
                         {bank.hasRecipients && (
                           <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 text-[10.5px] font-bold">
                             <CheckCircle2 className="size-3" />
@@ -760,8 +756,8 @@ export default function Export({
                     disabled={!selectedPeriod || isDownloading}
                     onClick={() => downloadBankFile(bank.code)}
                   >
-                    <Download className="size-3.5" />
-                    <span>{isDownloading ? "Mengunduh..." : `Unduh Batch ${bank.code}`}</span>
+                    <FileSpreadsheet className={cn("size-3.5 shrink-0", bank.hasRecipients ? "text-white" : "text-current")} />
+                    <span>{isDownloading ? "Mengunduh..." : `Unduh Excel ${bank.code}`}</span>
                   </Button>
                 </div>
               );

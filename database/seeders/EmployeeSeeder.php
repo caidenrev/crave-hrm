@@ -336,6 +336,108 @@ class EmployeeSeeder extends Seeder
             'is_active' => true,
         ]);
 
+        // Siti Rahmawati (HR Admin)
+        $userSiti = User::firstOrCreate(
+            ['email' => 'siti.hr@craveservices.my.id'],
+            [
+                'name' => 'Siti Rahmawati',
+                'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                'email_verified_at' => now(),
+            ]
+        );
+        if (!$userSiti->companies()->where('companies.id', $sub1->id)->exists()) {
+            $userSiti->companies()->attach($sub1->id, ['role' => 'hr_admin', 'branch_id' => $branchJkt?->id, 'is_primary' => true]);
+        }
+        Employee::create([
+            'company_id' => $sub1->id,
+            'branch_id' => $branchJkt?->id,
+            'department_id' => $deptHr->id,
+            'designation_id' => $desHrMgr->id,
+            'user_id' => $userSiti->id,
+            'nik' => 'CRV-HR-001',
+            'nama_lengkap' => 'Siti Rahmawati',
+            'email' => 'siti.hr@craveservices.my.id',
+            'nomor_telepon' => '081211223344',
+            'tanggal_lahir' => '1994-04-12',
+            'jenis_kelamin' => 'P',
+            'tanggal_masuk' => '2023-02-01',
+            'status_kerja' => 'PKWTT',
+            'ptkp_status' => 'TK/0',
+            'bank_name' => 'BCA',
+            'bank_account_number' => '8210445566',
+            'gaji_pokok' => 14000000,
+            'avatar_url' => '/images/avatars/avatar-4.jpg',
+            'is_active' => true,
+        ]);
+
+        // Budi Prasetyo (Finance Admin)
+        $userBudi = User::firstOrCreate(
+            ['email' => 'budi.finance@craveservices.my.id'],
+            [
+                'name' => 'Budi Prasetyo',
+                'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                'email_verified_at' => now(),
+            ]
+        );
+        if (!$userBudi->companies()->where('companies.id', $sub1->id)->exists()) {
+            $userBudi->companies()->attach($sub1->id, ['role' => 'finance', 'branch_id' => $branchJkt?->id, 'is_primary' => true]);
+        }
+        Employee::create([
+            'company_id' => $sub1->id,
+            'branch_id' => $branchJkt?->id,
+            'department_id' => $deptFin->id,
+            'designation_id' => $desFin->id,
+            'user_id' => $userBudi->id,
+            'nik' => 'CRV-FIN-001',
+            'nama_lengkap' => 'Budi Prasetyo',
+            'email' => 'budi.finance@craveservices.my.id',
+            'nomor_telepon' => '081255667788',
+            'tanggal_lahir' => '1993-09-28',
+            'jenis_kelamin' => 'L',
+            'tanggal_masuk' => '2023-04-15',
+            'status_kerja' => 'PKWTT',
+            'ptkp_status' => 'K/1',
+            'bank_name' => 'BCA',
+            'bank_account_number' => '8210778899',
+            'gaji_pokok' => 16000000,
+            'avatar_url' => '/images/avatars/avatar-5.jpg',
+            'is_active' => true,
+        ]);
+
+        // Dewi Lestari (Staff Karyawan / Frontend Dev)
+        $userDewi = User::firstOrCreate(
+            ['email' => 'dewi.staff@craveservices.my.id'],
+            [
+                'name' => 'Dewi Lestari',
+                'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                'email_verified_at' => now(),
+            ]
+        );
+        if (!$userDewi->companies()->where('companies.id', $sub1->id)->exists()) {
+            $userDewi->companies()->attach($sub1->id, ['role' => 'employee', 'branch_id' => $branchJkt?->id, 'is_primary' => true]);
+        }
+        Employee::create([
+            'company_id' => $sub1->id,
+            'branch_id' => $branchJkt?->id,
+            'department_id' => $deptEng->id,
+            'designation_id' => $desFe->id,
+            'user_id' => $userDewi->id,
+            'nik' => 'CRV-ENG-003',
+            'nama_lengkap' => 'Dewi Lestari',
+            'email' => 'dewi.staff@craveservices.my.id',
+            'nomor_telepon' => '081399001122',
+            'tanggal_lahir' => '1999-07-14',
+            'jenis_kelamin' => 'P',
+            'tanggal_masuk' => '2024-01-10',
+            'status_kerja' => 'PKWT',
+            'ptkp_status' => 'TK/0',
+            'bank_name' => 'Mandiri',
+            'bank_account_number' => '1370044556677',
+            'gaji_pokok' => 11000000,
+            'avatar_url' => '/images/avatars/avatar-6.jpg',
+            'is_active' => true,
+        ]);
+
         // 4. Seed Departments & Employees for Sub2 (Logistics) to verify multi-tenant isolation
         if ($sub2) {
             $deptLog = Department::create([

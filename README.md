@@ -130,7 +130,7 @@ Buka peramban Anda di: **`http://127.0.0.1:8000`**
 
 | Akun / Nama | Email | Password | Role / Peran | Entitas Perusahaan |
 | :--- | :--- | :--- | :--- | :--- |
-| **Eka Revandi** | `founder@craveservices.my.id` | `@Mukbsca22` | `super_admin` | Crave Global Group (Holding) & Subsidiaries |
+| **Eka Revandi** | `founder@craveservices.my.id` | `password123` | `super_admin` | Crave Global Group (Holding) & Subsidiaries |
 | **Egi Witra Aditya** | `egi@craveservices.my.id` | `password123` | `holding_admin` | Crave Global Group & Subsidiaries |
 | **Aufa** | `aufa@craveservices.my.id` | `password123` | `company_admin` | PT Crave Layanan Digital |
 

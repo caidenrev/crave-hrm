@@ -15,10 +15,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->validateCsrfTokens(except: [
             'deploy-webhook',
+            'midtrans/webhook',
+            'api/midtrans/webhook',
         ]);
         $middleware->web(append: [
             \App\Http\Middleware\EnsureActiveCompany::class,
+            \App\Http\Middleware\EnsureActiveSubscription::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
+        ]);
+        $middleware->alias([
+            'role' => \App\Http\Middleware\EnsureRole::class,
+            'founder' => \App\Http\Middleware\EnsureFounder::class,
+            'subscription.active' => \App\Http\Middleware\EnsureActiveSubscription::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -393,11 +393,11 @@ revan-laravel/
 * Create: `resources/js/pages/Performance/Evaluate.jsx` (Likert 1-5 questionnaire)
 * Create: `resources/js/pages/Performance/ReportRadar.jsx` (Recharts spider chart)
 
-- [ ] **Step 1: Write migrations for review cycles, questions, and responses**
-- [ ] **Step 2: Implement review invitation and score aggregator**
-- [ ] **Step 3: Build evaluation form with Likert scale and qualitative comments**
-- [ ] **Step 4: Build Radar Chart report comparing Self vs Peer vs Supervisor scores using Recharts**
-- [ ] **Step 5: Verify scoring aggregation and chart rendering**
+- [x] **Step 1: Write migrations for review cycles, questions, and responses**
+- [x] **Step 2: Implement review invitation and score aggregator**
+- [x] **Step 3: Build evaluation form with Likert scale and qualitative comments**
+- [x] **Step 4: Build Radar Chart report comparing Self vs Peer vs Supervisor scores using Recharts**
+- [x] **Step 5: Verify scoring aggregation and chart rendering**
 
 ---
 

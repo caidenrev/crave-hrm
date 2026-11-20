@@ -345,7 +345,6 @@ export default function Landing({ auth, stats = {} }) {
   const [showIosGuide, setShowIosGuide] = useState(false);
   const [showDesktopGuide, setShowDesktopGuide] = useState(false);
   const [showAndroidGuide, setShowAndroidGuide] = useState(false);
-  const [showContactSales, setShowContactSales] = useState(false);
   const [activeIntegrationNode, setActiveIntegrationNode] = useState(null);
 
   const renderHeroPlatformIcon = (os) => {
@@ -642,63 +641,47 @@ export default function Landing({ auth, stats = {} }) {
                 </button>
               )}
 
-              <button
-                type="button"
-                onClick={() => setShowContactSales(true)}
+              <Link
+                href="/contact-sales"
                 className="inline-flex items-center justify-center gap-2 h-[50px] px-6 rounded-xl bg-white hover:bg-[#F9FAFB] text-[#111827] border border-[#E5E7EB] text-[14px] font-semibold shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
               >
                 <PhoneCall className="size-4" />
                 <span>Contact Sales</span>
-              </button>
+              </Link>
             </div>
 
-            {/* Interactive Platform Availability Strip (Windows, Apple macOS/iOS, Android) */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-7 relative z-20">
-              <span className="text-[12px] font-semibold text-[#6B7280] mr-1">
+            {/* Platform Availability Strip (Windows, Apple, Android - Minimalist Black Logos) */}
+            <div className="flex items-center justify-center gap-3.5 sm:gap-4 mb-7 relative z-20">
+              <span className="text-[12.5px] sm:text-[13px] font-semibold text-[#6B7280]">
                 Tersedia untuk:
               </span>
-              <button
-                type="button"
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4.5 sm:size-5 fill-black hover:opacity-70 transition-opacity cursor-pointer shrink-0"
                 onClick={() => handlePlatformChipClick("windows")}
-                aria-label="Panduan instalasi Crave HRM di Windows"
-                className="inline-flex items-center justify-center h-11 sm:h-10 px-3.5 rounded-xl bg-white hover:bg-[#F9FAFB] border border-[#E5E7EB] hover:border-[#CBD5E1] shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
+                aria-label="Windows"
+                title="Windows"
               >
-                <img
-                  src="/images/partners/Logo WINDOWS.png"
-                  alt="Windows"
-                  decoding="async"
-                  className="h-5 sm:h-5.5 w-auto object-contain select-none"
-                />
-              </button>
-              <button
-                type="button"
+                <path d="M0 0h11.377v11.377H0zm12.623 0H24v11.377H12.623zM0 12.623h11.377V24H0zm12.623 0H24V24H12.623z" />
+              </svg>
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4.5 sm:size-5 fill-black hover:opacity-70 transition-opacity cursor-pointer shrink-0"
                 onClick={() => handlePlatformChipClick("apple")}
-                aria-label="Panduan instalasi Crave HRM di macOS dan iOS"
-                className="inline-flex items-center justify-center gap-2 h-11 sm:h-10 px-3.5 rounded-xl bg-white hover:bg-[#F9FAFB] border border-[#E5E7EB] hover:border-[#CBD5E1] shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
+                aria-label="Apple (macOS & iOS)"
+                title="Apple (macOS & iOS)"
               >
-                <img
-                  src="/images/partners/Logo APPLE_Hitam.png"
-                  alt="Apple"
-                  decoding="async"
-                  className="h-4 w-auto object-contain select-none"
-                />
-                <span className="text-[12.5px] font-bold text-[#111827] tracking-tight">
-                  macOS &amp; iOS
-                </span>
-              </button>
-              <button
-                type="button"
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.14c.64-.78 1.08-1.86.96-2.94-.93.04-2.06.62-2.73 1.4-.59.68-1.11 1.77-.97 2.83 1.04.08 2.1-.51 2.74-1.29z" />
+              </svg>
+              <svg
+                viewBox="0 0 24 24"
+                className="size-4.5 sm:size-5 fill-black hover:opacity-70 transition-opacity cursor-pointer shrink-0"
                 onClick={() => handlePlatformChipClick("android")}
-                aria-label="Panduan instalasi Crave HRM di Android"
-                className="inline-flex items-center justify-center h-11 sm:h-10 px-3.5 rounded-xl bg-white hover:bg-[#F9FAFB] border border-[#E5E7EB] hover:border-[#CBD5E1] shadow-2xs transition-all active:scale-[0.98] cursor-pointer"
+                aria-label="Android"
+                title="Android"
               >
-                <img
-                  src="/images/partners/Logo Android.png"
-                  alt="Android"
-                  decoding="async"
-                  className="h-6 sm:h-6.5 w-auto object-contain select-none"
-                />
-              </button>
+                <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-1.0002s.4482-1.0002.9993-1.0002c.5516 0 .9997.4486.9997 1.0002s-.4481 1.0002-.9997 1.0002m-11.046 0c-.5511 0-.9993-.4486-.9993-1.0002s.4482-1.0002.9993-1.0002c.5516 0 .9997.4486.9997 1.0002s-.4481 1.0002-.9997 1.0002m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4116 13.8533 8.0818 12 8.0818c-1.8533 0-3.5902.3298-5.1368.8679L4.8409 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396" />
+              </svg>
             </div>
 
             {/* Clean Trust Indicators */}
@@ -1934,13 +1917,12 @@ export default function Landing({ auth, stats = {} }) {
                     <li className="flex items-center gap-2.5"><Check className="size-4 text-[#059669]" />Custom Integration & On-Premise Sinkron</li>
                   </ul>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setShowContactSales(true)}
+                <Link
+                  href="/contact-sales"
                   className="w-full h-11 rounded-xl border border-[#E5E7EB] bg-white hover:bg-[#F9FAFB] text-[#111827] text-[13.5px] font-bold flex items-center justify-center transition-colors cursor-pointer"
                 >
                   Contact Sales Enterprise
-                </button>
+                </Link>
               </article>
             </div>
           </div>
@@ -2580,114 +2562,6 @@ export default function Landing({ auth, stats = {} }) {
         </div>
       )}
 
-      {/* S19: CONTACT SALES DIALOG MODAL */}
-      {showContactSales && (
-        <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4"
-          onClick={() => setShowContactSales(false)}
-        >
-          <div
-            className="relative w-full max-w-[490px] bg-white rounded-3xl p-6 sm:p-7 shadow-2xl border border-[#E5E7EB] text-left animate-in zoom-in-95 duration-150"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => setShowContactSales(false)}
-              className="absolute top-5 right-5 size-9 rounded-full bg-[#F3F4F6] hover:bg-[#E5E7EB] flex items-center justify-center text-[#6B7280] hover:text-[#111827] transition-colors cursor-pointer"
-              aria-label="Tutup jendela"
-            >
-              <X className="size-4.5" />
-            </button>
-
-            <div className="flex items-center gap-3 mb-4">
-              <div className="size-11 rounded-2xl bg-[#EEF2FF] text-[oklch(0.54_0.19_258)] flex items-center justify-center shrink-0 shadow-2xs">
-                <PhoneCall className="size-5.5" />
-              </div>
-              <div>
-                <h3 className="font-extrabold text-[18px] text-[#111827]">Hubungi Tim Sales Crave</h3>
-                <p className="text-[12px] text-[#6B7280]">Konsultasi Solusi & Demo Khusus Perusahaan</p>
-              </div>
-            </div>
-
-            <p className="text-[13px] text-[#4B5563] leading-relaxed mb-5">
-              Diskusikan implementasi sistem manajemen SDM, kepatuhan PPh 21 TER 2024, integrasi multi-holding, atau penawaran harga khusus perusahaan Anda:
-            </p>
-
-            <div className="space-y-3 mb-6">
-              {/* Option 1: WhatsApp Instant Chat */}
-              <a
-                href="https://wa.me/6281234567890?text=Halo%20Tim%20Sales%20Crave%20HRM,%20saya%20tertarik%20untuk%20mengetahui%20lebih%20lanjut%20tentang%20solusi%20Crave%20HRM%20untuk%20perusahaan%20saya."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 rounded-2xl bg-[#F0FDF4] border border-[#DCFCE7] hover:border-[#86EFAC] transition-all group"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className="size-10 rounded-xl bg-[#22C55E] text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <MessageCircle className="size-5" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-[13.5px] text-[#111827] group-hover:text-[#15803D] transition-colors flex items-center gap-2">
-                      <span>Chat WhatsApp Sales</span>
-                      <span className="px-2 py-0.5 rounded-full bg-[#DCFCE7] text-[#166534] text-[10px] font-bold">Fast Response</span>
-                    </div>
-                    <div className="text-[11.5px] text-[#6B7280]">Respon langsung dalam hitungan menit</div>
-                  </div>
-                </div>
-                <ArrowRight className="size-4 text-[#166534] group-hover:translate-x-1 transition-transform" />
-              </a>
-
-              {/* Option 2: Official Enterprise Email */}
-              <a
-                href="mailto:sales@craveservices.my.id?subject=Inquiry%20Solusi%20Enterprise%20Crave%20HRM"
-                className="flex items-center justify-between p-4 rounded-2xl bg-[#F8FAFC] border border-[#F1F5F9] hover:border-[#CBD5E1] transition-all group"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className="size-10 rounded-xl bg-[oklch(0.54_0.19_258)] text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <Mail className="size-5" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-[13.5px] text-[#111827] group-hover:text-[oklch(0.54_0.19_258)] transition-colors">
-                      Email Sales & Enterprise
-                    </div>
-                    <div className="text-[11.5px] text-[#6B7280]">sales@craveservices.my.id</div>
-                  </div>
-                </div>
-                <ArrowRight className="size-4 text-[#6B7280] group-hover:translate-x-1 transition-transform" />
-              </a>
-
-              {/* Option 3: Schedule 1-on-1 Demo */}
-              <Link
-                href="/register"
-                onClick={() => setShowContactSales(false)}
-                className="flex items-center justify-between p-4 rounded-2xl bg-white border border-[#E5E7EB] hover:border-[oklch(0.54_0.19_258)] transition-all group shadow-2xs"
-              >
-                <div className="flex items-center gap-3.5">
-                  <div className="size-10 rounded-xl bg-[#161924] text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <Calendar className="size-5" />
-                  </div>
-                  <div>
-                    <div className="font-bold text-[13.5px] text-[#111827] group-hover:text-[oklch(0.54_0.19_258)] transition-colors">
-                      Daftar Akun & Coba Langsung
-                    </div>
-                    <div className="text-[11.5px] text-[#6B7280]">Uji coba gratis 14 hari tanpa komitmen</div>
-                  </div>
-                </div>
-                <ArrowRight className="size-4 text-[#6B7280] group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
-
-            <div className="pt-4 border-t border-[#F1F2F6] flex items-center justify-end">
-              <button
-                type="button"
-                onClick={() => setShowContactSales(false)}
-                className="h-10 px-5 rounded-xl border border-[#D1D5DB] hover:bg-[#F9FAFB] text-[13px] font-semibold text-[#111827] transition-colors cursor-pointer"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
