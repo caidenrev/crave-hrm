@@ -209,15 +209,16 @@ export default function PerformanceIndex({
   return (
     <AuthenticatedLayout
       title="360 Performance Review"
-      subtitle={`Siklus evaluasi multi-rater terpadu (Self, Atasan, Rekan Sejawat & Bawahan) · Periode ${metrics.cycle_name || "Q4 2026"}`}
+      subtitle={`Siklus evaluasi multi-rater terpadu · Periode ${metrics.cycle_name || "Q4 2026"}`}
       actions={
         <Button
           size="sm"
           onClick={() => handleOpenEvaluationModal(null)}
-          className="rounded-xl font-bold shadow-soft text-xs gap-1.5"
+          className="rounded-xl font-bold shadow-soft text-xs gap-1 sm:gap-1.5 px-2.5 sm:px-3"
         >
-          <Plus className="size-4" />
-          <span>Beri Penilaian 360</span>
+          <Plus className="size-4 shrink-0" />
+          <span className="hidden sm:inline">Beri Penilaian 360</span>
+          <span className="sm:hidden">Nilai 360</span>
         </Button>
       }
     >
@@ -361,18 +362,18 @@ export default function PerformanceIndex({
 
               {/* Chart Body */}
               {chartViewMode === "radar" ? (
-                <div className="mt-2 h-[300px] w-full">
+                <div className="mt-2 h-[260px] sm:h-[300px] w-full min-w-0">
                   <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart cx="50%" cy="50%" outerRadius="72%" data={radarData}>
+                    <RadarChart cx="50%" cy="50%" outerRadius="62%" data={radarData}>
                       <PolarGrid stroke="var(--color-border)" strokeDasharray="3 3" />
                       <PolarAngleAxis
                         dataKey="subject"
-                        tick={{ fill: "var(--color-foreground)", fontSize: 11, fontWeight: 600 }}
+                        tick={{ fill: "var(--color-foreground)", fontSize: 10, fontWeight: 600 }}
                       />
                       <PolarRadiusAxis
                         angle={30}
                         domain={[0, 5]}
-                        tick={{ fontSize: 10, fill: "var(--color-muted-foreground)" }}
+                        tick={{ fontSize: 9, fill: "var(--color-muted-foreground)" }}
                       />
                       <Tooltip
                         contentStyle={{
@@ -438,18 +439,18 @@ export default function PerformanceIndex({
             </div>
 
             {/* Bottom 3 Summary Pillars */}
-            <div className="mt-4 pt-3 border-t border-border/50 grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="p-2.5 rounded-xl border border-border/40 bg-muted/30">
-                <span className="text-[10px] text-muted-foreground block font-medium">Self Review</span>
-                <span className="font-extrabold text-foreground text-sm">4.58</span>
+            <div className="mt-4 pt-3 border-t border-border/50 grid grid-cols-3 gap-1.5 sm:gap-2 text-center text-xs">
+              <div className="p-2 sm:p-2.5 rounded-xl border border-border/40 bg-muted/30 min-w-0">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground block font-medium truncate">Self Review</span>
+                <span className="font-extrabold text-foreground text-xs sm:text-sm">4.58</span>
               </div>
-              <div className="p-2.5 rounded-xl border border-border/40 bg-muted/30">
-                <span className="text-[10px] text-muted-foreground block font-medium">Atasan Langsung</span>
-                <span className="font-extrabold text-foreground text-sm">4.62</span>
+              <div className="p-2 sm:p-2.5 rounded-xl border border-border/40 bg-muted/30 min-w-0">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground block font-medium truncate">Atasan</span>
+                <span className="font-extrabold text-foreground text-xs sm:text-sm">4.62</span>
               </div>
-              <div className="p-2.5 rounded-xl border border-border/40 bg-muted/30">
-                <span className="text-[10px] text-muted-foreground block font-medium">Rata-Rata Peer</span>
-                <span className="font-extrabold text-foreground text-sm">4.56</span>
+              <div className="p-2 sm:p-2.5 rounded-xl border border-border/40 bg-muted/30 min-w-0">
+                <span className="text-[9px] sm:text-[10px] text-muted-foreground block font-medium truncate">Rata-Rata Peer</span>
+                <span className="font-extrabold text-foreground text-xs sm:text-sm">4.56</span>
               </div>
             </div>
           </div>
@@ -518,19 +519,21 @@ export default function PerformanceIndex({
         <div className="card-soft p-4 sm:p-5 bg-card border border-border/60">
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-border/60 pb-3">
-              <TabsList className="rounded-xl h-9">
-                <TabsTrigger value="aboutMe" className="text-xs px-3 font-semibold">
-                  Review Tentang Saya ({reviewsAboutMe.length})
-                </TabsTrigger>
-                <TabsTrigger value="toFill" className="text-xs px-3 font-semibold">
-                  Perlu Saya Isi ({reviewsToFill.length})
-                </TabsTrigger>
-                <TabsTrigger value="allTeam" className="text-xs px-3 font-semibold">
-                  Matriks Evaluasi Tim ({allReviews.length})
-                </TabsTrigger>
-              </TabsList>
+              <div className="w-full sm:w-auto overflow-x-auto no-scrollbar">
+                <TabsList className="rounded-xl h-9 inline-flex w-max min-w-full sm:min-w-0">
+                  <TabsTrigger value="aboutMe" className="text-xs px-2.5 sm:px-3 font-semibold whitespace-nowrap">
+                    Review Saya ({reviewsAboutMe.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="toFill" className="text-xs px-2.5 sm:px-3 font-semibold whitespace-nowrap">
+                    Perlu Saya Isi ({reviewsToFill.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="allTeam" className="text-xs px-2.5 sm:px-3 font-semibold whitespace-nowrap">
+                    Matriks Tim ({allReviews.length})
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
-              <Badge variant="outline" className="rounded-full text-xs font-semibold text-muted-foreground">
+              <Badge variant="outline" className="rounded-full text-xs font-semibold text-muted-foreground hidden sm:inline-flex">
                 Periode Aktif: {metrics.cycle_name || "Q4 2026"}
               </Badge>
             </div>
@@ -672,54 +675,56 @@ export default function PerformanceIndex({
             {/* TAB 3: Matriks Evaluasi Tim (Shadcn Table) */}
             <TabsContent value="allTeam" className="mt-4">
               <div className="rounded-2xl border border-border/60 overflow-hidden bg-card">
-                <Table>
-                  <TableHeader className="bg-muted/40">
-                    <TableRow>
-                      <TableHead className="font-bold text-xs text-muted-foreground">Karyawan</TableHead>
-                      <TableHead className="font-bold text-xs text-muted-foreground">Evaluator</TableHead>
-                      <TableHead className="font-bold text-xs text-muted-foreground">Hubungan Kerja</TableHead>
-                      <TableHead className="font-bold text-xs text-muted-foreground">Skor Rata-Rata</TableHead>
-                      <TableHead className="font-bold text-xs text-muted-foreground">Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {allReviews.map((r) => (
-                      <TableRow key={r.id} className="hover:bg-muted/30 transition-colors">
-                        <TableCell className="font-semibold text-xs text-foreground">
-                          <div className="flex items-center gap-2">
-                            <EmployeeAvatar person={r.employee} size="sm" className="size-7" />
-                            <span>{r.employee?.nama_lengkap || "Karyawan"}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-xs text-muted-foreground">
-                          {r.reviewer?.nama_lengkap || (r.reviewer_type === "self" ? "Diri Sendiri" : "Anonim (Peer)")}
-                        </TableCell>
-                        <TableCell>{getRaterBadge(r.reviewer_type)}</TableCell>
-                        <TableCell className="font-black text-xs text-foreground">
-                          {r.status === "completed" ? (
-                            <span className="flex items-center gap-1">
-                              <Star className="size-3 fill-amber-500 text-amber-500" />
-                              {r.overall_score} / 5.0
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {r.status === "completed" ? (
-                            <Badge variant="outline" className="rounded-full text-[10px] font-semibold text-foreground">
-                              Selesai
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary" className="rounded-full text-[10px] font-semibold">
-                              Menunggu
-                            </Badge>
-                          )}
-                        </TableCell>
+                <div className="w-full overflow-x-auto">
+                  <Table className="min-w-[550px]">
+                    <TableHeader className="bg-muted/40">
+                      <TableRow>
+                        <TableHead className="font-bold text-xs text-muted-foreground">Karyawan</TableHead>
+                        <TableHead className="font-bold text-xs text-muted-foreground">Evaluator</TableHead>
+                        <TableHead className="font-bold text-xs text-muted-foreground">Hubungan Kerja</TableHead>
+                        <TableHead className="font-bold text-xs text-muted-foreground">Skor Rata-Rata</TableHead>
+                        <TableHead className="font-bold text-xs text-muted-foreground">Status</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {allReviews.map((r) => (
+                        <TableRow key={r.id} className="hover:bg-muted/30 transition-colors">
+                          <TableCell className="font-semibold text-xs text-foreground">
+                            <div className="flex items-center gap-2">
+                              <EmployeeAvatar person={r.employee} size="sm" className="size-7" />
+                              <span>{r.employee?.nama_lengkap || "Karyawan"}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {r.reviewer?.nama_lengkap || (r.reviewer_type === "self" ? "Diri Sendiri" : "Anonim (Peer)")}
+                          </TableCell>
+                          <TableCell>{getRaterBadge(r.reviewer_type)}</TableCell>
+                          <TableCell className="font-black text-xs text-foreground">
+                            {r.status === "completed" ? (
+                              <span className="flex items-center gap-1">
+                                <Star className="size-3 fill-amber-500 text-amber-500" />
+                                {r.overall_score} / 5.0
+                              </span>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {r.status === "completed" ? (
+                              <Badge variant="outline" className="rounded-full text-[10px] font-semibold text-foreground">
+                                Selesai
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary" className="rounded-full text-[10px] font-semibold">
+                                Menunggu
+                              </Badge>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
               </div>
             </TabsContent>
           </Tabs>

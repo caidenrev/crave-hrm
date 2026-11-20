@@ -16,7 +16,7 @@ export default function AuthenticatedLayout({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen w-full bg-background">
+    <div className="min-h-screen w-full bg-background overflow-x-clip">
       {/* Global Toast Notification System */}
       <ToastNotification />
 
@@ -32,7 +32,7 @@ export default function AuthenticatedLayout({
       {/* Main Content Area */}
       <div
         className={cn(
-          "transition-[padding] duration-300",
+          "transition-[padding] duration-300 w-full min-w-0 overflow-x-clip",
           collapsed ? "lg:pl-20" : "lg:pl-72"
         )}
       >
@@ -43,7 +43,7 @@ export default function AuthenticatedLayout({
           onOpenMobileMenu={() => setMobileMenuOpen(true)}
         />
 
-        <main className="mx-auto max-w-[1400px] px-3 pb-28 pt-3 sm:px-6 sm:pt-4 sm:pb-24 lg:pb-10">
+        <main className="mx-auto max-w-[1400px] w-full min-w-0 px-3 pb-28 pt-3 sm:px-6 sm:pt-4 sm:pb-24 lg:pb-10 overflow-x-clip">
           {children}
         </main>
       </div>

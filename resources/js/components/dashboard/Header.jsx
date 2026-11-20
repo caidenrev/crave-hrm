@@ -127,16 +127,16 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
   };
 
   return (
-    <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur">
-      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-2.5 px-3 py-2.5 sm:gap-4 sm:px-6 sm:py-3">
+    <header className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur w-full min-w-0">
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-2 px-3 py-2 sm:gap-4 sm:px-6 sm:py-3 w-full min-w-0">
         {/* Title & Subtitle */}
         <div className="flex min-w-0 flex-1 items-center pr-1 sm:pr-2">
           <div className="min-w-0 flex-1">
-            <h1 className="text-base font-extrabold tracking-tight sm:text-xl text-foreground truncate">
+            <h1 className="text-sm sm:text-base md:text-xl font-extrabold tracking-tight text-foreground truncate">
               {title}
             </h1>
             {subtitle ? (
-              <p className="text-[11px] text-muted-foreground sm:text-xs truncate">
+              <p className="text-[10px] sm:text-xs text-muted-foreground truncate">
                 {subtitle}
               </p>
             ) : null}
@@ -144,7 +144,7 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
         </div>
 
         {/* Right Section */}
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-2 max-w-[65vw] sm:max-w-none justify-end">
           {/* Functional Global Search Bar */}
           <div ref={searchRef} className="relative hidden md:block">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />

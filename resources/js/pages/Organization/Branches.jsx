@@ -290,25 +290,25 @@ export default function Branches({ branches = [], stats = {} }) {
       actions={
         <Button
           onClick={openCreateModal}
-          className="rounded-xl font-semibold shadow-xs text-xs sm:text-sm"
+          size="sm"
+          className="rounded-xl font-semibold shadow-xs text-xs h-8 px-2.5 sm:px-3 gap-1"
         >
-          <Plus className="mr-1.5 size-4" />
+          <Plus className="size-4 shrink-0" />
           <span className="hidden sm:inline">Tambah Cabang Baru</span>
-          <span className="sm:hidden">Tambah Cabang</span>
+          <span className="sm:hidden">Tambah</span>
         </Button>
       }
     >
       <Head title="Cabang & Parameter Geofence" />
 
       <div className="space-y-4">
-        {/* 1. TOP METRICS CARDS (Dashboard-Consistent Crave POS Look) */}
+        {/* 1. TOP METRICS CARDS (Dashboard-Consistent Crave POS 2x2 Grid) */}
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
           {topStats.map((s, i) => (
             <div
               key={s.label}
               className={
                 "p-3 flex flex-col justify-between rounded-2xl sm:rounded-3xl sm:p-4 " +
-                (i === 0 || i === 3 ? "col-span-2 md:col-span-1 " : "") +
                 (i === 0
                   ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 border border-primary"
                   : "bg-card border border-border/50 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.08)]")
@@ -666,7 +666,8 @@ export default function Branches({ branches = [], stats = {} }) {
           </div>
         ) : (
           <div className="card-soft overflow-hidden p-0 border border-border/60">
-            <Table>
+            <div className="w-full overflow-x-auto">
+              <Table className="min-w-[650px]">
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead className="text-xs font-extrabold text-foreground">Nama & Kode Cabang</TableHead>
@@ -756,6 +757,7 @@ export default function Branches({ branches = [], stats = {} }) {
               </TableBody>
             </Table>
           </div>
+        </div>
         )}
       </div>
 

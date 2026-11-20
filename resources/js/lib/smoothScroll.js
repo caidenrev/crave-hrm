@@ -33,7 +33,6 @@ export function smoothScrollTo(target, options = {}) {
   // Jika user menyalakan mode prefers-reduced-motion, gunakan scroll instan
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const offset = options.offset !== undefined ? options.offset : getNavbarOffset();
-  const duration = prefersReducedMotion ? 0 : (options.duration || 0.85);
 
   let targetElement = null;
   let targetY = 0;
@@ -70,74 +69,27 @@ export function smoothScrollTo(target, options = {}) {
   );
   targetY = Math.min(Math.max(0, targetY), maxScroll);
 
-  // Jika GSAP tersedia dan tidak dalam prefers-reduced-motion
-  if (!prefersReducedMotion && typeof gsap !== "undefined" && gsap.to) {
-    try {
-      gsap.to(window, {
-        duration: duration,
-        scrollTo: {
-          y: targetY,
-          autoKill: true, // Berhenti jika user melakukan scroll manual
-        },
-        ease: "power2.out",
-        overwrite: "auto",
-        onComplete: () => {
-          if (options.onComplete) options.onComplete();
-          if (typeof target === "string" && target.startsWith("#")) {
-            try {
-              window.history.pushState(null, "", target);
-            } catch (_) {}
-          }
-        },
-      });
-      return;
-    } catch (e) {
-      // Fallback ke native/custom RAF jika plugin GSAP gagal
-    }
-  }
+  // Gunakan Native Smooth Scrolling yang 100% didukung seluruh browser modern & mobile
+  try {
+    window.scrollTo({
+      top: targetY,
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+    });
 
-  // Fallback: Programmatic cubic-bezier RAF easing
-  if (prefersReducedMotion || duration === 0) {
-    window.scrollTo({ top: targetY, behavior: "auto" });
     if (typeof target === "string" && target.startsWith("#")) {
       try {
         window.history.pushState(null, "", target);
       } catch (_) {}
     }
-    if (options.onComplete) options.onComplete();
-    return;
-  }
 
-  const startY = window.pageYOffset;
-  const distance = targetY - startY;
-  const startTime = performance.now();
-  const animDuration = duration * 1000;
-
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
-
-  function step(currentTime) {
-    const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / animDuration, 1);
-    const easeProgress = easeOutCubic(progress);
-
-    window.scrollTo(0, startY + distance * easeProgress);
-
-    if (progress < 1) {
-      window.requestAnimationFrame(step);
-    } else {
-      window.scrollTo(0, targetY);
-      if (typeof target === "string" && target.startsWith("#")) {
-        try {
-          window.history.pushState(null, "", target);
-        } catch (_) {}
-      }
-      if (options.onComplete) options.onComplete();
+    if (options.onComplete) {
+      setTimeout(options.onComplete, prefersReducedMotion ? 0 : 500);
     }
+  } catch (e) {
+    // Fallback instan jika native smooth scroll bermasalah
+    window.scrollTo(0, targetY);
+    if (options.onComplete) options.onComplete();
   }
-
-  window.requestAnimationFrame(step);
 }
 
 /**

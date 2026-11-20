@@ -360,7 +360,8 @@ export default function Shifts({
         {/* TAB 1: MASTER SHIFTS TABLE */}
         {activeTab === "shifts" && (
           <div className="card-soft overflow-hidden">
-            <Table>
+            <div className="w-full overflow-x-auto">
+              <Table className="min-w-[650px]">
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead className="font-bold text-foreground">Kode &amp; Nama Shift</TableHead>
@@ -444,12 +445,14 @@ export default function Shifts({
               </TableBody>
             </Table>
           </div>
+        </div>
         )}
 
         {/* TAB 2: SHIFT SWAPS TABLE */}
         {activeTab === "swaps" && (
           <div className="card-soft overflow-hidden">
-            <Table>
+            <div className="w-full overflow-x-auto">
+              <Table className="min-w-[650px]">
               <TableHeader>
                 <TableRow className="bg-muted/40">
                   <TableHead className="font-bold text-foreground">Tanggal Tukar</TableHead>
@@ -551,6 +554,7 @@ export default function Shifts({
               </TableBody>
             </Table>
           </div>
+        </div>
         )}
 
         {/* DIALOG: CREATE / EDIT SHIFT */}
