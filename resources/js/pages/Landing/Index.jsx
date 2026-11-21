@@ -2218,12 +2218,12 @@ export default function Landing({ auth, stats = {} }) {
       {/* S16: FOOTER WITH GIANT WATERMARK (High-Contrast Logo Always Visible) */}
       <footer className="w-full pt-12 pb-16 px-4 sm:px-6 bg-[#FBFBFB] border-t border-[#F1F2F6]">
         <div className="max-w-[1240px] mx-auto">
-          {/* Top Watermark & Copyright */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-10 mb-10 border-b border-[#ECEEF4]">
-            <div className="font-black text-[72px] sm:text-[118px] leading-[0.88] tracking-[-0.04em] text-[#EFEFF3] select-none">
-              CRAVE
+          {/* Top Signature Watermark & Copyright */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 mb-10 border-b border-[#ECEEF4]">
+            <div className="font-handwriting font-bold text-[72px] sm:text-[108px] md:text-[126px] leading-[0.85] text-[oklch(0.54_0.19_258)] select-none -rotate-1 origin-left">
+              crave
             </div>
-            <div className="text-[12px] text-[#9CA3AF] md:text-right">
+            <div className="text-[12px] text-[#9CA3AF] md:text-right pb-2">
               Hak Cipta © 2026 Crave HRM by Crave Services. Hak Cipta Dilindungi Undang-Undang.
             </div>
           </div>
