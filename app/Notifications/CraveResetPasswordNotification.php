@@ -36,11 +36,12 @@ class CraveResetPasswordNotification extends Notification
 
         return (new MailMessage)
             ->subject('[Crave HRM] Atur Ulang Kata Sandi Akun Anda')
-            ->greeting("Halo, {$notifiable->name}!")
-            ->line('Kami menerima permintaan pengaturan ulang kata sandi untuk akun Crave HRM yang terhubung dengan alamat email ini.')
-            ->action('Atur Ulang Kata Sandi', $resetUrl)
-            ->line('Tautan pengaturan ulang kata sandi ini bersifat rahasia dan berlaku selama 60 menit.')
-            ->line('Jika Anda tidak merasa melakukan permintaan ini, abaikan email ini dan kata sandi Anda akan tetap aman.')
-            ->salutation("Salam hangat,\nTim Keamanan Crave HRM");
+            ->view('emails.reset-password', [
+                'user' => $notifiable,
+                'name' => $notifiable->name ?? 'Pengguna Crave HRM',
+                'email' => $notifiable->getEmailForPasswordReset(),
+                'resetUrl' => $resetUrl,
+                'logoUrl' => asset('dark-mode-logo.png'),
+            ]);
     }
 }

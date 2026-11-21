@@ -107,4 +107,24 @@ class PasswordResetTest extends TestCase
         $response->assertSessionHasErrors('email');
         $this->assertFalse(Hash::check('newpassword456', $user->fresh()->password));
     }
+
+    public function test_email_notification_renders_properly(): void
+    {
+        $user = User::create([
+            'name' => 'Budi Santoso',
+            'email' => 'budi@craveservices.my.id',
+            'password' => Hash::make('oldpassword123'),
+        ]);
+
+        $notification = new CraveResetPasswordNotification('test-token-123');
+        $mail = $notification->toMail($user);
+
+        $html = view($mail->view, $mail->viewData)->render();
+
+        $this->assertStringContainsString('Crave', $html);
+        $this->assertStringContainsString('Atur Ulang Kata Sandi', $html);
+        $this->assertStringContainsString('Budi Santoso', $html);
+        $this->assertStringContainsString('test-token-123', $html);
+        $this->assertStringContainsString('dark-mode-logo.png', $html);
+    }
 }
