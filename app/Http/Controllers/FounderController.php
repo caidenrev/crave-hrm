@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\SalesLead;
@@ -47,6 +48,43 @@ class FounderController extends Controller
         $paidInvoices = SubscriptionInvoice::where('status', 'paid')->get();
         $revenueTotal = (int) $paidInvoices->sum('amount');
         $revenuePeriod = (int) $paidInvoices->where('paid_at', '>=', $fromDate)->sum('amount');
+
+        $previousFromDate = now()->subDays($days * 2)->startOfDay();
+        $revenuePrevious = (int) $paidInvoices
+            ->where('paid_at', '>=', $previousFromDate)
+            ->where('paid_at', '<', $fromDate)
+            ->sum('amount');
+
+        $payingCompaniesCount = Company::where('is_holding', false)
+            ->whereHas('subscriptionInvoices', fn ($q) => $q->where('status', 'paid'))
+            ->count();
+
+        $conversionRate = $companies->count() > 0
+            ? round(($payingCompaniesCount / $companies->count()) * 100, 1)
+            : 0;
+
+        $attendanceToday = Attendance::whereDate('date', today())->count();
+        $activitiesToday = $companies->where('created_at', '>=', today()->startOfDay())->count()
+            + $paidInvoices->where('paid_at', '>=', today()->startOfDay())->count()
+            + $attendanceToday;
+
+        $subscriptionDistribution = [
+            [
+                'name' => 'Tidak aktif',
+                'value' => max(0, $companies->filter(fn ($c) => in_array($c->subscriptionState(), ['expired', 'suspended']))->count()),
+                'color' => '#e11d48',
+            ],
+            [
+                'name' => 'Berbayar',
+                'value' => $companies->filter(fn ($c) => $c->subscriptionState() === 'active')->count(),
+                'color' => '#10b981',
+            ],
+            [
+                'name' => 'Trial',
+                'value' => $companies->filter(fn ($c) => $c->subscriptionState() === 'trial')->count(),
+                'color' => '#3b82f6',
+            ],
+        ];
 
         // Estimate MRR (Monthly Recurring Revenue)
         $mrr = 0;
@@ -142,8 +180,16 @@ class FounderController extends Controller
             'kpi' => [
                 ...$kpi,
                 'mrr' => $mrr,
+                'annual_mrr' => $mrr * 12,
                 'revenue_total' => $revenueTotal,
                 'revenue_period' => $revenuePeriod,
+                'revenue_previous' => $revenuePrevious,
+                'paying_companies_count' => $payingCompaniesCount,
+                'conversion_rate' => $conversionRate,
+                'attendance_today' => $attendanceToday,
+                'activities_today' => $activitiesToday,
+                'server_time' => now()->format('H:i:s'),
+                'subscription_distribution' => $subscriptionDistribution,
             ],
             'daily' => $daily,
             'expiring' => $expiring,

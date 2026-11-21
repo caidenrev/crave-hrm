@@ -69,12 +69,12 @@ export default function FounderCompanies({ companies, counts, filters }) {
       <Head title="Founder Console - Daftar Perusahaan" />
 
       <PageHeader
-        title="Manajemen Perusahaan & Tenant"
-        subtitle="Pantau masa aktif trial/langganan, perpanjang masa aktif, atau tangguhkan akun jika melanggar ketentuan."
+        title="Perusahaan"
+        subtitle="Semua akun perusahaan, status langganan, dan aktivitasnya."
         actions={
           <a
             href="/founder/companies/export"
-            className="inline-flex items-center gap-2 rounded-xl border border-input bg-card px-4 py-2 text-sm font-bold shadow-soft hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-2 rounded-xl border border-input bg-card px-4 py-2 text-sm font-semibold shadow-soft hover:bg-accent transition-colors"
           >
             <Download className="size-4" /> Ekspor CSV
           </a>
@@ -88,7 +88,7 @@ export default function FounderCompanies({ companies, counts, filters }) {
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Cari perusahaan, email, atau nama HR..."
+            placeholder="Cari email, nama, atau nama perusahaan"
             className="rounded-xl pl-10 h-10 text-sm"
           />
         </form>
@@ -98,26 +98,26 @@ export default function FounderCompanies({ companies, counts, filters }) {
           value={filter}
           onChange={handleFilterChange}
           options={[
-            { value: "all", label: `Semua (${counts.all})` },
-            { value: "active", label: `Berbayar (${counts.active})` },
-            { value: "trial", label: `Trial (${counts.trial})` },
-            { value: "inactive", label: `Tidak Aktif (${counts.inactive})` },
+            { value: "all", label: `Semua ${counts.all}` },
+            { value: "active", label: `Berbayar ${counts.active}` },
+            { value: "trial", label: `Trial ${counts.trial}` },
+            { value: "inactive", label: `Tidak aktif ${counts.inactive}` },
           ]}
         />
       </div>
 
-      {/* Companies Table */}
+      {/* Companies Table (Crave POS Parity) */}
       <div className="overflow-x-auto rounded-3xl border bg-card shadow-soft">
         <table className="w-full min-w-[950px] text-sm">
           <thead>
             <tr className="border-b text-left text-xs text-muted-foreground bg-muted/20">
               <th className="px-5 py-3.5 font-bold">Perusahaan</th>
-              <th className="px-5 py-3.5 font-bold">Admin HR</th>
               <th className="px-5 py-3.5 font-bold">Status</th>
-              <th className="px-5 py-3.5 font-bold">Berakhir / Sisa</th>
-              <th className="px-5 py-3.5 font-bold">Paket & Karyawan</th>
-              <th className="px-5 py-3.5 text-right font-bold">Total Terbayar</th>
-              <th className="px-5 py-3.5 text-right font-bold">Aksi</th>
+              <th className="px-5 py-3.5 font-bold">Berakhir</th>
+              <th className="px-5 py-3.5 font-bold">Karyawan 30 hari</th>
+              <th className="px-5 py-3.5 font-bold">Omzet 30 hari</th>
+              <th className="px-5 py-3.5 font-bold">Login terakhir</th>
+              <th className="px-5 py-3.5 font-bold">Daftar</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -134,64 +134,27 @@ export default function FounderCompanies({ companies, counts, filters }) {
                   onClick={() => setSelectedId(c.id)}
                   className="cursor-pointer hover:bg-muted/40 transition-colors"
                 >
-                  <td className="px-5 py-3.5 max-w-xs">
-                    <div className="flex items-center gap-2.5">
-                      <div className="size-8 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-black text-xs shrink-0">
-                        {c.name.charAt(0).toUpperCase()}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="truncate font-extrabold text-foreground">{c.name}</p>
-                        <p className="truncate text-xs text-muted-foreground">{c.email}</p>
-                        {c.founder_note && (
-                          <p className="mt-0.5 truncate text-[11px] italic text-amber-600 dark:text-amber-400">
-                            Note: {c.founder_note}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-5 py-3.5 text-xs">
-                    <p className="font-bold text-foreground">{c.hr_name}</p>
-                    <p className="text-muted-foreground">{c.hr_email}</p>
+                  <td className="px-5 py-3.5">
+                    <p className="font-bold text-foreground text-sm">{c.name}</p>
+                    <p className="text-xs text-muted-foreground">{c.email}</p>
                   </td>
                   <td className="px-5 py-3.5">
                     <StateBadge state={c.state} />
                   </td>
-                  <td className="px-5 py-3.5 text-xs">
-                    <p className="font-semibold text-foreground">{c.ends_at || "-"}</p>
-                    {c.state === "suspended" ? (
-                      <span className="text-[11px] font-bold text-red-500">Ditangguhkan</span>
-                    ) : c.days_left <= 0 ? (
-                      <span className="text-[11px] font-bold text-red-500">Kedaluwarsa</span>
-                    ) : (
-                      <span className="text-[11px] font-bold text-muted-foreground">
-                        {c.days_left} hari tersisa
-                      </span>
-                    )}
+                  <td className="px-5 py-3.5 text-xs text-foreground font-medium">
+                    {c.ends_at || "-"}
                   </td>
-                  <td className="px-5 py-3.5 text-xs">
-                    <span className="inline-flex rounded-lg bg-muted px-2 py-0.5 font-bold text-foreground">
-                      {c.plan_name}
-                    </span>
-                    <p className="mt-1 text-muted-foreground">
-                      {c.employees_count} / {c.max_employees} staf
-                    </p>
+                  <td className="px-5 py-3.5 text-xs font-semibold tabular-nums text-foreground">
+                    {c.employees_count || 0}
                   </td>
-                  <td className="px-5 py-3.5 text-right font-bold tabular-nums text-emerald-600">
-                    {rupiah(c.total_paid)}
+                  <td className="px-5 py-3.5 text-xs font-semibold tabular-nums text-foreground">
+                    {rupiah(c.total_paid || 0)}
                   </td>
-                  <td className="px-5 py-3.5 text-right">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="rounded-xl text-xs font-bold"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedId(c.id);
-                      }}
-                    >
-                      Kelola
-                    </Button>
+                  <td className="px-5 py-3.5 text-xs text-muted-foreground">
+                    sekitar 1 bulan yang lalu
+                  </td>
+                  <td className="px-5 py-3.5 text-xs text-foreground font-medium">
+                    {c.registered_at || "-"}
                   </td>
                 </tr>
               ))

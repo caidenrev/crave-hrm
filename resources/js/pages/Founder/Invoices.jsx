@@ -50,57 +50,56 @@ export default function FounderInvoices({ invoices, stats, filters }) {
       <Head title="Founder Console - Riwayat Pembayaran" />
 
       <PageHeader
-        title="Riwayat Tagihan & Pembayaran"
-        subtitle="Daftar transaksi langganan masuk dari Midtrans payment gateway dan aktivasi manual founder."
+        title="Pembayaran"
+        subtitle="Tagihan langganan dari semua perusahaan."
+        actions={
+          <a
+            href="/founder/companies/export"
+            className="inline-flex items-center gap-2 rounded-xl border border-input bg-card px-4 py-2 text-sm font-semibold shadow-soft hover:bg-accent transition-colors"
+          >
+            <Download className="size-4" /> Ekspor CSV
+          </a>
+        }
       />
 
-      {/* KPI Cards */}
+      {/* KPI Cards (Crave POS Parity: All 4 White Cards) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-        <Tile tone="primary">
-          <span className="text-xs font-bold uppercase tracking-wider text-primary-foreground/80">
-            Total Dana Masuk Lunas
+        <Tile>
+          <span className="text-xs font-semibold text-muted-foreground">
+            Total lunas
           </span>
-          <p className="mt-2 text-2xl font-black tracking-tight">{rupiah(stats.total_paid)}</p>
-          <p className="mt-1 text-xs text-primary-foreground/75">
-            {stats.paid_count} transaksi berhasil
-          </p>
-        </Tile>
-
-        <Tile>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Midtrans Gateway
-            </span>
-            <CreditCard className="size-4 text-emerald-500" />
-          </div>
-          <p className="mt-2 text-2xl font-black tracking-tight">{rupiah(stats.midtrans_total)}</p>
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">{rupiah(stats.total_paid)}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {stats.midtrans_count} transaksi via Midtrans
+            {stats.paid_count} tagihan
           </p>
         </Tile>
 
         <Tile>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Aktivasi Manual
-            </span>
-            <Wallet className="size-4 text-blue-500" />
-          </div>
-          <p className="mt-2 text-2xl font-black tracking-tight">{rupiah(stats.manual_total)}</p>
+          <span className="text-xs font-semibold text-muted-foreground">
+            Lewat Midtrans
+          </span>
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">{rupiah(stats.midtrans_total)}</p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {stats.manual_count} aktivasi oleh Founder
+            {stats.midtrans_count} tagihan
           </p>
         </Tile>
 
         <Tile>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Menunggu Pembayaran
-            </span>
-            <Clock className="size-4 text-amber-500" />
-          </div>
-          <p className="mt-2 text-2xl font-black tracking-tight">{rupiah(stats.pending_total)}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{stats.pending_count} invoice aktif</p>
+          <span className="text-xs font-semibold text-muted-foreground">
+            Aktivasi manual
+          </span>
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">{rupiah(stats.manual_total)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {stats.manual_count} tagihan, tidak lewat Midtrans
+          </p>
+        </Tile>
+
+        <Tile>
+          <span className="text-xs font-semibold text-muted-foreground">
+            Menunggu pembayaran
+          </span>
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">{rupiah(stats.pending_total)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{stats.pending_count} tagihan</p>
         </Tile>
       </div>
 
@@ -111,7 +110,7 @@ export default function FounderInvoices({ invoices, stats, filters }) {
           <Input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Cari order ID, nama perusahaan, email..."
+            placeholder="Cari email atau order ID"
             className="rounded-xl pl-10 h-10 text-sm"
           />
         </form>
@@ -124,23 +123,23 @@ export default function FounderInvoices({ invoices, stats, filters }) {
             { value: "all", label: "Semua" },
             { value: "paid", label: "Lunas" },
             { value: "pending", label: "Menunggu" },
-            { value: "expired", label: "Kedaluwarsa" },
+            { value: "cancelled", label: "Batal" },
           ]}
         />
       </div>
 
-      {/* Invoices Table */}
+      {/* Invoices Table (Crave POS Parity) */}
       <div className="overflow-x-auto rounded-3xl border bg-card shadow-soft">
         <table className="w-full min-w-[900px] text-sm">
           <thead>
             <tr className="border-b text-left text-xs text-muted-foreground bg-muted/20">
-              <th className="px-5 py-3.5 font-bold">Order ID</th>
               <th className="px-5 py-3.5 font-bold">Perusahaan</th>
-              <th className="px-5 py-3.5 font-bold">Paket</th>
-              <th className="px-5 py-3.5 font-bold">Jumlah</th>
+              <th className="px-5 py-3.5 font-bold">Durasi</th>
+              <th className="px-5 py-3.5 font-bold">Nominal</th>
               <th className="px-5 py-3.5 font-bold">Status</th>
-              <th className="px-5 py-3.5 font-bold">Sumber</th>
-              <th className="px-5 py-3.5 text-right font-bold">Tanggal</th>
+              <th className="px-5 py-3.5 font-bold">Metode</th>
+              <th className="px-5 py-3.5 font-bold">Dibuat</th>
+              <th className="px-5 py-3.5 font-bold">Dibayar</th>
             </tr>
           </thead>
           <tbody className="divide-y">
@@ -153,21 +152,16 @@ export default function FounderInvoices({ invoices, stats, filters }) {
             ) : (
               invoices.data.map((inv) => (
                 <tr key={inv.id} className="hover:bg-muted/30 transition-colors">
-                  <td className="px-5 py-3.5">
-                    <p className="font-mono font-bold text-xs text-foreground">{inv.order_id}</p>
-                    {inv.payment_type && (
-                      <p className="text-[11px] text-muted-foreground mt-0.5">
-                        {METHOD_LABEL[inv.payment_type] || inv.payment_type}
-                      </p>
-                    )}
-                  </td>
                   <td className="px-5 py-3.5 text-xs">
-                    <p className="font-bold text-foreground">{inv.company?.name || "Perusahaan"}</p>
-                    <p className="text-muted-foreground">{inv.user?.email || "-"}</p>
+                    <p className="font-bold text-foreground text-sm">
+                      {inv.user?.email || inv.company?.email || inv.company?.name || "Perusahaan"}
+                    </p>
+                    <p className="font-mono text-muted-foreground text-[11px] mt-0.5">
+                      {inv.order_id}
+                    </p>
                   </td>
-                  <td className="px-5 py-3.5 text-xs">
-                    <span className="font-semibold text-foreground">{inv.plan_name}</span>
-                    <p className="text-muted-foreground">{inv.months} Bulan</p>
+                  <td className="px-5 py-3.5 text-xs text-foreground font-medium">
+                    {inv.months} bulan
                   </td>
                   <td className="px-5 py-3.5 font-bold tabular-nums text-foreground">
                     {rupiah(inv.amount)}
@@ -175,20 +169,16 @@ export default function FounderInvoices({ invoices, stats, filters }) {
                   <td className="px-5 py-3.5">
                     <InvoiceBadge status={inv.status} />
                   </td>
-                  <td className="px-5 py-3.5 text-xs">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-md font-bold text-[11px] ${
-                        inv.source === "midtrans"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300"
-                          : "bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300"
-                      }`}
-                    >
-                      {inv.source === "midtrans" ? "Midtrans" : "Manual Founder"}
-                    </span>
+                  <td className="px-5 py-3.5 text-xs text-muted-foreground font-medium">
+                    {inv.source === "manual"
+                      ? "Manual (founder)"
+                      : METHOD_LABEL[inv.payment_type] || inv.payment_type || "Midtrans"}
                   </td>
-                  <td className="px-5 py-3.5 text-right text-xs text-muted-foreground">
-                    <p className="font-medium text-foreground">{tanggal(inv.paid_at || inv.created_at)}</p>
-                    <p className="text-[10px]">{tanggal(inv.paid_at || inv.created_at, "HH:mm")}</p>
+                  <td className="px-5 py-3.5 text-xs text-muted-foreground">
+                    {tanggal(inv.created_at, "d MMM yyyy HH:mm")}
+                  </td>
+                  <td className="px-5 py-3.5 text-xs text-muted-foreground">
+                    {inv.paid_at ? tanggal(inv.paid_at, "d MMM yyyy HH:mm") : "-"}
                   </td>
                 </tr>
               ))

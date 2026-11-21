@@ -145,26 +145,38 @@ export function Delta({ current, previous, inverted }) {
 
 export function StateBadge({ state }) {
   const s = state || "trial";
+  const color =
+    s === "active"
+      ? "#10b981"
+      : s === "trial"
+      ? "#3b82f6"
+      : s === "grace"
+      ? "#f59e0b"
+      : s === "suspended"
+      ? "#6b7280"
+      : "#ef4444";
+
   return (
-    <Badge variant="outline" className="gap-1.5 rounded-full font-semibold border-border/80">
-      <span className="size-2 rounded-full" style={{ background: STATE_COLOR[s] ?? "#6b7280" }} />
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background px-2.5 py-0.5 text-xs font-semibold text-foreground">
+      <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
       {STATE_LABEL[s] ?? s}
-    </Badge>
+    </span>
   );
 }
 
 export function InvoiceBadge({ status }) {
   const color =
     status === "paid"
-      ? "var(--color-success, #10b981)"
+      ? "#10b981"
       : status === "pending"
-      ? "var(--color-warning, #f59e0b)"
-      : "var(--color-muted-foreground, #6b7280)";
+      ? "#f59e0b"
+      : "#6b7280";
+
   return (
-    <Badge variant="outline" className="gap-1.5 rounded-full font-semibold border-border/80">
-      <span className="size-2 rounded-full" style={{ background: color }} />
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background px-2.5 py-0.5 text-xs font-semibold text-foreground">
+      <span className="size-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
       {INVOICE_LABEL[status] ?? status}
-    </Badge>
+    </span>
   );
 }
 

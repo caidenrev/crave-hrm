@@ -18,10 +18,10 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { id: "ringkasan", href: "/founder", label: "Ringkasan", icon: LayoutGrid },
-  { id: "leads", href: "/founder/leads", label: "Prospek Sales", icon: UserPlus },
   { id: "companies", href: "/founder/companies", label: "Perusahaan", icon: Building2 },
   { id: "invoices", href: "/founder/invoices", label: "Pembayaran", icon: CreditCard },
-  { id: "settings", href: "/founder/settings", label: "Pengaturan & Paket", icon: Settings },
+  { id: "leads", href: "/founder/leads", label: "Prospek Sales", icon: UserPlus },
+  { id: "settings", href: "/founder/settings", label: "Pengaturan", icon: Settings },
 ];
 
 function useDark() {
@@ -56,7 +56,7 @@ export function FounderShell({ children }) {
     <div className="min-h-screen w-full bg-background font-sans antialiased text-foreground">
       {/* Desktop Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r bg-card p-4 lg:flex">
-        <div className="flex items-center gap-3 px-2 py-1">
+        <div className="flex items-center gap-3 px-2 py-2 mb-2">
           <div className="grid size-9 shrink-0 place-items-center">
             <img
               src="/light-mode-logo.png"
@@ -71,26 +71,15 @@ export function FounderShell({ children }) {
           </div>
           <div className="min-w-0 leading-tight">
             <p className="truncate text-base font-extrabold tracking-tight text-foreground">
-              Crave <span className="text-primary">HRM</span>
+              Crave
             </p>
-            <p className="truncate text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            <p className="truncate text-xs text-muted-foreground font-normal">
               Founder Console
             </p>
           </div>
         </div>
 
-        {/* Quick return to HRM Tenant */}
-        <div className="mt-4 px-1">
-          <Link
-            href="/dashboard"
-            className="flex items-center justify-between rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs font-semibold text-primary hover:bg-primary/10 transition-colors"
-          >
-            <span>Buka HRM Tenant</span>
-            <ExternalLink className="size-3.5" />
-          </Link>
-        </div>
-
-        <nav className="mt-4 flex-1 space-y-1">
+        <nav className="mt-2 flex-1 space-y-1">
           {NAV.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -99,9 +88,9 @@ export function FounderShell({ children }) {
                 key={item.id}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors",
+                  "flex items-center gap-3 rounded-2xl px-3.5 py-2.5 text-sm font-semibold transition-colors",
                   active
-                    ? "bg-primary text-primary-foreground shadow-soft"
+                    ? "bg-primary text-primary-foreground shadow-sm"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
               >
@@ -112,10 +101,11 @@ export function FounderShell({ children }) {
           })}
         </nav>
 
-        <div className="space-y-2 border-t pt-3">
-          <div className="px-2">
-            <p className="truncate text-xs font-bold text-foreground">{user?.name || "Eka Revandi"}</p>
-            <p className="truncate text-[11px] text-muted-foreground">{user?.email || "founder@craveservices.my.id"}</p>
+        <div className="space-y-3 border-t pt-4">
+          <div className="px-1">
+            <p className="truncate text-xs text-muted-foreground">
+              {user?.email || "founder@craveservices.my.id"}
+            </p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -153,19 +143,12 @@ export function FounderShell({ children }) {
             </div>
             <div className="leading-tight">
               <p className="text-sm font-extrabold tracking-tight text-foreground">
-                Crave <span className="text-primary">HRM</span>
+                Crave
               </p>
-              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Founder Console</p>
+              <p className="text-[10px] text-muted-foreground font-normal">Founder Console</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link
-              href="/dashboard"
-              className="text-xs font-bold text-primary flex items-center gap-1 border border-primary/20 rounded-lg px-2 py-1"
-            >
-              HRM
-              <ExternalLink className="size-3" />
-            </Link>
             <Button
               variant="outline"
               size="icon"
