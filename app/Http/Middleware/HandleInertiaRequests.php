@@ -47,6 +47,93 @@ class HandleInertiaRequests extends Middleware
         }
         $activeCompany = $user?->currentCompany();
 
+        $notifications = [];
+        if ($user && $activeCompany && \Illuminate\Support\Facades\Schema::hasTable('companies')) {
+            try {
+                $role = $user->currentRole();
+                $isApprover = in_array($role, ['super_admin', 'company_admin', 'hr_admin', 'holding_admin', 'branch_manager', 'supervisor']);
+
+                if ($isApprover) {
+                    // 1. Pending Leave Requests
+                    if (\Illuminate\Support\Facades\Schema::hasTable('leave_requests')) {
+                        $pendingLeave = \App\Models\LeaveRequest::where('company_id', $activeCompany->id)->where('status', 'pending')->count();
+                        if ($pendingLeave > 0) {
+                            $notifications[] = [
+                                'id' => "leave_pending_{$activeCompany->id}_{$pendingLeave}",
+                                'title' => 'Pengajuan Cuti Menunggu Approval',
+                                'description' => "{$pendingLeave} permohonan cuti baru siap ditinjau.",
+                                'time' => 'Baru saja',
+                                'href' => '/leave/approvals',
+                                'type' => 'leave',
+                            ];
+                        }
+                    }
+
+                    // 2. Pending Overtime
+                    if (\Illuminate\Support\Facades\Schema::hasTable('overtimes')) {
+                        $pendingOvertime = \App\Models\Overtime::where('company_id', $activeCompany->id)->where('status', 'pending')->count();
+                        if ($pendingOvertime > 0) {
+                            $notifications[] = [
+                                'id' => "overtime_pending_{$activeCompany->id}_{$pendingOvertime}",
+                                'title' => 'Lembur SPKL Menunggu Review',
+                                'description' => "{$pendingOvertime} pengajuan lembur staf siap diperiksa.",
+                                'time' => 'Hari ini',
+                                'href' => '/claims/overtime',
+                                'type' => 'overtime',
+                            ];
+                        }
+                    }
+
+                    // 3. Pending Reimbursement
+                    if (\Illuminate\Support\Facades\Schema::hasTable('reimbursements')) {
+                        $pendingClaim = \App\Models\Reimbursement::where('company_id', $activeCompany->id)->where('status', 'pending')->count();
+                        if ($pendingClaim > 0) {
+                            $notifications[] = [
+                                'id' => "claim_pending_{$activeCompany->id}_{$pendingClaim}",
+                                'title' => 'Klaim Reimbursement Masuk',
+                                'description' => "{$pendingClaim} klaim pengeluaran menunggu verifikasi.",
+                                'time' => 'Hari ini',
+                                'href' => '/claims/reimbursement',
+                                'type' => 'claim',
+                            ];
+                        }
+                    }
+                }
+
+                // 4. Subscription Expiring Alert (< 7 days)
+                if ($activeCompany->daysLeft() <= 7 && $activeCompany->subscriptionState() !== 'active') {
+                    $notifications[] = [
+                        'id' => "subs_exp_{$activeCompany->id}_{$activeCompany->daysLeft()}",
+                        'title' => 'Masa Langganan Segera Berakhir',
+                        'description' => "Masa aktif {$activeCompany->name} tersisa {$activeCompany->daysLeft()} hari lagi.",
+                        'time' => 'Penting',
+                        'href' => '/subscription',
+                        'type' => 'subscription',
+                    ];
+                }
+
+                // 5. Latest Announcement for Employee
+                if (\Illuminate\Support\Facades\Schema::hasTable('announcements')) {
+                    $latestAnnounce = \App\Models\Announcement::where('company_id', $activeCompany->id)
+                        ->where('is_published', true)
+                        ->latest()
+                        ->first();
+                    if ($latestAnnounce) {
+                        $notifications[] = [
+                            'id' => "announce_{$latestAnnounce->id}",
+                            'title' => 'Pengumuman: ' . $latestAnnounce->title,
+                            'description' => \Illuminate\Support\Str::limit(strip_tags($latestAnnounce->content), 65),
+                            'time' => $latestAnnounce->created_at?->diffForHumans() ?? 'Baru saja',
+                            'href' => '/announcements',
+                            'type' => 'announcement',
+                        ];
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Silently fallback if any schema issue
+            }
+        }
+
         return [
             ...parent::share($request),
             'auth' => [
@@ -71,6 +158,7 @@ class HandleInertiaRequests extends Middleware
                 ]) : [],
                 'role' => $user?->currentRole(),
                 'is_founder' => $user?->isFounder() ?? false,
+                'notifications' => $notifications,
                 'subscription' => $activeCompany ? [
                     'state' => $activeCompany->subscriptionState(),
                     'days_left' => $activeCompany->daysLeft(),

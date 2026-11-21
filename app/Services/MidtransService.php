@@ -41,8 +41,8 @@ class MidtransService
             ],
         ];
 
-        // If credentials are valid real keys, call Midtrans Snap API
-        if ($serverKey && !str_contains($serverKey, 'demo-key')) {
+        // If credentials are valid real keys and not running in automated tests, call Midtrans Snap API
+        if (!app()->environment('testing') && $serverKey && !str_contains($serverKey, 'demo-key') && !str_contains($serverKey, 'your-key')) {
             try {
                 $response = Http::withHeaders([
                     'Authorization' => 'Basic ' . base64_encode($serverKey . ':'),

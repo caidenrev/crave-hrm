@@ -118,12 +118,37 @@ class SubscriptionController extends Controller
 
         $snap = MidtransService::createSnapTransaction($invoice, $user, $company);
 
-        if ($request->wantsJson()) {
+        $serverKey = config('midtrans.server_key');
+        $isDemo = empty($serverKey) || str_contains($serverKey, 'demo-key') || str_starts_with($snap['token'] ?? '', 'SNAP-MOCK-');
+
+        if ($isDemo) {
+            // Settle demo transaction directly without error
+            MidtransService::handleNotification([
+                'order_id' => $invoice->order_id,
+                'transaction_status' => 'settlement',
+                'gross_amount' => $invoice->amount,
+                'payment_type' => 'qris_simulation',
+            ]);
+
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'order_id' => $invoice->order_id,
+                    'is_demo' => true,
+                    'message' => "Paket {$plan->label} berhasil diperpanjang (+{$plan->months} bulan)!",
+                ]);
+            }
+
+            return redirect()->route('subscription.index')->with('success', "Paket {$plan->label} berhasil diperpanjang (+{$plan->months} bulan)!");
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
                 'success' => true,
                 'order_id' => $invoice->order_id,
                 'snap_token' => $snap['token'],
                 'redirect_url' => $snap['redirect_url'],
+                'is_demo' => false,
             ]);
         }
 

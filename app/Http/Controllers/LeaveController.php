@@ -62,10 +62,17 @@ class LeaveController extends Controller
         [$companyId, $employee] = $this->getActiveContext($request);
         $currentYear = Carbon::now()->year;
 
-        // Leave Types for company
+        // Leave Types for company - ensure defaults exist
         $leaveTypes = LeaveType::where('company_id', $companyId)
             ->where('is_active', true)
             ->get();
+
+        if ($leaveTypes->isEmpty() && $companyId) {
+            LeaveType::seedDefaultsForCompany($companyId);
+            $leaveTypes = LeaveType::where('company_id', $companyId)
+                ->where('is_active', true)
+                ->get();
+        }
 
         // Balances for employee
         $balances = [];

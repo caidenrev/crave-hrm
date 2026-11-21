@@ -45,23 +45,68 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
     }
   }, [midtrans]);
 
-  const handleCheckout = (months) => {
+  const handleCheckout = async (months) => {
     setLoadingMonths(months);
 
-    router.post(
-      "/subscription/checkout",
-      { months },
-      {
-        preserveScroll: true,
-        onSuccess: (page) => {
-          setLoadingMonths(null);
+    try {
+      const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+      const res = await fetch("/subscription/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-CSRF-TOKEN": csrfToken || "",
         },
-        onError: () => {
-          setLoadingMonths(null);
-          toast.error("Gagal membuat pesanan langganan.");
-        },
+        body: JSON.stringify({ months }),
+      });
+
+      const result = await res.json();
+
+      if (!res.ok || !result.success) {
+        throw new Error(result.error || "Gagal membuat pesanan langganan.");
       }
-    );
+
+      // Case 1: Demo / simulation instant renewal without errors
+      if (result.is_demo) {
+        toast.success(result.message || `Paket langganan ${months} bulan berhasil diaktifkan!`);
+        router.reload({ preserveScroll: true });
+        setLoadingMonths(null);
+        return;
+      }
+
+      // Case 2: Midtrans Snap interactive popup
+      if (result.snap_token && window.snap) {
+        window.snap.pay(result.snap_token, {
+          onSuccess: () => {
+            toast.success("Pembayaran langganan berhasil diselesaikan!");
+            router.reload({ preserveScroll: true });
+            setLoadingMonths(null);
+          },
+          onPending: () => {
+            toast.info("Menunggu pembayaran diselesaikan.");
+            router.reload({ preserveScroll: true });
+            setLoadingMonths(null);
+          },
+          onError: () => {
+            toast.error("Pembayaran dibatalkan atau tidak selesai.");
+            setLoadingMonths(null);
+          },
+          onClose: () => {
+            setLoadingMonths(null);
+          },
+        });
+      } else if (result.redirect_url) {
+        // Case 3: External payment link redirect
+        window.location.href = result.redirect_url;
+      } else {
+        router.reload({ preserveScroll: true });
+        setLoadingMonths(null);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Gagal memproses perpanjangan langganan.");
+      setLoadingMonths(null);
+    }
   };
 
   const rupiah = (val) =>

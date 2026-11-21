@@ -3,6 +3,7 @@ import { Head, useForm, Link } from "@inertiajs/react";
 import GuestLayout from "@/layouts/GuestLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import {
   Building2,
   CheckCircle2,
@@ -17,6 +18,10 @@ import {
   Users,
   ArrowRight,
   ShieldCheck,
+  Calendar,
+  Clock,
+  Check,
+  Receipt,
 } from "lucide-react";
 
 const EMPLOYEE_OPTIONS = [
@@ -46,7 +51,11 @@ export default function ContactSales() {
       preserveScroll: true,
       onSuccess: () => {
         setSubmittedData({ ...data });
+        toast.success("Permintaan konsultasi berhasil dikirim!");
         reset();
+      },
+      onError: () => {
+        toast.error("Mohon periksa kembali kolom formulir yang belum lengkap.");
       },
     });
   };
@@ -58,6 +67,15 @@ export default function ContactSales() {
       )}`
     : "https://wa.me/6281234567890?text=Halo%20Tim%20Sales%20Crave%20HRM,%20saya%20tertarik%20konsultasi%20solusi%20dan%20demo%20Crave%20HRM.";
 
+  const ticketNumber = submittedData
+    ? `CS-2611-${Math.abs(
+        (submittedData.name + submittedData.company_name).split("").reduce((a, b) => {
+          a = (a << 5) - a + b.charCodeAt(0);
+          return a & a;
+        }, 0) % 9000
+      ) + 1000}`
+    : "CS-2611-8891";
+
   return (
     <GuestLayout
       title="Konsultasi Solusi & Demo."
@@ -67,49 +85,87 @@ export default function ContactSales() {
       <Head title="Hubungi Sales & Demo — Crave HRM" />
 
       {submittedData ? (
-        /* SUCCESS CONFIRMATION STATE */
-        <div className="py-2 text-center animate-in fade-in-50 zoom-in-95 duration-200">
-          <div className="mx-auto size-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 shadow-2xs border border-emerald-100">
-            <CheckCircle2 className="size-8" />
+        /* SUCCESS CONFIRMATION STATE - POLISHED CRAVE POS STYLE */
+        <div className="py-1 text-center animate-in fade-in-50 zoom-in-95 duration-200">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-extrabold tracking-wide">
+              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+              INQUIRY TICKET #{ticketNumber}
+            </span>
           </div>
 
-          <h3 className="text-xl font-extrabold text-slate-900 tracking-tight">
-            Permintaan Demo Berhasil Terkirim!
+          <div className="mx-auto size-13 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-3 shadow-2xs border border-primary/20">
+            <CheckCircle2 className="size-7 text-primary" />
+          </div>
+
+          <h3 className="text-xl font-black text-slate-900 tracking-tight">
+            Permintaan Demo Berhasil Diterima!
           </h3>
-          <p className="mt-2 text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
-            Terima kasih, <strong className="text-slate-900">{submittedData.name}</strong>. Tim Solution Architect Crave HRM akan menghubungi Anda melalui WhatsApp / Email dalam waktu 1x24 jam kerja.
+          <p className="mt-1.5 text-xs sm:text-[13px] text-slate-600 max-w-md mx-auto leading-relaxed">
+            Terima kasih, <strong className="text-slate-900">{submittedData.name}</strong>. Tim Solution Consultant Crave HRM telah menerima rincian profil perusahaan Anda.
           </p>
 
-          {/* Submission Summary Card */}
-          <div className="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 text-left space-y-2 text-xs">
-            <div className="flex justify-between items-center py-1 border-b border-slate-200/60">
-              <span className="text-slate-500">Perusahaan</span>
-              <span className="font-bold text-slate-900">{submittedData.company_name}</span>
-            </div>
-            <div className="flex justify-between items-center py-1 border-b border-slate-200/60">
-              <span className="text-slate-500">Email Kantor</span>
-              <span className="font-semibold text-slate-900">{submittedData.work_email}</span>
-            </div>
-            <div className="flex justify-between items-center py-1 border-b border-slate-200/60">
-              <span className="text-slate-500">WhatsApp / Telepon</span>
-              <span className="font-semibold text-slate-900">{submittedData.phone}</span>
-            </div>
-            <div className="flex justify-between items-center py-1">
-              <span className="text-slate-500">Estimasi Karyawan</span>
-              <span className="font-bold text-primary">{submittedData.employee_count}</span>
+          {/* 3-Step Progress Timeline */}
+          <div className="mt-4 p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div className="flex flex-col items-center">
+                <span className="size-6 rounded-full bg-primary text-white flex items-center justify-center text-[10px] font-bold shadow-xs">
+                  <Check className="size-3.5 stroke-[3]" />
+                </span>
+                <span className="text-[10px] font-bold text-slate-900 mt-1">Diterima</span>
+                <span className="text-[9px] text-emerald-600 font-semibold">Tercatat di sistem</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="size-6 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] font-bold shadow-xs">
+                  2
+                </span>
+                <span className="text-[10px] font-bold text-slate-900 mt-1">Review Kebutuhan</span>
+                <span className="text-[9px] text-slate-500">Maks. 1x24 jam</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <span className="size-6 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center text-[10px] font-bold">
+                  3
+                </span>
+                <span className="text-[10px] font-bold text-slate-600 mt-1">Undangan Demo</span>
+                <span className="text-[9px] text-slate-400">Jadwal privat</span>
+              </div>
             </div>
           </div>
 
-          {/* Instant WhatsApp Action */}
-          <div className="mt-6 space-y-2.5">
+          {/* Submission Summary Receipt */}
+          <div className="mt-3.5 p-3.5 rounded-2xl bg-white border border-slate-200/90 text-left space-y-1.5 text-xs shadow-2xs">
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
+              <span className="text-slate-500">Nama Penanggung Jawab</span>
+              <span className="font-bold text-slate-900">{submittedData.name}</span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
+              <span className="text-slate-500">Entitas Bisnis</span>
+              <span className="font-bold text-slate-900">{submittedData.company_name}</span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
+              <span className="text-slate-500">Email Kantor</span>
+              <span className="font-semibold text-slate-800">{submittedData.work_email}</span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-100">
+              <span className="text-slate-500">WhatsApp / HP</span>
+              <span className="font-semibold text-slate-800">{submittedData.phone}</span>
+            </div>
+            <div className="flex justify-between items-center py-1">
+              <span className="text-slate-500">Skala Tenaga Kerja</span>
+              <span className="font-extrabold text-primary">{submittedData.employee_count}</span>
+            </div>
+          </div>
+
+          {/* Instant WhatsApp Action & Alternate Buttons */}
+          <div className="mt-4 space-y-2">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm tracking-tight flex items-center justify-center gap-2 shadow-xs transition-colors"
+              className="w-full h-11.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm tracking-tight flex items-center justify-center gap-2 shadow-xs transition-colors cursor-pointer"
             >
               <MessageCircle className="size-4.5" />
-              <span>Chat Tim Sales Sekarang di WhatsApp</span>
+              <span>Ingin Respon Lebih Cepat? Chat Tim Sales di WhatsApp</span>
             </a>
 
             <div className="grid grid-cols-2 gap-2 pt-1">
@@ -117,20 +173,25 @@ export default function ContactSales() {
                 type="button"
                 variant="outline"
                 onClick={() => setSubmittedData(null)}
-                className="h-10 rounded-xl text-xs font-semibold text-slate-700"
+                className="h-10 rounded-xl text-xs font-semibold text-slate-700 cursor-pointer"
               >
-                Kirim Form Lain
+                Kirim Permintaan Lain
               </Button>
               <Button
                 asChild
                 variant="default"
-                className="h-10 rounded-xl text-xs font-bold bg-primary text-white"
+                className="h-10 rounded-xl text-xs font-bold bg-primary text-white cursor-pointer"
               >
                 <Link href="/register">
                   Daftar Akun Langsung <ArrowRight className="size-3.5 ml-1" />
                 </Link>
               </Button>
             </div>
+          </div>
+
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-[10.5px] text-slate-400">
+            <ShieldCheck className="size-3.5 text-emerald-600" />
+            <span>Data dilindungi enkripsi TLS 256-bit &amp; kepatuhan UU PDP No. 27/2022.</span>
           </div>
         </div>
       ) : (

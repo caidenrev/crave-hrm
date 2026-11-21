@@ -11,6 +11,9 @@ import {
   Receipt,
   Crown,
   CreditCard,
+  Calendar,
+  Clock,
+  Check,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -52,50 +55,70 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const searchRef = useRef(null);
 
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      title: "Pengajuan Cuti Tahunan",
-      description: "Budi Santoso mengajukan cuti 3 hari (14-16 Nov 2026).",
-      time: "10 menit yang lalu",
-      read: false,
-      href: "/leave/approvals",
-      icon: Receipt,
-      color: "bg-primary text-white shadow-xs",
-    },
-    {
-      id: 2,
-      title: "Lembur SPKL Menunggu Review",
-      description: "2 staf logistik mengajukan lembur 4 jam.",
-      time: "1 jam yang lalu",
-      read: false,
-      href: "/claims/overtime",
-      icon: AlertTriangle,
-      color: "bg-amber-500 text-white shadow-xs",
-    },
-    {
-      id: 3,
-      title: "Klaim Reimbursement Masuk",
-      description: "Siti Rahma mengajukan klaim medis Rp 350.000.",
-      time: "2 jam yang lalu",
-      read: false,
-      href: "/claims/reimbursement",
-      icon: Receipt,
-      color: "bg-emerald-600 text-white shadow-xs",
-    },
-  ]);
+  // Dynamic notifications from server
+  const serverNotifications = auth?.notifications || [];
+  const storageKey = auth?.user?.id ? `crave_read_notifs_${auth.user.id}` : "crave_read_notifs_guest";
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const [readIds, setReadIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      setReadIds(saved ? JSON.parse(saved) : []);
+    } catch {
+      setReadIds([]);
+    }
+  }, [storageKey]);
+
+  const getNotifMeta = (n) => {
+    switch (n.type) {
+      case "leave":
+        return { icon: Calendar, color: "bg-primary text-white shadow-xs" };
+      case "overtime":
+        return { icon: Clock, color: "bg-amber-500 text-white shadow-xs" };
+      case "claim":
+        return { icon: Receipt, color: "bg-emerald-600 text-white shadow-xs" };
+      case "subscription":
+        return { icon: AlertTriangle, color: "bg-rose-500 text-white shadow-xs" };
+      case "announcement":
+        return { icon: Bell, color: "bg-indigo-600 text-white shadow-xs" };
+      default:
+        return { icon: Bell, color: "bg-primary text-white shadow-xs" };
+    }
+  };
+
+  const notificationsList = serverNotifications.map((n) => ({
+    ...n,
+    ...getNotifMeta(n),
+    read: readIds.includes(n.id),
+  }));
+
+  const unreadCount = notificationsList.filter((n) => !n.read).length;
 
   const handleMarkAllAsRead = (e) => {
     e?.stopPropagation();
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    const allIds = serverNotifications.map((n) => n.id);
+    const updated = Array.from(new Set([...readIds, ...allIds]));
+    setReadIds(updated);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch {}
   };
 
   const handleNotificationClick = (item) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === item.id ? { ...n, read: true } : n))
-    );
+    const updated = Array.from(new Set([...readIds, item.id]));
+    setReadIds(updated);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(updated));
+    } catch {}
+
     if (item.href) {
       router.visit(item.href);
     }
@@ -258,41 +281,51 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
               </div>
 
               <div className="max-h-[320px] overflow-y-auto p-1.5 space-y-1">
-                {notifications.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={item.id}
-                      onClick={() => handleNotificationClick(item)}
-                      className={cn(
-                        "flex items-start gap-3 rounded-xl p-2.5 transition-colors cursor-pointer group text-left",
-                        item.read
-                          ? "hover:bg-muted/40 opacity-75"
-                          : "bg-primary/5 hover:bg-primary/10 border border-primary/15 shadow-2xs"
-                      )}
-                    >
-                      <div className={cn("mt-0.5 rounded-full p-2 shrink-0", item.color)}>
-                        <Icon className="size-4" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-1">
-                          <p className={cn("text-xs font-bold truncate", item.read ? "text-foreground" : "text-primary")}>
-                            {item.title}
-                          </p>
-                          {!item.read && (
-                            <span className="size-2 rounded-full bg-primary shrink-0" />
-                          )}
-                        </div>
-                        <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
-                          {item.description}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground/80 mt-1 font-medium">
-                          {item.time}
-                        </p>
-                      </div>
+                {notificationsList.length === 0 ? (
+                  <div className="py-8 px-4 text-center">
+                    <div className="size-9 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center mx-auto mb-2">
+                      <Check className="size-4.5 stroke-[2.5]" />
                     </div>
-                  );
-                })}
+                    <p className="text-xs font-bold text-foreground">Tidak Ada Notifikasi</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">Semua tugas dan pengajuan sudah selesai.</p>
+                  </div>
+                ) : (
+                  notificationsList.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <div
+                        key={item.id}
+                        onClick={() => handleNotificationClick(item)}
+                        className={cn(
+                          "flex items-start gap-3 rounded-xl p-2.5 transition-colors cursor-pointer group text-left",
+                          item.read
+                            ? "hover:bg-muted/40 opacity-75"
+                            : "bg-primary/5 hover:bg-primary/10 border border-primary/15 shadow-2xs"
+                        )}
+                      >
+                        <div className={cn("mt-0.5 rounded-full p-2 shrink-0", item.color)}>
+                          <Icon className="size-4" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <p className={cn("text-xs font-bold truncate", item.read ? "text-foreground" : "text-primary")}>
+                              {item.title}
+                            </p>
+                            {!item.read && (
+                              <span className="size-2 rounded-full bg-primary shrink-0" />
+                            )}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2 leading-relaxed">
+                            {item.description}
+                          </p>
+                          <p className="text-[10px] text-muted-foreground/80 mt-1 font-medium">
+                            {item.time}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
               </div>
 
               <div className="p-2 border-t border-border/60 bg-muted/10">

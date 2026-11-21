@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Link } from "@inertiajs/react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Logo } from "@/components/Logo";
 import { smoothScrollTo } from "@/lib/smoothScroll";
@@ -101,7 +102,7 @@ export function LandingNavbar({ auth }) {
             isScrolled={isScrolled}
             onItemClick={() => setIsMobileMenuOpen(false)}
           />
-          <div className="flex items-center gap-2.5 justify-end hidden lg:flex shrink-0">
+          <div className="relative z-20 pointer-events-auto flex items-center gap-2.5 justify-end hidden lg:flex shrink-0">
             {user ? (
               <NavbarButton
                 href="/dashboard"
@@ -111,15 +112,15 @@ export function LandingNavbar({ auth }) {
               </NavbarButton>
             ) : (
               <>
-                <a
+                <Link
                   href="/login"
-                  className="text-[13px] font-semibold text-[#4B5563] hover:text-[#111827] px-2.5 py-1.5 transition-colors cursor-pointer"
+                  className="relative z-20 text-[13px] font-semibold text-[#4B5563] hover:text-[#111827] px-2.5 py-1.5 transition-colors cursor-pointer"
                 >
                   Masuk
-                </a>
+                </Link>
                 <NavbarButton
                   href="/register"
-                  className="bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white shadow-xs"
+                  className="relative z-20 bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white shadow-xs"
                 >
                   Mulai Gratis
                 </NavbarButton>
@@ -225,20 +226,20 @@ export function LandingNavbar({ auth }) {
                 </a>
               ) : (
                 <>
-                  <a
+                  <Link
                     href="/register"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="w-full h-11.5 sm:h-12 rounded-full bg-[oklch(0.54_0.19_258)] hover:bg-[oklch(0.48_0.20_258)] text-white font-bold text-[13.5px] sm:text-[14px] shadow-sm flex items-center justify-center transition-all cursor-pointer active:scale-[0.99]"
                   >
                     Mulai Gratis (30 Hari)
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="w-full h-11.5 sm:h-12 rounded-full bg-slate-50/70 hover:bg-slate-100 border border-slate-200/80 text-[#111827] font-semibold text-[13px] sm:text-[13.5px] shadow-2xs flex items-center justify-center transition-all cursor-pointer active:scale-[0.99]"
                   >
                     Masuk ke Akun
-                  </a>
+                  </Link>
                 </>
               )}
             </motion.div>

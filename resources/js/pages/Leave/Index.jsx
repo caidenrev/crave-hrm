@@ -70,6 +70,12 @@ export default function LeaveIndex({
     attachment_url: "",
   });
 
+  useEffect(() => {
+    if (!data.leave_type_id && leaveTypes.length > 0) {
+      setData("leave_type_id", String(leaveTypes[0].id));
+    }
+  }, [leaveTypes, data.leave_type_id]);
+
   // Selected leave type details
   const selectedType = useMemo(() => {
     return leaveTypes.find((t) => String(t.id) === String(data.leave_type_id));

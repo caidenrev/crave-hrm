@@ -89,7 +89,7 @@ export const NavItems = ({ items, className, onItemClick, isScrolled }) => {
     <motion.div
       onMouseLeave={() => setHovered(null)}
       className={cn(
-        "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-1 lg:space-x-1.5 text-sm font-medium transition duration-200 lg:flex",
+        "absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-1 lg:space-x-1.5 text-sm font-medium transition duration-200 lg:flex pointer-events-none",
         className
       )}
     >
@@ -104,7 +104,7 @@ export const NavItems = ({ items, className, onItemClick, isScrolled }) => {
               }
               if (onItemClick) onItemClick();
             }}
-            className="relative px-3 py-1.5 font-medium z-10 select-none cursor-pointer"
+            className="relative px-3 py-1.5 font-medium z-10 select-none cursor-pointer pointer-events-auto"
             key={`link-${idx}`}
             href={item.link}
           >
