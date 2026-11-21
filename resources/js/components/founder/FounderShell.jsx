@@ -126,41 +126,31 @@ export function FounderShell({ children }) {
 
       {/* Main Content Area */}
       <div className="lg:pl-64">
-        {/* Mobile Header */}
-        <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur lg:hidden">
-          <div className="flex items-center gap-2.5">
-            <div className="grid size-8 shrink-0 place-items-center">
-              <img
-                src="/light-mode-logo.png"
-                alt="Crave"
-                className="size-8 object-contain dark:hidden"
-              />
-              <img
-                src="/dark-mode-logo.png"
-                alt="Crave"
-                className="size-8 object-contain hidden dark:block"
-              />
-            </div>
-            <div className="leading-tight">
-              <p className="text-sm font-extrabold tracking-tight text-foreground">
-                Crave
-              </p>
-              <p className="text-[10px] text-muted-foreground font-normal">Founder Console</p>
-            </div>
+        {/* Mobile Header (Crave POS Parity) */}
+        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border/60 bg-background/80 px-4 py-3 backdrop-blur-md lg:hidden">
+          <div className="leading-tight">
+            <p className="text-xl font-black tracking-tight text-foreground">
+              Crave
+            </p>
+            <p className="text-xs text-muted-foreground font-normal">Founder Console</p>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              className="rounded-xl size-8"
+            <button
+              type="button"
               onClick={toggle}
+              className="size-9 rounded-full border border-border/80 bg-background/80 flex items-center justify-center text-foreground hover:bg-accent transition-colors shadow-xs cursor-pointer"
               aria-label={dark ? "Mode terang" : "Mode gelap"}
             >
-              {dark ? <Sun className="size-3.5" /> : <Moon className="size-3.5" />}
-            </Button>
-            <Button variant="outline" size="icon" className="rounded-xl size-8" onClick={handleLogout} aria-label="Keluar">
-              <LogOut className="size-3.5" />
-            </Button>
+              {dark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+            </button>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="size-9 rounded-full border border-border/80 bg-background/80 flex items-center justify-center text-foreground hover:bg-accent transition-colors shadow-xs cursor-pointer"
+              aria-label="Keluar"
+            >
+              <LogOut className="size-4" />
+            </button>
           </div>
         </header>
 
@@ -169,9 +159,9 @@ export function FounderShell({ children }) {
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation */}
-      <div className="fixed bottom-4 left-3 right-3 z-40 mx-auto lg:hidden max-w-md">
-        <nav className="flex items-center justify-around rounded-2xl border bg-card/95 p-1.5 shadow-2xl backdrop-blur">
+      {/* Mobile Bottom Navigation (Frosted Glassmorphism - Crave POS Parity) */}
+      <div className="fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-md lg:hidden">
+        <nav className="flex items-center justify-between rounded-3xl border border-white/40 dark:border-white/10 bg-white/70 dark:bg-card/70 p-1.5 shadow-2xl backdrop-blur-2xl">
           {NAV.map((item) => {
             const active = isActive(item.href);
             const Icon = item.icon;
@@ -180,14 +170,14 @@ export function FounderShell({ children }) {
                 key={item.id}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center gap-1 rounded-xl px-3 py-1.5 text-[10px] font-bold transition-all",
+                  "flex flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-2 px-1 text-[11px] transition-all",
                   active
-                    ? "bg-primary text-primary-foreground shadow"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-black/10 dark:bg-white/15 text-foreground font-bold shadow-xs"
+                    : "text-foreground/75 dark:text-foreground/60 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 font-medium"
                 )}
               >
-                <Icon className="size-4" />
-                <span>{item.label}</span>
+                <Icon className={cn("size-5 shrink-0", active ? "text-foreground" : "text-foreground/80 dark:text-foreground/70")} />
+                <span className="truncate tracking-tight">{item.label}</span>
               </Link>
             );
           })}
