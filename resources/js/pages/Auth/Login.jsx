@@ -161,12 +161,12 @@ export default function Login({
               Ingat sesi di perangkat ini
             </span>
           </label>
-          <button
-            type="button"
-            className="text-[12px] sm:text-[13px] font-semibold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+          <Link
+            href="/forgot-password"
+            className="text-[12px] sm:text-[13px] font-semibold text-primary hover:text-primary/80 transition-colors cursor-pointer"
           >
-            Forgot password?
-          </button>
+            Lupa kata sandi?
+          </Link>
         </div>
 
         {/* Cloudflare Turnstile Bot Verification (Full-Width Flexible) */}

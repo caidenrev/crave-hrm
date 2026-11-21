@@ -102,4 +102,9 @@ class User extends Authenticatable
         return $this->email === 'founder@craveservices.my.id' 
             || $this->companies()->wherePivot('role', 'super_admin')->exists();
     }
+
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $this->notify(new \App\Notifications\CraveResetPasswordNotification($token));
+    }
 }

@@ -8,10 +8,14 @@ use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password as PasswordBroker;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
@@ -283,6 +287,173 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/login')->with('success', 'Anda telah berhasil keluar dari sistem Crave HRM.');
+    }
+
+    /**
+     * Tampilkan halaman lupa kata sandi.
+     */
+    public function showForgotPassword()
+    {
+        if (Auth::check()) {
+            return redirect()->intended('/dashboard');
+        }
+
+        $isLocal = app()->environment('local', 'testing') || in_array(request()->getHost(), ['localhost', '127.0.0.1']);
+
+        return Inertia::render('Auth/ForgotPassword', [
+            'status' => session('status'),
+            'turnstileSiteKey' => $isLocal ? 'disabled' : env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
+        ]);
+    }
+
+    /**
+     * Kirim email berisi link token atur ulang kata sandi.
+     */
+    public function sendResetLinkEmail(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'cf_turnstile_response' => ['nullable', 'string'],
+        ], [
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format alamat email tidak valid.',
+        ]);
+
+        $turnstileError = $this->checkTurnstile($request);
+        if ($turnstileError) {
+            return $turnstileError;
+        }
+
+        // Rate limiter proteksi spam request
+        $throttleKey = 'forgot-password:' . Str::lower($request->ip());
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Terlalu banyak permintaan. Silakan tunggu {$seconds} detik sebelum mencoba kembali.",
+            ]);
+        }
+        RateLimiter::hit($throttleKey, 60);
+
+        $status = PasswordBroker::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === PasswordBroker::RESET_LINK_SENT) {
+            return back()->with('status', 'Tautan atur ulang kata sandi telah dikirim ke alamat email Anda. Silakan periksa kotak masuk atau spam.');
+        }
+
+        if ($status === PasswordBroker::INVALID_USER) {
+            return back()->withErrors(['email' => 'Alamat email tidak ditemukan dalam sistem Crave HRM.']);
+        }
+
+        return back()->withErrors(['email' => 'Gagal mengirimkan tautan atur ulang kata sandi. Silakan coba kembali beberapa saat lagi.']);
+    }
+
+    /**
+     * Tampilkan form pembuatan kata sandi baru dari token email.
+     */
+    public function showResetPassword(Request $request, string $token)
+    {
+        if (Auth::check()) {
+            return redirect()->intended('/dashboard');
+        }
+
+        $isLocal = app()->environment('local', 'testing') || in_array(request()->getHost(), ['localhost', '127.0.0.1']);
+
+        return Inertia::render('Auth/ResetPassword', [
+            'token' => $token,
+            'email' => $request->query('email', ''),
+            'turnstileSiteKey' => $isLocal ? 'disabled' : env('TURNSTILE_SITE_KEY', '0x4AAAAAAGE_beCSvLpqhbkp'),
+        ]);
+    }
+
+    /**
+     * Proses pembaruan kata sandi baru.
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => ['required', 'string'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed', Password::min(8)],
+            'cf_turnstile_response' => ['nullable', 'string'],
+        ], [
+            'token.required' => 'Token reset kata sandi tidak valid.',
+            'email.required' => 'Alamat email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+            'password.min' => 'Kata sandi minimal terdiri dari 8 karakter.',
+        ]);
+
+        $turnstileError = $this->checkTurnstile($request);
+        if ($turnstileError) {
+            return $turnstileError;
+        }
+
+        $status = PasswordBroker::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status === PasswordBroker::PASSWORD_RESET) {
+            return redirect()->route('login')->with('status', 'Kata sandi Anda berhasil diperbarui! Silakan masuk dengan kata sandi baru Anda.');
+        }
+
+        if ($status === PasswordBroker::INVALID_TOKEN) {
+            return back()->withErrors(['email' => 'Tautan atur ulang kata sandi tidak valid atau telah kedaluwarsa. Silakan ajukan permintaan baru.']);
+        }
+
+        return back()->withErrors(['email' => 'Gagal memperbarui kata sandi. Silakan periksa kembali data Anda.']);
+    }
+
+    /**
+     * Validasi bot Cloudflare Turnstile pada environment produksi.
+     */
+    protected function checkTurnstile(Request $request): ?\Illuminate\Http\RedirectResponse
+    {
+        $isLocal = app()->environment('local', 'testing') || in_array($request->getHost(), ['localhost', '127.0.0.1']);
+        $turnstileSecret = env('TURNSTILE_SECRET_KEY', '0x4AAAAAAGE_bfNXRoOw_fB7_MW9wsyXlRs');
+        $turnstileToken = $request->input('cf_turnstile_response');
+
+        if (!$isLocal && $turnstileSecret) {
+            if (!$turnstileToken) {
+                return back()->withErrors([
+                    'cf_turnstile_response' => 'Silakan centang verifikasi Cloudflare Turnstile terlebih dahulu.',
+                ]);
+            }
+
+            try {
+                $response = Http::asForm()->timeout(5)->post(
+                    'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+                    [
+                        'secret' => $turnstileSecret,
+                        'response' => $turnstileToken,
+                        'remoteip' => $request->ip(),
+                    ]
+                );
+
+                $result = $response->json();
+
+                if (!($result['success'] ?? false)) {
+                    Log::warning('[Turnstile] Bot verification failed', ['result' => $result]);
+                    return back()->withErrors([
+                        'cf_turnstile_response' => 'Verifikasi bot gagal. Silakan coba kembali.',
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('[Turnstile] Verification connection error: ' . $e->getMessage());
+            }
+        }
+
+        return null;
     }
 }
 
