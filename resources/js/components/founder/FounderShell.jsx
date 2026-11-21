@@ -13,6 +13,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import GlassNav from "@/components/dashboard/GlassNav";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -159,29 +160,17 @@ export function FounderShell({ children }) {
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation (Frosted Glassmorphism - Crave POS Parity) */}
-      <div className="fixed bottom-3 left-3 right-3 z-50 mx-auto max-w-md lg:hidden">
-        <nav className="flex items-center justify-between rounded-3xl border border-white/40 dark:border-white/10 bg-white/70 dark:bg-card/70 p-1.5 shadow-2xl backdrop-blur-2xl">
-          {NAV.map((item) => {
-            const active = isActive(item.href);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.id}
-                href={item.href}
-                className={cn(
-                  "flex flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-2 px-1 text-[11px] transition-all",
-                  active
-                    ? "bg-black/10 dark:bg-white/15 text-foreground font-bold shadow-xs"
-                    : "text-foreground/75 dark:text-foreground/60 hover:text-foreground hover:bg-black/5 dark:hover:bg-white/5 font-medium"
-                )}
-              >
-                <Icon className={cn("size-5 shrink-0", active ? "text-foreground" : "text-foreground/80 dark:text-foreground/70")} />
-                <span className="truncate tracking-tight">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+      {/* Mobile Bottom Navigation (GlassNav Liquid Glass ala Crave POS) */}
+      <div className="fixed bottom-5 left-3 right-3 z-[9999] mx-auto lg:hidden" style={{ maxWidth: 480 }}>
+        <GlassNav
+          tabs={NAV.map(({ id, label, icon }) => ({ id, label, icon, noFill: true }))}
+          value={NAV.find((n) => isActive(n.href))?.id || "ringkasan"}
+          theme={dark ? "dark" : "light"}
+          onChange={(id) => {
+            const item = NAV.find((n) => n.id === id);
+            if (item) router.visit(item.href);
+          }}
+        />
       </div>
     </div>
   );

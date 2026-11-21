@@ -78,54 +78,45 @@ export default function FounderLeads({ leads, stats, filters }) {
         subtitle="Pantau data leads masuk dari formulir Contact Sales landing page dan hubungi calon klien via WhatsApp 1-klik."
       />
 
-      {/* KPI Cards */}
+      {/* KPI Cards (Crave POS Parity: Clean Monochrome White Cards) */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-        <Tile tone="primary">
-          <span className="text-xs font-bold uppercase tracking-wider text-primary-foreground/80">
-            Total Prospek Masuk
+        <Tile>
+          <span className="text-xs font-semibold text-muted-foreground">
+            Total prospek masuk
           </span>
-          <p className="mt-2 text-3xl font-black tracking-tight">{stats.total}</p>
-          <p className="mt-1 text-xs text-primary-foreground/80">
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">{stats.total}</p>
+          <p className="mt-1 text-xs text-muted-foreground">
             {stats.converted} prospek berhasil closing
           </p>
         </Tile>
 
         <Tile>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Prospek Baru (Belum Dihubungi)
-            </span>
-            <Clock className="size-4 text-blue-500" />
-          </div>
-          <p className="mt-2 text-3xl font-black tracking-tight text-blue-600 dark:text-blue-400">
+          <span className="text-xs font-semibold text-muted-foreground">
+            Prospek baru (belum dihubungi)
+          </span>
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">
             {stats.new}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
-            {stats.new > 0 ? "Segera follow-up calon klien!" : "Semua prospek telah direspons"}
+            {stats.new > 0 ? "Segera follow-up calon klien" : "Semua prospek telah direspons"}
           </p>
         </Tile>
 
         <Tile>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Demo Dijadwalkan
-            </span>
-            <Calendar className="size-4 text-purple-500" />
-          </div>
-          <p className="mt-2 text-3xl font-black tracking-tight text-purple-600 dark:text-purple-400">
+          <span className="text-xs font-semibold text-muted-foreground">
+            Demo dijadwalkan
+          </span>
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">
             {stats.demo_scheduled}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">Siap presentasi solusi HRM</p>
         </Tile>
 
         <Tile>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-              Closing / Jadi Tenant
-            </span>
-            <CheckCircle2 className="size-4 text-emerald-500" />
-          </div>
-          <p className="mt-2 text-3xl font-black tracking-tight text-emerald-600 dark:text-emerald-400">
+          <span className="text-xs font-semibold text-muted-foreground">
+            Closing / jadi tenant
+          </span>
+          <p className="mt-1 text-2xl font-black tracking-tight text-foreground">
             {stats.converted}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
