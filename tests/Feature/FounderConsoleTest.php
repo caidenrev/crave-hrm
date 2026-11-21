@@ -244,4 +244,31 @@ class FounderConsoleTest extends TestCase
         $this->assertEquals('active', $this->company->subscription_status);
         $this->assertNotNull($this->company->current_period_end);
     }
+
+    public function test_user_can_cancel_pending_subscription_invoice(): void
+    {
+        $orderId = 'CRV-TEST-CANCEL-' . uniqid();
+        $invoice = SubscriptionInvoice::create([
+            'company_id' => $this->company->id,
+            'user_id' => $this->regularHr->id,
+            'order_id' => $orderId,
+            'plan_name' => 'Paket 1 Bulan',
+            'months' => 1,
+            'amount' => 299000,
+            'status' => 'pending',
+            'source' => 'midtrans',
+        ]);
+
+        $response = $this->actingAs($this->regularHr)
+            ->withSession(['active_company_id' => $this->company->id])
+            ->post('/subscription/cancel-invoice', [
+                'order_id' => $orderId,
+            ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('success');
+
+        $invoice->refresh();
+        $this->assertEquals('cancelled', $invoice->status);
+    }
 }

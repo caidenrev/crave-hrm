@@ -9,7 +9,6 @@ import {
   CreditCard,
   ExternalLink,
   ShieldAlert,
-  Sparkles,
   TrendingUp,
   UserCheck,
   UserPlus,
@@ -71,23 +70,23 @@ export default function FounderIndex({ days, kpi, daily, expiring, feed }) {
 
       {/* New Leads Notification Banner */}
       {kpi.new_leads > 0 && (
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/90 p-4 text-amber-950 shadow-xs">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4 text-foreground shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="size-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shrink-0 shadow-xs">
+            <div className="size-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-soft">
               <UserPlus className="size-5" />
             </div>
             <div>
-              <p className="text-sm font-extrabold">
-                {kpi.new_leads} Permintaan Demo & Sales Baru Masuk!
+              <p className="text-sm font-extrabold text-foreground">
+                {kpi.new_leads} Permintaan Demo & Sales Baru Masuk
               </p>
-              <p className="text-xs text-amber-800">
+              <p className="text-xs text-muted-foreground">
                 Calon klien telah mengisi formulir Contact Sales di landing page dan menunggu dihubungi via WhatsApp / Email.
               </p>
             </div>
           </div>
           <Link
             href="/founder/leads"
-            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition-colors shrink-0 shadow-xs"
+            className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold transition-colors shrink-0 shadow-soft"
           >
             Tindak Lanjuti <ArrowRight className="size-3.5" />
           </Link>
@@ -128,17 +127,14 @@ export default function FounderIndex({ days, kpi, daily, expiring, feed }) {
             <span className="text-xs text-muted-foreground">perusahaan</span>
           </div>
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-            <span className="inline-flex items-center gap-1 font-bold text-emerald-600">
-              <span className="size-2 rounded-full bg-emerald-500" />
+            <span className="inline-flex items-center rounded-lg bg-emerald-500/10 px-2.5 py-1 font-bold text-emerald-600 dark:text-emerald-400">
               {kpi.active} Aktif
             </span>
-            <span className="inline-flex items-center gap-1 font-bold text-blue-600">
-              <span className="size-2 rounded-full bg-blue-500" />
+            <span className="inline-flex items-center rounded-lg bg-blue-500/10 px-2.5 py-1 font-bold text-blue-600 dark:text-blue-400">
               {kpi.trial} Trial
             </span>
             {kpi.suspended > 0 && (
-              <span className="inline-flex items-center gap-1 font-bold text-red-500">
-                <span className="size-2 rounded-full bg-red-500" />
+              <span className="inline-flex items-center rounded-lg bg-destructive/10 px-2.5 py-1 font-bold text-destructive">
                 {kpi.suspended} Suspend
               </span>
             )}
@@ -169,7 +165,7 @@ export default function FounderIndex({ days, kpi, daily, expiring, feed }) {
             <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
               Pendaftaran Baru
             </span>
-            <Sparkles className="size-4 text-amber-500" />
+            <UserPlus className="size-4 text-primary" />
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <p className="text-3xl font-black tracking-tight">+{kpi.signups_period}</p>
@@ -245,20 +241,20 @@ export default function FounderIndex({ days, kpi, daily, expiring, feed }) {
               feed.map((item, idx) => (
                 <div key={idx} className="flex items-start gap-3 rounded-2xl bg-muted/40 p-2.5">
                   <div
-                    className={`size-7 rounded-xl flex items-center justify-center shrink-0 ${
+                    className={`size-8 rounded-xl flex items-center justify-center shrink-0 border border-border/60 ${
                       item.type === "payment"
-                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400"
+                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
                         : item.type === "lead"
-                        ? "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
-                        : "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-400"
+                        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                        : "bg-primary/10 text-primary"
                     }`}
                   >
                     {item.type === "payment" ? (
-                      <CreditCard className="size-3.5" />
+                      <CreditCard className="size-4" />
                     ) : item.type === "lead" ? (
-                      <UserPlus className="size-3.5" />
+                      <UserPlus className="size-4" />
                     ) : (
-                      <Building2 className="size-3.5" />
+                      <Building2 className="size-4" />
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -283,7 +279,7 @@ export default function FounderIndex({ days, kpi, daily, expiring, feed }) {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <AlertTriangle className="size-4.5 text-amber-500" />
+              <Clock className="size-4.5 text-primary" />
               <h2 className="text-base font-extrabold tracking-tight">
                 Perusahaan Berakhir Dalam 7 Hari ({expiring.length})
               </h2>
@@ -330,7 +326,7 @@ export default function FounderIndex({ days, kpi, daily, expiring, feed }) {
                       <StateBadge state={c.state} />
                     </td>
                     <td className="py-3">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-400">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-muted text-foreground">
                         {c.days_left} hari lagi
                       </span>
                     </td>

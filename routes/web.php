@@ -272,6 +272,7 @@ Route::middleware(['auth', 'founder'])->prefix('founder')->name('founder.')->gro
 Route::middleware('auth')->prefix('subscription')->name('subscription.')->group(function () {
     Route::get('/', [SubscriptionController::class, 'index'])->name('index');
     Route::post('/checkout', [SubscriptionController::class, 'checkout'])->name('checkout');
+    Route::post('/cancel-invoice', [SubscriptionController::class, 'cancelInvoice'])->name('cancel_invoice');
     Route::get('/suspended', [SubscriptionController::class, 'suspended'])->name('suspended');
 });
 

@@ -57,17 +57,25 @@ export function FounderShell({ children }) {
       {/* Desktop Sidebar */}
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r bg-card p-4 lg:flex">
         <div className="flex items-center gap-3 px-2 py-1">
-          <div className="size-10 rounded-2xl bg-primary flex items-center justify-center text-primary-foreground shadow-soft font-black text-lg">
-            C
+          <div className="grid size-9 shrink-0 place-items-center">
+            <img
+              src="/light-mode-logo.png"
+              alt="Crave"
+              className="size-9 object-contain dark:hidden"
+            />
+            <img
+              src="/dark-mode-logo.png"
+              alt="Crave"
+              className="size-9 object-contain hidden dark:block"
+            />
           </div>
           <div className="min-w-0 leading-tight">
-            <p className="truncate text-base font-extrabold tracking-tight">Crave HRM</p>
-            <div className="flex items-center gap-1.5">
-              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-              <p className="truncate text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
-                Founder Console
-              </p>
-            </div>
+            <p className="truncate text-base font-extrabold tracking-tight text-foreground">
+              Crave <span className="text-primary">HRM</span>
+            </p>
+            <p className="truncate text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              Founder Console
+            </p>
           </div>
         </div>
 
@@ -131,12 +139,23 @@ export function FounderShell({ children }) {
         {/* Mobile Header */}
         <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-background/90 px-4 py-3 backdrop-blur lg:hidden">
           <div className="flex items-center gap-2.5">
-            <div className="size-8 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black text-sm">
-              C
+            <div className="grid size-8 shrink-0 place-items-center">
+              <img
+                src="/light-mode-logo.png"
+                alt="Crave"
+                className="size-8 object-contain dark:hidden"
+              />
+              <img
+                src="/dark-mode-logo.png"
+                alt="Crave"
+                className="size-8 object-contain hidden dark:block"
+              />
             </div>
             <div className="leading-tight">
-              <p className="text-sm font-extrabold tracking-tight">Crave HRM</p>
-              <p className="text-[10px] text-muted-foreground font-semibold uppercase">Founder Console</p>
+              <p className="text-sm font-extrabold tracking-tight text-foreground">
+                Crave <span className="text-primary">HRM</span>
+              </p>
+              <p className="text-[10px] text-muted-foreground font-semibold uppercase tracking-wider">Founder Console</p>
             </div>
           </div>
           <div className="flex items-center gap-2">

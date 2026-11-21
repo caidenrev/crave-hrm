@@ -15,7 +15,6 @@ import {
   QrCode,
   ShieldCheck,
   Sparkles,
-  Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -23,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 
 export default function SubscriptionIndex({ company, plans, invoices, midtrans }) {
   const [loadingMonths, setLoadingMonths] = useState(null);
+  const [cancellingOrderId, setCancellingOrderId] = useState(null);
   const [snapReady, setSnapReady] = useState(false);
 
   useEffect(() => {
@@ -109,6 +109,36 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
     }
   };
 
+  const handleCancelInvoice = (orderId) => {
+    if (confirm(`Batalkan tagihan ${orderId}?`)) {
+      setCancellingOrderId(orderId);
+      router.post(
+        "/subscription/cancel-invoice",
+        { order_id: orderId },
+        {
+          preserveScroll: true,
+          onFinish: () => setCancellingOrderId(null),
+        }
+      );
+    }
+  };
+
+  const formatDate = (iso) => {
+    if (!iso) return "-";
+    try {
+      const d = new Date(iso);
+      return d.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch {
+      return iso;
+    }
+  };
+
   const rupiah = (val) =>
     new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -154,56 +184,58 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
           </Badge>
         </div>
 
-        {/* Status Card Banner */}
-        <div className="rounded-3xl border bg-card p-6 shadow-soft relative overflow-hidden">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Crown className="size-5 text-amber-500" />
-                <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
-                  Paket Saat Ini
-                </span>
+        {/* Status Card Banner - Minimalist Crave POS Style */}
+        <div className="rounded-2xl border bg-card p-4 sm:p-5 shadow-soft">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="size-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <Crown className="size-5" />
               </div>
-              <p className="text-2xl font-black tracking-tight text-foreground">
-                Crave HRM {company.plan_name}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {company.state === "trial" ? (
-                  <>
-                    Masa trial berakhir pada:{" "}
-                    <span className="font-bold text-foreground">{company.trial_ends_at || "-"}</span>
-                  </>
-                ) : (
-                  <>
-                    Periode aktif sampai:{" "}
-                    <span className="font-bold text-foreground">{company.current_period_end || "-"}</span>
-                  </>
-                )}
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Paket Saat Ini
+                  </span>
+                  <Badge variant="secondary" className="text-[11px] font-bold py-0 h-5">
+                    {company.plan_name}
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {company.state === "trial" ? (
+                    <>
+                      Masa trial sampai:{" "}
+                      <span className="font-bold text-foreground">{company.trial_ends_at || "-"}</span>
+                    </>
+                  ) : (
+                    <>
+                      Periode aktif sampai:{" "}
+                      <span className="font-bold text-foreground">{company.current_period_end || "-"}</span>
+                    </>
+                  )}
+                </p>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="rounded-2xl bg-muted/50 p-4 text-center min-w-32">
-                <span className="text-[11px] font-bold text-muted-foreground uppercase">Sisa Waktu</span>
-                <p className="text-3xl font-black text-primary tracking-tight mt-0.5">
-                  {company.days_left}
-                </p>
-                <span className="text-[11px] text-muted-foreground font-semibold">Hari Tersisa</span>
-              </div>
+            <div className="flex items-center gap-2 self-start sm:self-auto rounded-xl bg-muted/60 px-3.5 py-2 border border-border/50 text-xs">
+              <Clock className="size-4 text-muted-foreground shrink-0" />
+              <span className="text-muted-foreground font-medium">Sisa Waktu:</span>
+              <span className="font-black text-primary tracking-tight text-sm tabular-nums">
+                {company.days_left} Hari
+              </span>
             </div>
           </div>
 
           {company.days_left <= 7 && company.days_left > 0 && (
-            <div className="mt-4 flex items-center gap-2 rounded-2xl bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+            <div className="mt-3.5 flex items-center gap-2 rounded-xl bg-amber-50 p-2.5 text-xs text-amber-800 dark:bg-amber-950 dark:text-amber-300">
               <AlertTriangle className="size-4 shrink-0" />
               <span>
-                Masa aktif Anda tersisa <strong>{company.days_left} hari lagi</strong>. Lakukan perpanjangan sekarang untuk memastikan operasional absensi dan payroll karyawan tidak terganggu.
+                Masa aktif tersisa <strong>{company.days_left} hari lagi</strong>. Lakukan perpanjangan sekarang untuk memastikan operasional tidak terganggu.
               </span>
             </div>
           )}
 
           {company.state === "expired" && (
-            <div className="mt-4 flex items-center gap-2 rounded-2xl bg-red-50 p-3 text-xs text-red-800 dark:bg-red-950 dark:text-red-300">
+            <div className="mt-3.5 flex items-center gap-2 rounded-xl bg-red-50 p-2.5 text-xs text-red-800 dark:bg-red-950 dark:text-red-300">
               <AlertTriangle className="size-4 shrink-0" />
               <span>
                 Masa aktif perusahaan Anda telah berakhir. Pilih salah satu paket di bawah untuk mengaktifkan kembali seluruh modul HRM.
@@ -292,13 +324,7 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
                       disabled={loadingMonths === p.months}
                       onClick={() => handleCheckout(p.months)}
                     >
-                      {loadingMonths === p.months ? (
-                        "Menyiapkan Tagihan..."
-                      ) : (
-                        <>
-                          <Zap className="size-4 mr-1.5" /> Pilih Paket Ini
-                        </>
-                      )}
+                      {loadingMonths === p.months ? "Menyiapkan Tagihan..." : "Pilih Paket Ini"}
                     </Button>
                   </div>
                 </div>
@@ -322,13 +348,14 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
                   <th className="pb-3 font-bold">Paket</th>
                   <th className="pb-3 font-bold">Jumlah</th>
                   <th className="pb-3 font-bold">Status</th>
-                  <th className="pb-3 font-bold text-right">Tanggal</th>
+                  <th className="pb-3 font-bold">Tanggal</th>
+                  <th className="pb-3 font-bold text-right">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
                 {invoices.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-xs text-muted-foreground">
+                    <td colSpan={6} className="py-8 text-center text-xs text-muted-foreground">
                       Belum ada riwayat transaksi pembayaran.
                     </td>
                   </tr>
@@ -352,11 +379,28 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
                             ? "Lunas"
                             : inv.status === "pending"
                             ? "Menunggu"
+                            : inv.status === "cancelled"
+                            ? "Dibatalkan"
                             : inv.status}
                         </span>
                       </td>
-                      <td className="py-3 text-right text-xs text-muted-foreground">
-                        {inv.paid_at || inv.created_at}
+                      <td className="py-3 text-xs text-muted-foreground">
+                        {formatDate(inv.paid_at || inv.created_at)}
+                      </td>
+                      <td className="py-3 text-right">
+                        {inv.status === "pending" ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 px-2.5 text-xs font-bold text-destructive hover:bg-destructive/10 hover:text-destructive rounded-lg cursor-pointer transition-colors"
+                            disabled={cancellingOrderId === inv.order_id}
+                            onClick={() => handleCancelInvoice(inv.order_id)}
+                          >
+                            {cancellingOrderId === inv.order_id ? "Membatalkan..." : "Batalkan"}
+                          </Button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">-</span>
+                        )}
                       </td>
                     </tr>
                   ))

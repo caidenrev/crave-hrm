@@ -222,15 +222,18 @@ export function Header({ title, subtitle, actions, onOpenMobileMenu }) {
 
           {actions}
 
-          {/* Founder Console Quick Switch Pill */}
+          {/* Founder Console Quick Switch Button */}
           {auth?.is_founder && (
-            <Link
-              href="/founder"
-              className="hidden md:inline-flex items-center gap-1.5 rounded-xl bg-primary/10 border border-primary/25 px-3 py-1.5 text-xs font-black text-primary hover:bg-primary hover:text-primary-foreground shadow-xs transition-all"
+            <Button
+              asChild
+              size="sm"
+              className="hidden md:inline-flex items-center gap-1.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold shadow-soft transition-all"
             >
-              <Crown className="size-3.5 text-amber-500 fill-amber-500" />
-              <span>Founder Console</span>
-            </Link>
+              <Link href="/founder">
+                <Crown className="size-4 text-white fill-white" />
+                <span>Founder Console</span>
+              </Link>
+            </Button>
           )}
 
           {/* Notifikasi */}

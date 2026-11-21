@@ -156,6 +156,42 @@ class SubscriptionController extends Controller
     }
 
     /**
+     * Cancel a pending subscription invoice.
+     */
+    public function cancelInvoice(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'order_id' => ['required', 'string'],
+        ]);
+
+        $user = $request->user();
+        $activeCompanyId = session('active_company_id');
+        $company = $activeCompanyId
+            ? Company::find($activeCompanyId)
+            : $user?->currentCompany();
+
+        if (!$company) {
+            return back()->with('error', 'Perusahaan tidak ditemukan.');
+        }
+
+        $invoice = SubscriptionInvoice::where('company_id', $company->id)
+            ->where('order_id', $validated['order_id'])
+            ->first();
+
+        if (!$invoice) {
+            return back()->with('error', 'Tagihan tidak ditemukan.');
+        }
+
+        if ($invoice->status !== 'pending') {
+            return back()->with('error', 'Hanya tagihan dengan status menunggu yang dapat dibatalkan.');
+        }
+
+        $invoice->update(['status' => 'cancelled']);
+
+        return back()->with('success', "Tagihan {$invoice->order_id} berhasil dibatalkan.");
+    }
+
+    /**
      * Midtrans IPN Webhook Endpoint.
      */
     public function handleWebhook(Request $request): JsonResponse
