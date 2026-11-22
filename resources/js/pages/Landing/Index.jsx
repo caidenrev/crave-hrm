@@ -2302,8 +2302,8 @@ export default function Landing({ auth, stats = {} }) {
         <div className="max-w-[1240px] mx-auto">
           {/* Top Signature Watermark & Copyright */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 mb-10 border-b border-[#ECEEF4]">
-            <div className="font-handwriting font-normal text-[72px] sm:text-[108px] md:text-[126px] leading-[0.85] text-[oklch(0.54_0.19_258)] select-none -rotate-1 origin-left">
-              Crave
+            <div className="font-handwriting font-normal text-[52px] sm:text-[80px] md:text-[104px] leading-[0.9] text-[oklch(0.54_0.19_258)] select-none -rotate-1 origin-left">
+              Crave Services
             </div>
             <div className="text-[12px] text-[#9CA3AF] md:text-right pb-2">
               Hak Cipta © 2026 Crave HRM by Crave Services. Hak Cipta Dilindungi Undang-Undang.
