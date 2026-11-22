@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -109,44 +109,45 @@ export function TeamSection() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.4, ease: [0.2, 0.7, 0.2, 1] }}
-              className="relative w-full h-full flex-1 flex flex-col justify-between p-6 sm:p-10 md:p-14"
+              className="relative w-full h-full flex-1 flex flex-col justify-between p-6 pb-0 sm:p-10 sm:pb-0 md:p-14"
             >
-              {/* Silhouette Graphic in Background (Right side) */}
+              {/* 1. Copy: Top on mobile, left-aligned */}
+              <div className="relative z-10 md:absolute md:left-12 md:bottom-[26%] lg:bottom-[28%] max-w-[560px] text-left">
+                <div className="inline-block px-3 py-1 mb-3.5 sm:mb-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-[12px] font-semibold text-white/90">
+                  {currentMember.role}
+                </div>
+                <h3 className="font-bold text-[22px] sm:text-[28px] lg:text-[34px] leading-[1.2] tracking-[-0.02em] text-white mb-4 sm:mb-6 max-w-[20ch] text-left">
+                  {currentMember.heading}
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-7 text-[13.5px] sm:text-[14.5px] leading-[1.75] text-white/80 text-left">
+                  <p>{currentMember.col1}</p>
+                  <p>{currentMember.col2}</p>
+                </div>
+              </div>
+
+              {/* 2. Silhouette Graphic: At bottom, mentok batas div */}
               <div
-                className="relative md:absolute md:right-[3%] md:bottom-0 w-full md:w-[48%] h-[260px] md:h-[88%] flex items-end justify-center pointer-events-none z-0 mt-2 md:mt-0"
+                className="relative md:absolute md:right-[3%] md:bottom-0 w-full md:w-[48%] h-[260px] sm:h-[320px] md:h-[88%] flex items-end justify-center pointer-events-none z-0 mt-6 md:mt-0"
                 aria-hidden="true"
               >
                 <svg
                   viewBox="0 0 200 220"
-                  className="h-[90%] md:h-[92%] w-auto text-white/[0.14] drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)]"
+                  className="h-full w-auto text-white/[0.14] drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)] block align-bottom"
                   fill="currentColor"
                   role="img"
                   aria-label={`Siluet ${currentMember.name}`}
+                  style={{ display: "block", verticalAlign: "bottom" }}
                 >
                   <circle cx="100" cy="72" r="46" />
                   <path d="M10 220c0-52 40-88 90-88s90 36 90 88z" />
                 </svg>
               </div>
 
-              {/* Copy (Left side) */}
-              <div className="relative z-10 md:absolute md:left-12 md:bottom-[26%] lg:bottom-[28%] max-w-[560px] mt-4 md:mt-0">
-                <div className="inline-block px-3 py-1 mb-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-[12px] font-semibold text-white/90">
-                  {currentMember.role}
-                </div>
-                <h3 className="font-bold text-[22px] sm:text-[28px] lg:text-[34px] leading-[1.2] tracking-[-0.02em] text-white mb-5 sm:mb-6 max-w-[20ch]">
-                  {currentMember.heading}
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-7 text-[13.5px] sm:text-[14.5px] leading-[1.75] text-white/80">
-                  <p>{currentMember.col1}</p>
-                  <p>{currentMember.col2}</p>
-                </div>
-              </div>
-
-              {/* Giant Name Watermark at Bottom */}
+              {/* 3. Giant Name Watermark at Bottom */}
               <div
-                className="relative md:absolute md:left-12 md:right-12 md:bottom-5 z-10 pointer-events-none select-none mt-6 md:mt-0 overflow-hidden text-center md:text-left"
+                className="relative md:absolute md:left-12 md:right-12 md:bottom-5 z-10 pointer-events-none select-none -mt-12 sm:-mt-16 md:mt-0 pb-5 md:pb-0 overflow-hidden text-left"
               >
-                <span className="inline-block font-extrabold tracking-[-0.055em] leading-[0.9] text-white/95 text-[40px] sm:text-[68px] md:text-[clamp(3.5rem,7.5vw,7.8rem)] whitespace-nowrap">
+                <span className="inline-block font-extrabold tracking-[-0.055em] leading-[0.9] text-white/95 text-[38px] sm:text-[58px] md:text-[clamp(3.5rem,7.5vw,7.8rem)] whitespace-nowrap">
                   {currentMember.name}
                 </span>
               </div>
