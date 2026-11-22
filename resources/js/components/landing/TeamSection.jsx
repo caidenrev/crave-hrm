@@ -60,20 +60,20 @@ export function TeamSection() {
 
   return (
     <div className="w-full">
-      {/* Stage: Interactive Stage Container Matching About Reference */}
+      {/* Stage: Interactive Stage Container */}
       <div
-        className="relative w-full max-w-[1240px] mx-auto min-h-[580px] md:min-h-[660px] lg:min-h-[700px] rounded-[24px] sm:rounded-[28px] overflow-hidden text-white shadow-[0_24px_64px_-16px_rgba(27,79,224,0.35)]"
+        className="relative w-full max-w-[1200px] mx-auto md:h-[550px] lg:h-[570px] rounded-[24px] sm:rounded-[28px] overflow-hidden text-white shadow-[0_24px_64px_-16px_rgba(27,79,224,0.35)]"
         style={{
           background: "linear-gradient(165deg, #3a78ff 0%, #1b4fe0 45%, #06163f 100%)",
         }}
       >
         {/* Ambient Glow Orbs */}
-        <div className="absolute top-0 right-0 w-[480px] h-[480px] bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[380px] h-[380px] bg-indigo-900/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[440px] h-[440px] bg-sky-400/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[360px] h-[360px] bg-indigo-900/40 rounded-full blur-3xl pointer-events-none" />
 
         {/* Floating Pill Tabs */}
         <div
-          className="absolute z-30 top-6 sm:top-8 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0 flex items-center gap-1.5 p-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 shadow-lg"
+          className="absolute z-30 top-5 sm:top-6 left-1/2 -translate-x-1/2 md:left-12 md:translate-x-0 flex items-center gap-1.5 p-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 shadow-lg"
           role="tablist"
           aria-label="Anggota tim"
         >
@@ -103,35 +103,35 @@ export function TeamSection() {
         </div>
 
         {/* Tab Panel with AnimatePresence */}
-        <div className="relative w-full h-full min-h-[580px] md:min-h-[660px] lg:min-h-[700px] flex flex-col justify-between pt-24 md:pt-0">
+        <div className="relative w-full h-full">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentMember.id}
               role="tabpanel"
               id={`panel-${currentMember.id}`}
               aria-labelledby={`tab-${currentMember.id}`}
-              initial={{ opacity: 0, y: 24 }}
+              initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.4, ease: [0.2, 0.7, 0.2, 1] }}
-              className="relative w-full h-full flex-1 flex flex-col justify-between p-6 pb-0 sm:p-10 sm:pb-0 md:p-14"
+              exit={{ opacity: 0, y: -12 }}
+              transition={{ duration: 0.35, ease: [0.2, 0.7, 0.2, 1] }}
+              className="relative w-full h-full flex flex-col md:block p-6 pb-0 sm:p-10 sm:pb-0 md:p-12 overflow-hidden"
             >
-              {/* 1. Copy: Top on mobile, left-aligned */}
-              <div className="relative z-10 md:absolute md:left-12 md:bottom-[26%] lg:bottom-[28%] max-w-[560px] text-left">
-                <div className="inline-block px-3 py-1 mb-3.5 sm:mb-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-[12px] font-semibold text-white/90">
+              {/* 1. Copy: Left side on desktop, top on mobile, z-20 (ABOVE photo) */}
+              <div className="relative z-20 md:absolute md:left-12 md:top-24 md:max-w-[500px] lg:max-w-[540px] text-left pt-16 sm:pt-20 md:pt-0">
+                <div className="inline-block px-3 py-1 mb-3 sm:mb-3.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-[12px] font-semibold text-white/90">
                   {currentMember.role}
                 </div>
-                <h3 className="font-bold text-[22px] sm:text-[28px] lg:text-[34px] leading-[1.2] tracking-[-0.02em] text-white mb-4 sm:mb-6 max-w-[20ch] text-left">
+                <h3 className="font-bold text-[22px] sm:text-[26px] lg:text-[30px] leading-[1.2] tracking-[-0.02em] text-white mb-3.5 sm:mb-4 max-w-[20ch] text-left">
                   {currentMember.heading}
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-7 text-[13.5px] sm:text-[14.5px] leading-[1.75] text-white/80 text-left">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 text-[13px] sm:text-[14px] leading-[1.7] text-white/80 text-left">
                   <p>{currentMember.col1}</p>
                   <p>{currentMember.col2}</p>
                 </div>
 
                 {/* Social Links (LinkedIn & Instagram) */}
                 {currentMember.socials && (
-                  <div className="flex flex-wrap items-center gap-2.5 mt-5 sm:mt-6">
+                  <div className="flex flex-wrap items-center gap-2.5 mt-4 sm:mt-5">
                     {currentMember.socials.linkedin && (
                       <a
                         href={currentMember.socials.linkedin}
@@ -164,16 +164,16 @@ export function TeamSection() {
                 )}
               </div>
 
-              {/* 2. Photo / Silhouette Graphic: At bottom, mentok batas div */}
+              {/* 2. Photo / Silhouette: Layer z-10 (BELOW text and name) */}
               <div
-                className="relative md:absolute md:right-[3%] lg:right-[6%] md:bottom-0 w-full md:w-[46%] lg:w-[44%] h-[280px] sm:h-[340px] md:h-[90%] lg:h-[95%] flex items-end justify-center pointer-events-none z-0 mt-6 md:mt-0"
+                className="relative md:absolute md:right-4 lg:right-10 md:bottom-0 w-full md:w-[46%] lg:w-[44%] h-[270px] sm:h-[320px] md:h-[92%] lg:h-[96%] flex items-end justify-center pointer-events-none z-10 mt-4 md:mt-0"
                 aria-hidden="true"
               >
                 {currentMember.photo ? (
                   <img
                     src={currentMember.photo}
                     alt={currentMember.name}
-                    className="h-full w-auto max-h-[580px] object-contain object-bottom drop-shadow-[0_24px_50px_rgba(0,0,0,0.4)] block align-bottom select-none"
+                    className="h-full w-auto max-h-[540px] object-contain object-bottom drop-shadow-[0_24px_50px_rgba(0,0,0,0.4)] block align-bottom select-none"
                     style={{ display: "block", verticalAlign: "bottom" }}
                   />
                 ) : (
@@ -191,11 +191,11 @@ export function TeamSection() {
                 )}
               </div>
 
-              {/* 3. Giant Name Watermark at Bottom */}
+              {/* 3. Giant Name Watermark: Layer z-20 (ABOVE photo) */}
               <div
-                className="relative md:absolute md:left-12 md:right-12 md:bottom-5 z-10 pointer-events-none select-none -mt-12 sm:-mt-16 md:mt-0 pb-5 md:pb-0 overflow-hidden text-left"
+                className="relative md:absolute md:left-12 md:right-12 md:bottom-4 z-20 pointer-events-none select-none -mt-10 sm:-mt-14 md:mt-0 pb-4 md:pb-0 overflow-hidden text-left"
               >
-                <span className="inline-block font-extrabold tracking-[-0.055em] leading-[0.9] text-white/95 text-[38px] sm:text-[58px] md:text-[clamp(3.5rem,7.5vw,7.8rem)] whitespace-nowrap">
+                <span className="inline-block font-extrabold tracking-[-0.055em] leading-[0.9] text-white/95 text-[36px] sm:text-[50px] md:text-[60px] lg:text-[72px] whitespace-nowrap">
                   {currentMember.name}
                 </span>
               </div>
