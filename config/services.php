@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'crave_internal' => [
+        'secret' => env('CRAVE_INTERNAL_API_SECRET', 'crave_sec_internal_hrm_2026_x89f7a'),
+        'founder_console_url' => env('CRAVE_FOUNDER_CONSOLE_URL', 'http://localhost:5173/founder'),
+    ],
+
+
 ];
