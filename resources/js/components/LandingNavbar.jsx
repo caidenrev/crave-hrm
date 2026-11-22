@@ -23,6 +23,7 @@ const CRAVE_HRM_NAV = [
   { name: "Portal Karir", link: "/careers", isPage: true },
   { name: "Harga", link: "#harga" },
   { name: "FAQ", link: "#faq" },
+  { name: "Tentang", link: "#about" },
 ];
 
 export function LandingNavbar({ auth }) {

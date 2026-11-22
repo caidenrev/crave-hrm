@@ -21,6 +21,7 @@ import CraveServiceCards from "../../../../CraveCards/CraveServiceCards";
 import { FeatureGrid, FeatureBento } from "@/components/FeatureSections";
 import FeatureShowcase from "@/components/FeatureShowcase";
 import TestimonialSlider from "@/components/landing/TestimonialSlider";
+import TeamSection from "@/components/landing/TeamSection";
 
 const NAV_LINKS = [
   { href: "#fitur", label: "Fitur" },
@@ -2111,6 +2112,87 @@ export default function Landing({ auth, stats = {} }) {
           </div>
         </section>
 
+        {/* S14B: ABOUT / TIM KAMI SECTION */}
+        <section id="about" className="w-full py-20 px-4 sm:px-6 bg-white border-t border-[#F1F2F6] scroll-mt-20 sm:scroll-mt-24">
+          <div className="max-w-[1240px] mx-auto">
+            {/* Section Header: Handwriting Badge + Heading */}
+            <div className="flex flex-col items-center text-center mb-12">
+              {/* Handwriting Eyebrow with Animated Doodle Arrow */}
+              <div className="inline-flex items-center gap-2 mb-3 text-[oklch(0.54_0.19_258)] font-handwriting select-none">
+                <span className="text-[21px] sm:text-[23px] font-bold tracking-wide animate-write-in">
+                  Tim di Balik Crave HRM
+                </span>
+                <svg
+                  width="28"
+                  height="20"
+                  viewBox="0 0 28 20"
+                  fill="none"
+                  className="stroke-current animate-draw-stroke shrink-0"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 3C9 3 19 6 22 14M22 14L17 12M22 14L25 8"
+                    strokeWidth="2.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+
+              <h2 className="font-black text-[32px] sm:text-[42px] leading-[1.16] tracking-[-0.025em] text-[#111827] max-w-[680px] mx-auto text-center text-balance mb-3">
+                <BlurText
+                  text="Mengenal Sosok yang"
+                  effect="blur"
+                  animateBy="letters"
+                  direction="top"
+                  staggerFrom="start"
+                  trigger="view"
+                  delay={35}
+                  stepDuration={0.3}
+                  blur={10}
+                  distance={35}
+                  className="inline text-[#111827]"
+                />{" "}
+                <span className="relative inline-block text-[oklch(0.54_0.19_258)]">
+                  <BlurText
+                    text="Membangun Crave"
+                    effect="blur"
+                    animateBy="letters"
+                    direction="top"
+                    staggerFrom="start"
+                    trigger="view"
+                    delay={35}
+                    stepDuration={0.3}
+                    blur={10}
+                    distance={35}
+                    className="inline text-[oklch(0.54_0.19_258)]"
+                  />
+                  <svg
+                    className="absolute -bottom-1.5 left-0 w-full h-[9px] text-[oklch(0.54_0.19_258)] animate-draw-stroke pointer-events-none"
+                    viewBox="0 0 190 9"
+                    fill="none"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 6C50 2 120 8 188 3"
+                      stroke="currentColor"
+                      strokeWidth="2.4"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+              </h2>
+              <p className="text-[14px] sm:text-[15px] text-[#6B7280] max-w-[540px] mx-auto">
+                Kolaborasi solid antara arsitek sistem, insinyur software, dan pengelola proyek untuk menghadirkan platform HR nomor satu di Indonesia.
+              </p>
+            </div>
+
+            {/* Stage Container */}
+            <TeamSection />
+          </div>
+        </section>
+
         {/* S15: BOTTOM ROYAL BLUE CTA BANNER */}
         <section className="w-full py-10 px-4 sm:px-6 bg-white">
           <div className="max-w-[1060px] mx-auto relative rounded-3xl overflow-hidden bg-gradient-to-b from-[#3354FF] to-[#2F4AE0] py-16 px-6 sm:px-12 text-center text-white shadow-[0_20px_50px_-12px_rgba(51,84,255,0.45)]">
@@ -2264,6 +2346,7 @@ export default function Landing({ auth, stats = {} }) {
               <div>
                 <h3 className="font-bold text-[13.5px] text-[#111827] mb-4">Ekosistem & Karir</h3>
                 <ul className="space-y-2.5 text-[13px] text-[#6B7280]">
+                  <li><a href="#about" className="hover:text-[oklch(0.54_0.19_258)] transition-colors">Tentang Tim Kami</a></li>
                   <li><Link href="/careers" className="hover:text-[oklch(0.54_0.19_258)] transition-colors">Portal Karir Publik</Link></li>
                   <li><a href="#integrasi" className="hover:text-[oklch(0.54_0.19_258)] transition-colors">Integrasi Perbankan</a></li>
                   <li><a href="#harga" className="hover:text-[oklch(0.54_0.19_258)] transition-colors">Paket Harga</a></li>
