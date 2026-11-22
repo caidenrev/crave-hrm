@@ -9,6 +9,11 @@ const TEAM_MEMBERS = [
     tab: "Founder",
     name: "Eka Revandi",
     role: "Founder & Lead Software Engineer",
+    photo: "/images/foto-eka-revandi.png",
+    socials: {
+      linkedin: "https://www.linkedin.com/in/caidenrev",
+      instagram: "https://www.instagram.com/caidenrev",
+    },
     heading: "Pendiri yang menjaga arah dan visi produk.",
     col1: "Eka memulai produk ini dari masalah nyata yang ia temui sendiri. Ia memastikan setiap fitur yang dibangun punya alasan yang jelas.",
     col2: "Ia memegang visi, strategi, dan hubungan dengan pengguna, supaya tim selalu bergerak ke arah yang sama.",
@@ -123,24 +128,67 @@ export function TeamSection() {
                   <p>{currentMember.col1}</p>
                   <p>{currentMember.col2}</p>
                 </div>
+
+                {/* Social Links (LinkedIn & Instagram) */}
+                {currentMember.socials && (
+                  <div className="flex flex-wrap items-center gap-2.5 mt-5 sm:mt-6">
+                    {currentMember.socials.linkedin && (
+                      <a
+                        href={currentMember.socials.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-[12.5px] font-semibold backdrop-blur-sm border border-white/20 transition-all shadow-sm group select-none cursor-pointer"
+                        aria-label={`${currentMember.name} LinkedIn`}
+                      >
+                        <svg className="size-3.5 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.45c-.96 0-1.74.77-1.74 1.73a1.74 1.74 0 0 0 1.74 1.74c.95 0 1.73-.78 1.73-1.74 0-.96-.78-1.73-1.73-1.73z" />
+                        </svg>
+                        <span>LinkedIn</span>
+                      </a>
+                    )}
+                    {currentMember.socials.instagram && (
+                      <a
+                        href={currentMember.socials.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 hover:bg-white/25 active:scale-95 text-white text-[12.5px] font-semibold backdrop-blur-sm border border-white/20 transition-all shadow-sm group select-none cursor-pointer"
+                        aria-label={`${currentMember.name} Instagram`}
+                      >
+                        <svg className="size-3.5 fill-current transition-transform group-hover:scale-110" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                        <span>Instagram</span>
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
 
-              {/* 2. Silhouette Graphic: At bottom, mentok batas div */}
+              {/* 2. Photo / Silhouette Graphic: At bottom, mentok batas div */}
               <div
-                className="relative md:absolute md:right-[3%] md:bottom-0 w-full md:w-[48%] h-[260px] sm:h-[320px] md:h-[88%] flex items-end justify-center pointer-events-none z-0 mt-6 md:mt-0"
+                className="relative md:absolute md:right-[3%] lg:right-[6%] md:bottom-0 w-full md:w-[46%] lg:w-[44%] h-[280px] sm:h-[340px] md:h-[90%] lg:h-[95%] flex items-end justify-center pointer-events-none z-0 mt-6 md:mt-0"
                 aria-hidden="true"
               >
-                <svg
-                  viewBox="0 0 200 220"
-                  className="h-full w-auto text-white/[0.14] drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)] block align-bottom"
-                  fill="currentColor"
-                  role="img"
-                  aria-label={`Siluet ${currentMember.name}`}
-                  style={{ display: "block", verticalAlign: "bottom" }}
-                >
-                  <circle cx="100" cy="72" r="46" />
-                  <path d="M10 220c0-52 40-88 90-88s90 36 90 88z" />
-                </svg>
+                {currentMember.photo ? (
+                  <img
+                    src={currentMember.photo}
+                    alt={currentMember.name}
+                    className="h-full w-auto max-h-[580px] object-contain object-bottom drop-shadow-[0_24px_50px_rgba(0,0,0,0.4)] block align-bottom select-none"
+                    style={{ display: "block", verticalAlign: "bottom" }}
+                  />
+                ) : (
+                  <svg
+                    viewBox="0 0 200 220"
+                    className="h-full w-auto text-white/[0.14] drop-shadow-[0_20px_40px_rgba(0,0,0,0.2)] block align-bottom"
+                    fill="currentColor"
+                    role="img"
+                    aria-label={`Siluet ${currentMember.name}`}
+                    style={{ display: "block", verticalAlign: "bottom" }}
+                  >
+                    <circle cx="100" cy="72" r="46" />
+                    <path d="M10 220c0-52 40-88 90-88s90 36 90 88z" />
+                  </svg>
+                )}
               </div>
 
               {/* 3. Giant Name Watermark at Bottom */}
