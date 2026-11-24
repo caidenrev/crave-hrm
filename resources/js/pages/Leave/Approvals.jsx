@@ -69,6 +69,12 @@ export default function LeaveApprovals({
   const [rejectReason, setRejectReason] = useState("");
   const [isRejecting, setIsRejecting] = useState(false);
 
+  // Modal State for Approve Confirmation
+  const [approveModalOpen, setApproveModalOpen] = useState(false);
+  const [approvingRequest, setApprovingRequest] = useState(null);
+  const [approveLevel, setApproveLevel] = useState("supervisor");
+  const [isApproving, setIsApproving] = useState(false);
+
   // Modal State for Attachment Preview
   const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
   const [previewAttachment, setPreviewAttachment] = useState(null);
@@ -87,21 +93,32 @@ export default function LeaveApprovals({
     applyFilters({});
   };
 
-  const handleApproveSupervisor = (requestId) => {
-    if (!confirm("Setujui permohonan cuti ini di tingkat atasan langsung?")) return;
-    router.post(
-      `/leave/approvals/${requestId}/supervisor`,
-      {},
-      { preserveScroll: true }
-    );
+  const openApproveModal = (request, level = "supervisor") => {
+    setApprovingRequest(request);
+    setApproveLevel(level);
+    setApproveModalOpen(true);
   };
 
-  const handleApproveHr = (requestId) => {
-    if (!confirm("Setujui final permohonan cuti ini dan potong kuota cuti karyawan?")) return;
+  const submitApprove = () => {
+    if (!approvingRequest) return;
+    setIsApproving(true);
+    const endpoint =
+      approveLevel === "hr"
+        ? `/leave/approvals/${approvingRequest.id}/hr`
+        : `/leave/approvals/${approvingRequest.id}/supervisor`;
+
     router.post(
-      `/leave/approvals/${requestId}/hr`,
+      endpoint,
       {},
-      { preserveScroll: true }
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          setApproveModalOpen(false);
+          setIsApproving(false);
+          setApprovingRequest(null);
+        },
+        onError: () => setIsApproving(false),
+      }
     );
   };
 
@@ -446,7 +463,7 @@ export default function LeaveApprovals({
                         <div className="flex items-center justify-end gap-1.5">
                           <Button
                             size="sm"
-                            onClick={() => handleApproveSupervisor(req.id)}
+                            onClick={() => openApproveModal(req, "supervisor")}
                             className="h-8 rounded-xl bg-primary text-xs font-semibold shadow-sm"
                           >
                             <Check className="mr-1 size-3.5" /> Setujui (L1)
@@ -466,7 +483,7 @@ export default function LeaveApprovals({
                         <div className="flex items-center justify-end gap-1.5">
                           <Button
                             size="sm"
-                            onClick={() => handleApproveHr(req.id)}
+                            onClick={() => openApproveModal(req, "hr")}
                             className="h-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs font-semibold shadow-sm"
                           >
                             <Check className="mr-1 size-3.5" /> Setujui Final (HR)
@@ -518,6 +535,84 @@ export default function LeaveApprovals({
           )}
         </div>
       </div>
+
+      {/* MODAL PERSETUJUAN CUTI (POPUP SESUAI DESAIN SHADCN) */}
+      <Dialog open={approveModalOpen} onOpenChange={setApproveModalOpen}>
+        <DialogContent className="max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-foreground">
+              {approveLevel === "hr"
+                ? "Konfirmasi Persetujuan Final Cuti"
+                : "Konfirmasi Persetujuan Cuti"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              {approveLevel === "hr"
+                ? "Setujui final permohonan cuti ini dan potong kuota cuti karyawan secara otomatis sesuai ketentuan perusahaan?"
+                : "Setujui permohonan cuti ini di tingkat atasan langsung? Pengajuan akan diteruskan ke antrean HR Admin untuk verifikasi akhir."}
+            </p>
+
+            {approvingRequest && (
+              <div className="rounded-xl border bg-muted/40 p-3.5 space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Karyawan</span>
+                  <span className="font-bold text-foreground">
+                    {approvingRequest.employee?.nama_lengkap}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Jenis Cuti</span>
+                  <Badge variant="outline" className="rounded-full text-[11px] font-semibold">
+                    {approvingRequest.leave_type?.name}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Durasi</span>
+                  <span className="font-medium text-foreground">
+                    {formatDisplayDate(approvingRequest.start_date)} s.d. {formatDisplayDate(approvingRequest.end_date)} ({approvingRequest.total_days} hari)
+                  </span>
+                </div>
+                {approvingRequest.reason && (
+                  <div className="pt-2 border-t border-border/60 text-muted-foreground">
+                    <span className="font-semibold text-foreground">Alasan: </span>
+                    {approvingRequest.reason}
+                  </div>
+                )}
+              </div>
+            )}
+
+            <DialogFooter className="mt-4 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setApproveModalOpen(false)}
+                className="rounded-xl text-xs"
+                disabled={isApproving}
+              >
+                Batal
+              </Button>
+              <Button
+                type="button"
+                onClick={submitApprove}
+                disabled={isApproving}
+                className={`rounded-xl text-xs font-bold ${
+                  approveLevel === "hr"
+                    ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                    : "bg-primary hover:bg-primary/90 text-white"
+                }`}
+              >
+                {isApproving
+                  ? "Menyetujui..."
+                  : approveLevel === "hr"
+                  ? "Setujui Final (HR)"
+                  : "Setujui Permohonan"}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* MODAL PENOLAKAN CUTI DENGAN ALASAN */}
       <Dialog open={rejectModalOpen} onOpenChange={setRejectModalOpen}>

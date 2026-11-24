@@ -61,6 +61,9 @@ export default function LeaveIndex({
   const [modalOpen, setModalOpen] = useState(false);
   const [previewAttachment, setPreviewAttachment] = useState(null);
   const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [cancellingRequestId, setCancellingRequestId] = useState(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const { data, setData, post, processing, errors, reset } = useForm({
     leave_type_id: leaveTypes[0]?.id ? String(leaveTypes[0].id) : "",
@@ -128,10 +131,22 @@ export default function LeaveIndex({
     });
   };
 
-  const handleCancel = (requestId) => {
-    if (!confirm("Apakah Anda yakin ingin membatalkan pengajuan cuti ini?")) return;
-    router.delete(`/leave/${requestId}`, {
+  const openCancelModal = (requestId) => {
+    setCancellingRequestId(requestId);
+    setCancelModalOpen(true);
+  };
+
+  const submitCancel = () => {
+    if (!cancellingRequestId) return;
+    setIsCancelling(true);
+    router.delete(`/leave/${cancellingRequestId}`, {
       preserveScroll: true,
+      onSuccess: () => {
+        setCancelModalOpen(false);
+        setIsCancelling(false);
+        setCancellingRequestId(null);
+      },
+      onError: () => setIsCancelling(false),
     });
   };
 
@@ -467,7 +482,7 @@ export default function LeaveIndex({
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => handleCancel(req.id)}
+                            onClick={() => openCancelModal(req.id)}
                             className="h-8 rounded-xl text-xs text-destructive hover:bg-destructive/10 hover:text-destructive"
                           >
                             <Trash2 className="mr-1 size-3.5" /> Batal
@@ -614,6 +629,44 @@ export default function LeaveIndex({
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* MODAL KONFIRMASI PEMBATALAN CUTI */}
+      <Dialog open={cancelModalOpen} onOpenChange={setCancelModalOpen}>
+        <DialogContent className="max-w-md rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-foreground">
+              Konfirmasi Pembatalan Cuti
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Apakah Anda yakin ingin membatalkan permohonan cuti ini? Pengajuan yang dibatalkan tidak dapat dikembalikan.
+            </p>
+
+            <DialogFooter className="mt-4 gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setCancelModalOpen(false)}
+                className="rounded-xl text-xs"
+                disabled={isCancelling}
+              >
+                Kembali
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={submitCancel}
+                disabled={isCancelling}
+                className="rounded-xl text-xs font-bold"
+              >
+                {isCancelling ? "Membatalkan..." : "Ya, Batalkan Permohonan"}
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
 
