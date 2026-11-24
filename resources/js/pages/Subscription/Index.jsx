@@ -19,10 +19,19 @@ import {
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function SubscriptionIndex({ company, plans, invoices, midtrans }) {
   const [loadingMonths, setLoadingMonths] = useState(null);
   const [cancellingOrderId, setCancellingOrderId] = useState(null);
+  const [cancelModalOpen, setCancelModalOpen] = useState(false);
+  const [targetInvoice, setTargetInvoice] = useState(null);
   const [snapReady, setSnapReady] = useState(false);
 
   useEffect(() => {
@@ -109,18 +118,31 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
     }
   };
 
-  const handleCancelInvoice = (orderId) => {
-    if (confirm(`Batalkan tagihan ${orderId}?`)) {
-      setCancellingOrderId(orderId);
-      router.post(
-        "/subscription/cancel-invoice",
-        { order_id: orderId },
-        {
-          preserveScroll: true,
-          onFinish: () => setCancellingOrderId(null),
-        }
-      );
-    }
+  const openCancelInvoiceModal = (inv) => {
+    setTargetInvoice(inv);
+    setCancelModalOpen(true);
+  };
+
+  const submitCancelInvoice = () => {
+    if (!targetInvoice) return;
+    const orderId = targetInvoice.order_id;
+    setCancellingOrderId(orderId);
+    router.post(
+      "/subscription/cancel-invoice",
+      { order_id: orderId },
+      {
+        preserveScroll: true,
+        onSuccess: () => {
+          toast.success(`Tagihan ${orderId} berhasil dibatalkan.`);
+          setCancelModalOpen(false);
+          setTargetInvoice(null);
+        },
+        onError: () => {
+          toast.error("Gagal membatalkan tagihan.");
+        },
+        onFinish: () => setCancellingOrderId(null),
+      }
+    );
   };
 
   const formatDate = (iso) => {
@@ -394,7 +416,7 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
                             size="sm"
                             className="h-7 px-2.5 text-xs font-bold text-destructive hover:bg-destructive/10 hover:text-destructive rounded-lg cursor-pointer transition-colors"
                             disabled={cancellingOrderId === inv.order_id}
-                            onClick={() => handleCancelInvoice(inv.order_id)}
+                            onClick={() => openCancelInvoiceModal(inv)}
                           >
                             {cancellingOrderId === inv.order_id ? "Membatalkan..." : "Batalkan"}
                           </Button>
@@ -410,6 +432,65 @@ export default function SubscriptionIndex({ company, plans, invoices, midtrans }
           </div>
         </div>
       </div>
+
+      {/* MODAL KONFIRMASI PEMBATALAN TAGIHAN */}
+      <Dialog open={cancelModalOpen} onOpenChange={setCancelModalOpen}>
+        <DialogContent className="max-w-md rounded-2xl p-6">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-foreground">
+              Konfirmasi Pembatalan Tagihan
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Apakah Anda yakin ingin membatalkan tagihan pembayaran ini? Tagihan yang telah dibatalkan tidak dapat diproses lagi melalui Midtrans.
+            </p>
+
+            {targetInvoice && (
+              <div className="rounded-xl border bg-muted/30 p-3.5 space-y-2 text-xs">
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Order ID:</span>
+                  <span className="font-mono font-bold text-foreground">{targetInvoice.order_id}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Paket:</span>
+                  <span className="font-semibold">{targetInvoice.plan_name}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Total Tagihan:</span>
+                  <span className="font-bold text-foreground tabular-nums">{rupiah(targetInvoice.amount)}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-muted-foreground">Tanggal Dibuat:</span>
+                  <span>{formatDate(targetInvoice.created_at)}</span>
+                </div>
+              </div>
+            )}
+
+            <DialogFooter className="mt-5 gap-2 sm:gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setCancelModalOpen(false)}
+                className="rounded-xl text-xs font-medium cursor-pointer"
+                disabled={cancellingOrderId === targetInvoice?.order_id}
+              >
+                Batal
+              </Button>
+              <Button
+                type="button"
+                variant="destructive"
+                disabled={cancellingOrderId === targetInvoice?.order_id}
+                onClick={submitCancelInvoice}
+                className="rounded-xl text-xs font-bold cursor-pointer"
+              >
+                {cancellingOrderId === targetInvoice?.order_id ? "Membatalkan..." : "Batalkan Tagihan"}
+              </Button>
+            </DialogFooter>
+          </div>
+        </DialogContent>
+      </Dialog>
     </AuthenticatedLayout>
   );
 }
